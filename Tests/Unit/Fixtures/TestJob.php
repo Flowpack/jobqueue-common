@@ -14,7 +14,7 @@ namespace Jobqueue\Common\Tests\Unit\Fixtures;
 /**
  * Test job
  */
-class TestJob extends \Jobqueue\Common\Job\AbstractJob {
+class TestJob implements \Jobqueue\Common\Job\JobInterface {
 
 	/**
 	 * @var boolean
@@ -27,7 +27,7 @@ class TestJob extends \Jobqueue\Common\Job\AbstractJob {
 	 * @param \Jobqueue\Common\Queue\QueueInterface $queue
 	 * @return boolean
 	 */
-	public function execute(\Jobqueue\Common\Queue\QueueInterface $queue) {
+	public function execute(\Jobqueue\Common\Queue\QueueInterface $queue, \Jobqueue\Common\Queue\Message $message) {
 		$this->processed = TRUE;
 		return TRUE;
 	}

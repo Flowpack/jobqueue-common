@@ -57,9 +57,10 @@ class TestQueue implements \Jobqueue\Common\Queue\QueueInterface {
 	}
 
 	/**
+	 * @param integer $limit
 	 * @return \Jobqueue\Common\Queue\Message
 	 */
-	public function peek() {
+	public function peek($limit = 1) {
 		return count($this->messages) > 0 ? $this->messages[0] : NULL;
 	}
 
@@ -120,6 +121,22 @@ class TestQueue implements \Jobqueue\Common\Queue\QueueInterface {
 	 */
 	public function getProcessing() {
 		return $this->processing;
+	}
+
+	/**
+	 * @return integer
+	 */
+	public function count() {
+		return count($this->messages);
+	}
+
+	/**
+	 *
+	 * @param string $identifier
+	 * @return \Jobqueue\Common\Queue\Message
+	 */
+	public function getMessage($identifier) {
+		return NULL;
 	}
 
 }

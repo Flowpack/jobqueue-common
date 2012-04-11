@@ -34,7 +34,7 @@ class JobManagerTest extends \TYPO3\FLOW3\Tests\UnitTestCase {
 		$this->queueManager->injectSettings(array(
 			'queues' => array(
 				'TestQueue' => array(
-					'type' => 'Jobqueue\Common\Tests\Unit\Fixtures\TestQueue'
+					'className' => 'Jobqueue\Common\Tests\Unit\Fixtures\TestQueue'
 				)
 			)
 		));

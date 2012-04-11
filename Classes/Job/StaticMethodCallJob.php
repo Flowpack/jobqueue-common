@@ -16,7 +16,7 @@ use TYPO3\FLOW3\Annotations as FLOW3;
 /**
  * Static method call job
  */
-class StaticMethodCallJob extends AbstractJob {
+class StaticMethodCallJob implements JobInterface {
 
 	/**
 	 * @var string
@@ -63,9 +63,10 @@ class StaticMethodCallJob extends AbstractJob {
 	 * A job should finish itself after successful execution using the queue methods.
 	 *
 	 * @param \Jobqueue\Common\Queue\QueueInterface $queue
+	 * @param \Jobqueue\Common\Queue\Message $message
 	 * @return boolean TRUE If the execution was successful
 	 */
-	public function execute(\Jobqueue\Common\Queue\QueueInterface $queue) {
+	public function execute(\Jobqueue\Common\Queue\QueueInterface $queue, \Jobqueue\Common\Queue\Message $message) {
 		$service = $this->objectManager->get($this->className);
 		$this->deferMethodCallAspect->setProcessingJob(TRUE);
 		try {
@@ -77,6 +78,20 @@ class StaticMethodCallJob extends AbstractJob {
 			throw $exception;
 		}
 		$this->deferMethodCallAspect->setProcessingJob(FALSE);
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getLabel() {
+		return $this->className . '->' . $this->methodName;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getIdentifier() {
+		return NULL;
 	}
 
 }

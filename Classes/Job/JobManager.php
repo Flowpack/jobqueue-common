@@ -51,17 +51,16 @@ class JobManager {
 	 * A worker using this method should catch exceptions
 	 *
 	 * @param string $queueName
+	 * @param integer $timeout
 	 * @return \Jobqueue\Common\Job\JobInterface The job that was executed or NULL if no job was executed and a timeout occured
 	 */
-	public function waitAndExecute($queueName) {
+	public function waitAndExecute($queueName, $timeout = NULL) {
 		$queue = $this->queueManager->getQueue($queueName);
-		$message = $queue->waitAndReserve();
+		$message = $queue->waitAndReserve($timeout);
 		if ($message !== NULL) {
 			$job = unserialize($message->getPayload());
 
-			$job->setMessage($message);
-
-			if ($job->execute($queue)) {
+			if ($job->execute($queue, $message)) {
 				$queue->finish($message);
 				return $job;
 			} else {
@@ -70,6 +69,21 @@ class JobManager {
 		}
 
 		return NULL;
+	}
+
+	/**
+	 *
+	 * @param string $queueName
+	 * @param integer $limit
+	 * @return array
+	 */
+	public function peek($queueName, $limit = 1) {
+		$queue = $this->queueManager->getQueue($queueName);
+		$messages = $queue->peek($limit);
+		return array_map(function(\Jobqueue\Common\Queue\Message $message) {
+			$job = unserialize($message->getPayload());
+			return $job;
+		}, $messages);
 	}
 
 }

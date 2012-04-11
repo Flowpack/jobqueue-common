@@ -24,24 +24,24 @@ interface JobInterface {
 	 * A job should finish itself after successful execution using the queue methods.
 	 *
 	 * @param \Jobqueue\Common\Queue\QueueInterface $queue
+	 * @param \Jobqueue\Common\Queue\Message $message The original message
 	 * @return boolean TRUE if the job was executed successfully and the message should be finished
 	 */
-	public function execute(\Jobqueue\Common\Queue\QueueInterface $queue);
+	public function execute(\Jobqueue\Common\Queue\QueueInterface $queue, \Jobqueue\Common\Queue\Message $message);
 
 	/**
-	 * Injects the original message of the job
+	 * Get an optional identifier for the job
 	 *
-	 * @param \Jobqueue\Common\Queue\Message $message The original message
-	 * @return void
+	 * @return string A job identifier
 	 */
-	public function setMessage(\Jobqueue\Common\Queue\Message $message);
+	public function getIdentifier();
 
 	/**
-	 * Get the original message of the job
+	 * Get a readable label for the job
 	 *
-	 * @return \Jobqueue\Common\Queue\Message The original message
+	 * @return string A label for the job
 	 */
-	public function getMessage();
+	public function getLabel();
 
 }
 ?>

@@ -55,7 +55,10 @@ class QueueManager {
 		if (!isset($this->settings['queues'][$queueName])) {
 			throw new \TYPO3\FLOW3\Exception('Queue "' . $queueName . '" is not configured', 1334054137);
 		}
-		$queueObjectName = $this->settings['queues'][$queueName]['type'];
+		if (!isset($this->settings['queues'][$queueName]['className'])) {
+			throw new \TYPO3\FLOW3\Exception('Option className for queue "' . $queueName . '" is not configured', 1334147126);
+		}
+		$queueObjectName = $this->settings['queues'][$queueName]['className'];
 		$options = isset($this->settings['queues'][$queueName]['options']) ? $this->settings['queues'][$queueName]['options'] : array();
 		$queue = new $queueObjectName($queueName, $options);
 

@@ -21,8 +21,10 @@ class Message {
 	// Created locally, not published to queue
 	const STATE_NEW = 0;
 	// Message published to queue, should not be processed by client
+	// TODO Rename _SUBMITTED
 	const STATE_PUBLISHED = 1;
 	// Message received from queue, not deleted from queue! (a.k.a. Reserved)
+	// TODO Rename _RESERVED
 	const STATE_RECEIVED = 2;
 	// Message processed and deleted from queue
 	const STATE_DONE = 3;
@@ -49,6 +51,7 @@ class Message {
 
 	/**
 	 * @var string The original message value as encoded in a queue
+	 * @todo Can be removed with new Redis implementation
 	 */
 	protected $originalValue;
 

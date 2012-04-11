@@ -28,7 +28,8 @@ interface QueueInterface {
 	 * another message with the same identifier already exists.
 	 *
 	 * @param \Jobqueue\Common\Queue\Message $message
-	 * @return void
+	 * @return string The identifier of the message under which it was queued
+	 * @todo rename to submit()
 	 */
 	public function publish(\Jobqueue\Common\Queue\Message $message);
 
@@ -41,7 +42,7 @@ interface QueueInterface {
 	 * @param integer $timeout
 	 * @return \Jobqueue\Common\Queue\Message The received message or NULL if a timeout occured
 	 */
-	public function waitAndTake($timeout = 60);
+	public function waitAndTake($timeout = NULL);
 
 	/**
 	 * Wait for a message in the queue and reserve the message for processing
@@ -56,24 +57,45 @@ interface QueueInterface {
 	 * @param integer $timeout
 	 * @return \Jobqueue\Common\Queue\Message The received message or NULL if a timeout occured
 	 */
-	public function waitAndReserve($timeout = 60);
+	public function waitAndReserve($timeout = NULL);
 
 	/**
-	 * Mark a message as finished
+	 * Mark a message as done
+	 *
+	 * This must be called for every message that was reserved and that was
+	 * processed successfully.
 	 *
 	 * @return boolean TRUE if the message could be removed
 	 */
 	public function finish(\Jobqueue\Common\Queue\Message $message);
 
 	/**
-	 * Peek for a message
+	 * Peek for messages
 	 *
-	 * Inspect a message without taking it from the queue. It is not safe to take this message
-	 * and process it, since another consumer could have received this message already!
+	 * Inspect the next messages without taking them from the queue. It is not safe to take the messages
+	 * and process them, since another consumer could have received this message already!
 	 *
-	 * @return \Jobqueue\Common\Queue\Message The received message or NULL if no message is present currently
+	 * @param integer $limit
+	 * @return array<\Jobqueue\Common\Queue\Message> The messages up to the length of limit or an empty array if no messages are present currently
 	 */
-	public function peek();
+	public function peek($limit = 1);
+
+	/**
+	 * Get a message by identifier
+	 *
+	 * @param string $identifier
+	 * @return \Jobqueue\Common\Queue\Message The message or NULL if not present
+	 */
+	public function getMessage($identifier);
+
+	/**
+	 * Count messages in the queue
+	 *
+	 * Get a count of messages currently in the queue.
+	 *
+	 * @return integer The number of messages in the queue
+	 */
+	public function count();
 
 }
 ?>
