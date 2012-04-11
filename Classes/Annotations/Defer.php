@@ -1,5 +1,5 @@
 <?php
-namespace Jobqueue\Common\Annotations;
+namespace TYPO3\Jobqueue\Common\Annotations;
 
 /*                                                                        *
  * This script belongs to the FLOW3 package "Jobqueue.Common".                *

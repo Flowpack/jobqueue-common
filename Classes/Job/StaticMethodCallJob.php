@@ -1,5 +1,5 @@
 <?php
-namespace Jobqueue\Common\Job;
+namespace TYPO3\Jobqueue\Common\Job;
 
 /*                                                                        *
  * This script belongs to the FLOW3 package "Jobqueue.Common".                *
@@ -35,7 +35,7 @@ class StaticMethodCallJob implements JobInterface {
 
 	/**
 	 * @FLOW3\Inject
-	 * @var \Jobqueue\Common\Job\Aspect\DeferMethodCallAspect
+	 * @var \TYPO3\Jobqueue\Common\Job\Aspect\DeferMethodCallAspect
 	 */
 	protected $deferMethodCallAspect;
 
@@ -62,11 +62,11 @@ class StaticMethodCallJob implements JobInterface {
 	 *
 	 * A job should finish itself after successful execution using the queue methods.
 	 *
-	 * @param \Jobqueue\Common\Queue\QueueInterface $queue
-	 * @param \Jobqueue\Common\Queue\Message $message
+	 * @param \TYPO3\Jobqueue\Common\Queue\QueueInterface $queue
+	 * @param \TYPO3\Jobqueue\Common\Queue\Message $message
 	 * @return boolean TRUE If the execution was successful
 	 */
-	public function execute(\Jobqueue\Common\Queue\QueueInterface $queue, \Jobqueue\Common\Queue\Message $message) {
+	public function execute(\TYPO3\Jobqueue\Common\Queue\QueueInterface $queue, \TYPO3\Jobqueue\Common\Queue\Message $message) {
 		$service = $this->objectManager->get($this->className);
 		$this->deferMethodCallAspect->setProcessingJob(TRUE);
 		try {

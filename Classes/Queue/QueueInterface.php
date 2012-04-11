@@ -1,5 +1,5 @@
 <?php
-namespace Jobqueue\Common\Queue;
+namespace TYPO3\Jobqueue\Common\Queue;
 
 /*                                                                        *
  * This script belongs to the FLOW3 package "Jobqueue.Common".                *
@@ -27,11 +27,11 @@ interface QueueInterface {
 	 * If the queue supports unique messages, the message should not be queued if
 	 * another message with the same identifier already exists.
 	 *
-	 * @param \Jobqueue\Common\Queue\Message $message
+	 * @param \TYPO3\Jobqueue\Common\Queue\Message $message
 	 * @return string The identifier of the message under which it was queued
 	 * @todo rename to submit()
 	 */
-	public function publish(\Jobqueue\Common\Queue\Message $message);
+	public function publish(\TYPO3\Jobqueue\Common\Queue\Message $message);
 
 	/**
 	 * Wait for a message in the queue and remove the message from the queue for processing
@@ -40,7 +40,7 @@ interface QueueInterface {
 	 * occured and no message was available or received.
 	 *
 	 * @param integer $timeout
-	 * @return \Jobqueue\Common\Queue\Message The received message or NULL if a timeout occured
+	 * @return \TYPO3\Jobqueue\Common\Queue\Message The received message or NULL if a timeout occured
 	 */
 	public function waitAndTake($timeout = NULL);
 
@@ -55,7 +55,7 @@ interface QueueInterface {
 	 * occured and no message was available or received.
 	 *
 	 * @param integer $timeout
-	 * @return \Jobqueue\Common\Queue\Message The received message or NULL if a timeout occured
+	 * @return \TYPO3\Jobqueue\Common\Queue\Message The received message or NULL if a timeout occured
 	 */
 	public function waitAndReserve($timeout = NULL);
 
@@ -67,7 +67,7 @@ interface QueueInterface {
 	 *
 	 * @return boolean TRUE if the message could be removed
 	 */
-	public function finish(\Jobqueue\Common\Queue\Message $message);
+	public function finish(\TYPO3\Jobqueue\Common\Queue\Message $message);
 
 	/**
 	 * Peek for messages
@@ -76,7 +76,7 @@ interface QueueInterface {
 	 * and process them, since another consumer could have received this message already!
 	 *
 	 * @param integer $limit
-	 * @return array<\Jobqueue\Common\Queue\Message> The messages up to the length of limit or an empty array if no messages are present currently
+	 * @return array<\TYPO3\Jobqueue\Common\Queue\Message> The messages up to the length of limit or an empty array if no messages are present currently
 	 */
 	public function peek($limit = 1);
 
@@ -84,7 +84,7 @@ interface QueueInterface {
 	 * Get a message by identifier
 	 *
 	 * @param string $identifier
-	 * @return \Jobqueue\Common\Queue\Message The message or NULL if not present
+	 * @return \TYPO3\Jobqueue\Common\Queue\Message The message or NULL if not present
 	 */
 	public function getMessage($identifier);
 

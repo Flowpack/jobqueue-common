@@ -1,5 +1,5 @@
 <?php
-namespace Jobqueue\Common\Tests\Unit\Fixtures;
+namespace TYPO3\Jobqueue\Common\Tests\Unit\Fixtures;
 
 /*                                                                        *
  * This script belongs to the FLOW3 package "Jobqueue.Common".                *
@@ -14,7 +14,7 @@ namespace Jobqueue\Common\Tests\Unit\Fixtures;
 /**
  * Test job
  */
-class TestJob implements \Jobqueue\Common\Job\JobInterface {
+class TestJob implements \TYPO3\Jobqueue\Common\Job\JobInterface {
 
 	/**
 	 * @var boolean
@@ -24,10 +24,10 @@ class TestJob implements \Jobqueue\Common\Job\JobInterface {
 	/**
 	 * Do nothing
 	 *
-	 * @param \Jobqueue\Common\Queue\QueueInterface $queue
+	 * @param \TYPO3\Jobqueue\Common\Queue\QueueInterface $queue
 	 * @return boolean
 	 */
-	public function execute(\Jobqueue\Common\Queue\QueueInterface $queue, \Jobqueue\Common\Queue\Message $message) {
+	public function execute(\TYPO3\Jobqueue\Common\Queue\QueueInterface $queue, \TYPO3\Jobqueue\Common\Queue\Message $message) {
 		$this->processed = TRUE;
 		return TRUE;
 	}

@@ -1,5 +1,5 @@
 <?php
-namespace Jobqueue\Common\Tests\Unit\Queue;
+namespace TYPO3\Jobqueue\Common\Tests\Unit\Queue;
 
 /*                                                                        *
  * This script belongs to the FLOW3 package "Jobqueue.Common".                *
@@ -20,28 +20,28 @@ class QueueManagerTest extends \TYPO3\FLOW3\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function getQueueCreatesInstanceByQueueName() {
-		$queueManager = new \Jobqueue\Common\Queue\QueueManager();
+		$queueManager = new \TYPO3\Jobqueue\Common\Queue\QueueManager();
 		$queueManager->injectSettings(array(
 			'queues' => array(
 				'TestQueue' => array(
-					'className' => 'Jobqueue\Common\Tests\Unit\Fixtures\TestQueue'
+					'className' => 'TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestQueue'
 				)
 			)
 		));
 
 		$queue = $queueManager->getQueue('TestQueue');
-		$this->assertInstanceOf('Jobqueue\Common\Tests\Unit\Fixtures\TestQueue', $queue);
+		$this->assertInstanceOf('TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestQueue', $queue);
 	}
 
 	/**
 	 * @test
 	 */
 	public function getQueueSetsOptionsOnInstance() {
-		$queueManager = new \Jobqueue\Common\Queue\QueueManager();
+		$queueManager = new \TYPO3\Jobqueue\Common\Queue\QueueManager();
 		$queueManager->injectSettings(array(
 			'queues' => array(
 				'TestQueue' => array(
-					'className' => 'Jobqueue\Common\Tests\Unit\Fixtures\TestQueue',
+					'className' => 'TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestQueue',
 					'options' => array(
 						'foo' => 'bar'
 					)
@@ -57,11 +57,11 @@ class QueueManagerTest extends \TYPO3\FLOW3\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function getQueueReusesInstances() {
-		$queueManager = new \Jobqueue\Common\Queue\QueueManager();
+		$queueManager = new \TYPO3\Jobqueue\Common\Queue\QueueManager();
 		$queueManager->injectSettings(array(
 			'queues' => array(
 				'TestQueue' => array(
-					'className' => 'Jobqueue\Common\Tests\Unit\Fixtures\TestQueue'
+					'className' => 'TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestQueue'
 				)
 			)
 		));

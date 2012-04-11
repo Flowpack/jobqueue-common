@@ -1,5 +1,5 @@
 <?php
-namespace Jobqueue\Common\Tests\Unit\Fixtures;
+namespace TYPO3\Jobqueue\Common\Tests\Unit\Fixtures;
 
 /*                                                                        *
  * This script belongs to the FLOW3 package "Jobqueue.Common".                *
@@ -16,7 +16,7 @@ namespace Jobqueue\Common\Tests\Unit\Fixtures;
  *
  * A simple in-memory message queue for unit tests.
  */
-class TestQueue implements \Jobqueue\Common\Queue\QueueInterface {
+class TestQueue implements \TYPO3\Jobqueue\Common\Queue\QueueInterface {
 
 	/**
 	 * @var array
@@ -49,33 +49,33 @@ class TestQueue implements \Jobqueue\Common\Queue\QueueInterface {
 	}
 
 		/**
-	 * @param \Jobqueue\Common\Queue\Message $message
+	 * @param \TYPO3\Jobqueue\Common\Queue\Message $message
 	 * @return void
 	 */
-	public function finish(\Jobqueue\Common\Queue\Message $message) {
+	public function finish(\TYPO3\Jobqueue\Common\Queue\Message $message) {
 		unset($this->processing[$message->getIdentifier()]);
 	}
 
 	/**
 	 * @param integer $limit
-	 * @return \Jobqueue\Common\Queue\Message
+	 * @return \TYPO3\Jobqueue\Common\Queue\Message
 	 */
 	public function peek($limit = 1) {
 		return count($this->messages) > 0 ? $this->messages[0] : NULL;
 	}
 
 	/**
-	 * @param \Jobqueue\Common\Queue\Message $message
+	 * @param \TYPO3\Jobqueue\Common\Queue\Message $message
 	 * @return void
 	 */
-	public function publish(\Jobqueue\Common\Queue\Message $message) {
+	public function publish(\TYPO3\Jobqueue\Common\Queue\Message $message) {
 			// TODO Unique identifiers
 		$this->messages[] = $message;
 	}
 
 	/**
 	 * @param integer $timeout
-	 * @return \Jobqueue\Common\Queue\Message
+	 * @return \TYPO3\Jobqueue\Common\Queue\Message
 	 */
 	public function waitAndReserve($timeout = 60) {
 		$message = array_shift($this->messages);
@@ -88,7 +88,7 @@ class TestQueue implements \Jobqueue\Common\Queue\QueueInterface {
 	/**
 	 *
 	 * @param integer $timeout
-	 * @return \Jobqueue\Common\Queue\Message
+	 * @return \TYPO3\Jobqueue\Common\Queue\Message
 	 */
 	public function waitAndTake($timeout = 60) {
 		$message = array_shift($this->messages);
@@ -133,7 +133,7 @@ class TestQueue implements \Jobqueue\Common\Queue\QueueInterface {
 	/**
 	 *
 	 * @param string $identifier
-	 * @return \Jobqueue\Common\Queue\Message
+	 * @return \TYPO3\Jobqueue\Common\Queue\Message
 	 */
 	public function getMessage($identifier) {
 		return NULL;

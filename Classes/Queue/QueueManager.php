@@ -1,5 +1,5 @@
 <?php
-namespace Jobqueue\Common\Queue;
+namespace TYPO3\Jobqueue\Common\Queue;
 
 /*                                                                        *
  * This script belongs to the FLOW3 package "Jobqueue.Common".                *
@@ -45,7 +45,7 @@ class QueueManager {
 	/**
 	 *
 	 * @param string $queueName
-	 * @return \Jobqueue\Common\Queue\QueueInterface
+	 * @return \TYPO3\Jobqueue\Common\Queue\QueueInterface
 	 */
 	public function getQueue($queueName) {
 		if (isset($this->queues[$queueName])) {

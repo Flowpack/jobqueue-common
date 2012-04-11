@@ -1,5 +1,5 @@
 <?php
-namespace Jobqueue\Common\Tests\Unit\Job;
+namespace TYPO3\Jobqueue\Common\Tests\Unit\Job;
 
 /*                                                                        *
  * This script belongs to the FLOW3 package "Jobqueue.Common".                *
@@ -17,12 +17,12 @@ namespace Jobqueue\Common\Tests\Unit\Job;
 class JobManagerTest extends \TYPO3\FLOW3\Tests\UnitTestCase {
 
 	/**
-	 * @var \Jobqueue\Common\Queue\QueueManager
+	 * @var \TYPO3\Jobqueue\Common\Queue\QueueManager
 	 */
 	protected $queueManager;
 
 	/**
-	 * @var \Jobqueue\Common\Job\JobManager
+	 * @var \TYPO3\Jobqueue\Common\Job\JobManager
 	 */
 	protected $jobManager;
 
@@ -30,16 +30,16 @@ class JobManagerTest extends \TYPO3\FLOW3\Tests\UnitTestCase {
 	 *
 	 */
 	public function setUp() {
-		$this->queueManager = new \Jobqueue\Common\Queue\QueueManager();
+		$this->queueManager = new \TYPO3\Jobqueue\Common\Queue\QueueManager();
 		$this->queueManager->injectSettings(array(
 			'queues' => array(
 				'TestQueue' => array(
-					'className' => 'Jobqueue\Common\Tests\Unit\Fixtures\TestQueue'
+					'className' => 'TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestQueue'
 				)
 			)
 		));
 
-		$this->jobManager = new \Jobqueue\Common\Job\JobManager();
+		$this->jobManager = new \TYPO3\Jobqueue\Common\Job\JobManager();
 		\TYPO3\FLOW3\Reflection\ObjectAccess::setProperty($this->jobManager, 'queueManager', $this->queueManager, TRUE);
 	}
 
@@ -47,19 +47,19 @@ class JobManagerTest extends \TYPO3\FLOW3\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function queuePublishesMessageToQueue() {
-		$job = new \Jobqueue\Common\Tests\Unit\Fixtures\TestJob();
+		$job = new \TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestJob();
 		$this->jobManager->queue('TestQueue', $job);
 
 		$testQueue = $this->queueManager->getQueue('TestQueue');
 		$message = $testQueue->peek();
-		$this->assertInstanceOf('Jobqueue\Common\Queue\Message', $message);
+		$this->assertInstanceOf('TYPO3\Jobqueue\Common\Queue\Message', $message);
 	}
 
 	/**
 	 * @test
 	 */
 	public function waitAndExecuteGetsAndExecutesJobFromQueue() {
-		$job = new \Jobqueue\Common\Tests\Unit\Fixtures\TestJob();
+		$job = new \TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestJob();
 		$this->jobManager->queue('TestQueue', $job);
 
 		$queuedJob = $this->jobManager->waitAndExecute('TestQueue');

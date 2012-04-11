@@ -1,5 +1,5 @@
 <?php
-namespace Jobqueue\Common\Job;
+namespace TYPO3\Jobqueue\Common\Job;
 
 /*                                                                        *
  * This script belongs to the FLOW3 package "Jobqueue.Common".                *
@@ -23,11 +23,11 @@ interface JobInterface {
 	 *
 	 * A job should finish itself after successful execution using the queue methods.
 	 *
-	 * @param \Jobqueue\Common\Queue\QueueInterface $queue
-	 * @param \Jobqueue\Common\Queue\Message $message The original message
+	 * @param \TYPO3\Jobqueue\Common\Queue\QueueInterface $queue
+	 * @param \TYPO3\Jobqueue\Common\Queue\Message $message The original message
 	 * @return boolean TRUE if the job was executed successfully and the message should be finished
 	 */
-	public function execute(\Jobqueue\Common\Queue\QueueInterface $queue, \Jobqueue\Common\Queue\Message $message);
+	public function execute(\TYPO3\Jobqueue\Common\Queue\QueueInterface $queue, \TYPO3\Jobqueue\Common\Queue\Message $message);
 
 	/**
 	 * Get an optional identifier for the job

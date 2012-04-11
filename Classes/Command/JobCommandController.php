@@ -1,5 +1,5 @@
 <?php
-namespace Jobqueue\Common\Command;
+namespace TYPO3\Jobqueue\Common\Command;
 
 /*                                                                        *
  * This script belongs to the FLOW3 package "Jobqueue.Common".                *
@@ -20,13 +20,13 @@ class JobCommandController extends \TYPO3\FLOW3\MVC\Controller\CommandController
 
 	/**
 	 * @FLOW3\Inject
-	 * @var \Jobqueue\Common\Job\JobManager
+	 * @var \TYPO3\Jobqueue\Common\Job\JobManager
 	 */
 	protected $jobManager;
 
 	/**
 	 * @FLOW3\Inject
-	 * @var \Jobqueue\Common\Queue\QueueManager
+	 * @var \TYPO3\Jobqueue\Common\Queue\QueueManager
 	 */
 	protected $queueManager;
 

@@ -1,5 +1,5 @@
 <?php
-namespace Jobqueue\Common\Job;
+namespace TYPO3\Jobqueue\Common\Job;
 
 /*                                                                        *
  * This script belongs to the FLOW3 package "Jobqueue.Common".                *
@@ -20,7 +20,7 @@ class JobManager {
 
 	/**
 	 * @FLOW3\Inject
-	 * @var \Jobqueue\Common\Queue\QueueManager
+	 * @var \TYPO3\Jobqueue\Common\Queue\QueueManager
 	 */
 	protected $queueManager;
 
@@ -33,14 +33,14 @@ class JobManager {
 	/**
 	 *
 	 * @param string $queueName
-	 * @param \Jobqueue\Common\Job\JobInterface $job
+	 * @param \TYPO3\Jobqueue\Common\Job\JobInterface $job
 	 * @return void
 	 */
 	public function queue($queueName, JobInterface $job) {
 		$queue = $this->queueManager->getQueue($queueName);
 
 		$payload = serialize($job);
-		$message = new \Jobqueue\Common\Queue\Message($payload);
+		$message = new \TYPO3\Jobqueue\Common\Queue\Message($payload);
 
 		$queue->publish($message);
 	}
@@ -52,7 +52,7 @@ class JobManager {
 	 *
 	 * @param string $queueName
 	 * @param integer $timeout
-	 * @return \Jobqueue\Common\Job\JobInterface The job that was executed or NULL if no job was executed and a timeout occured
+	 * @return \TYPO3\Jobqueue\Common\Job\JobInterface The job that was executed or NULL if no job was executed and a timeout occured
 	 */
 	public function waitAndExecute($queueName, $timeout = NULL) {
 		$queue = $this->queueManager->getQueue($queueName);
@@ -80,7 +80,7 @@ class JobManager {
 	public function peek($queueName, $limit = 1) {
 		$queue = $this->queueManager->getQueue($queueName);
 		$messages = $queue->peek($limit);
-		return array_map(function(\Jobqueue\Common\Queue\Message $message) {
+		return array_map(function(\TYPO3\Jobqueue\Common\Queue\Message $message) {
 			$job = unserialize($message->getPayload());
 			return $job;
 		}, $messages);
