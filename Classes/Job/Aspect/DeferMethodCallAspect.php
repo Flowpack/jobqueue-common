@@ -39,11 +39,11 @@ class DeferMethodCallAspect {
 	protected $processingJob = FALSE;
 
 	/**
-	 * @param \TYPO3\FLOW3\AOP\JoinPointInterface $joinPoint The current join point
+	 * @param \TYPO3\FLOW3\Aop\JoinPointInterface $joinPoint The current join point
 	 * @return void
 	 * @FLOW3\Around("methodAnnotatedWith(TYPO3\Jobqueue\Common\Annotations\Defer)")
 	 */
-	public function queueMerthodCallAsJob(\TYPO3\FLOW3\AOP\JoinPointInterface $joinPoint) {
+	public function queueMerthodCallAsJob(\TYPO3\FLOW3\Aop\JoinPointInterface $joinPoint) {
 		if ($this->processingJob) {
 			return $joinPoint->getAdviceChain()->proceed($joinPoint);
 		} else {

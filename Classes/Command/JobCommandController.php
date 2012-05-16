@@ -16,7 +16,7 @@ use TYPO3\FLOW3\Annotations as FLOW3;
 /**
  * Job command controller
  */
-class JobCommandController extends \TYPO3\FLOW3\MVC\Controller\CommandController {
+class JobCommandController extends \TYPO3\FLOW3\Cli\CommandController {
 
 	/**
 	 * @FLOW3\Inject
