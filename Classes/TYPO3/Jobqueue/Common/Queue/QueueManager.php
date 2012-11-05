@@ -15,6 +15,7 @@ use TYPO3\Flow\Annotations as Flow;
 
 /**
  * Queue manager
+ * @Flow\Scope("singleton")
  */
 class QueueManager {
 
