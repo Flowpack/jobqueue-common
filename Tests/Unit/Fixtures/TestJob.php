@@ -39,5 +39,22 @@ class TestJob implements \TYPO3\Jobqueue\Common\Job\JobInterface {
 		return $this->processed;
 	}
 
+	/**
+	 * Get an optional identifier for the job
+	 *
+	 * @return string A job identifier
+	 */
+	public function getIdentifier() {
+		return 'testjob';
+	}
+
+	/**
+	 * Get a readable label for the job
+	 *
+	 * @return string A label for the job
+	 */
+	public function getLabel() {
+		return 'Test Job';
+	}
 }
 ?>
