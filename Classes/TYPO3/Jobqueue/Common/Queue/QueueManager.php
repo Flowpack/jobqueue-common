@@ -11,7 +11,7 @@ namespace TYPO3\Jobqueue\Common\Queue;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use TYPO3\FLOW3\Annotations as FLOW3;
+use TYPO3\Flow\Annotations as Flow;
 
 /**
  * Queue manager
@@ -19,8 +19,8 @@ use TYPO3\FLOW3\Annotations as FLOW3;
 class QueueManager {
 
 	/**
-	 * @FLOW3\Inject
-	 * @var \TYPO3\FLOW3\Object\ObjectManagerInterface
+	 * @Flow\Inject
+	 * @var \TYPO3\Flow\Object\ObjectManagerInterface
 	 */
 	protected $objectManager;
 
@@ -53,10 +53,10 @@ class QueueManager {
 		}
 
 		if (!isset($this->settings['queues'][$queueName])) {
-			throw new \TYPO3\FLOW3\Exception('Queue "' . $queueName . '" is not configured', 1334054137);
+			throw new \TYPO3\Flow\Exception('Queue "' . $queueName . '" is not configured', 1334054137);
 		}
 		if (!isset($this->settings['queues'][$queueName]['className'])) {
-			throw new \TYPO3\FLOW3\Exception('Option className for queue "' . $queueName . '" is not configured', 1334147126);
+			throw new \TYPO3\Flow\Exception('Option className for queue "' . $queueName . '" is not configured', 1334147126);
 		}
 		$queueObjectName = $this->settings['queues'][$queueName]['className'];
 		$options = isset($this->settings['queues'][$queueName]['options']) ? $this->settings['queues'][$queueName]['options'] : array();

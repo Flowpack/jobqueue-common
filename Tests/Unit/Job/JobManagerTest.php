@@ -14,7 +14,7 @@ namespace TYPO3\Jobqueue\Common\Tests\Unit\Job;
 /**
  * Queue manager
  */
-class JobManagerTest extends \TYPO3\FLOW3\Tests\UnitTestCase {
+class JobManagerTest extends \TYPO3\Flow\Tests\UnitTestCase {
 
 	/**
 	 * @var \TYPO3\Jobqueue\Common\Queue\QueueManager
@@ -40,7 +40,7 @@ class JobManagerTest extends \TYPO3\FLOW3\Tests\UnitTestCase {
 		));
 
 		$this->jobManager = new \TYPO3\Jobqueue\Common\Job\JobManager();
-		\TYPO3\FLOW3\Reflection\ObjectAccess::setProperty($this->jobManager, 'queueManager', $this->queueManager, TRUE);
+		\TYPO3\Flow\Reflection\ObjectAccess::setProperty($this->jobManager, 'queueManager', $this->queueManager, TRUE);
 	}
 
 	/**

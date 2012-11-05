@@ -11,21 +11,21 @@ namespace TYPO3\Jobqueue\Common\Command;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use TYPO3\FLOW3\Annotations as FLOW3;
+use TYPO3\Flow\Annotations as Flow;
 
 /**
  * Job command controller
  */
-class JobCommandController extends \TYPO3\FLOW3\Cli\CommandController {
+class JobCommandController extends \TYPO3\Flow\Cli\CommandController {
 
 	/**
-	 * @FLOW3\Inject
+	 * @Flow\Inject
 	 * @var \TYPO3\Jobqueue\Common\Job\JobManager
 	 */
 	protected $jobManager;
 
 	/**
-	 * @FLOW3\Inject
+	 * @Flow\Inject
 	 * @var \TYPO3\Jobqueue\Common\Queue\QueueManager
 	 */
 	protected $queueManager;

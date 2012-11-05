@@ -11,25 +11,25 @@ namespace TYPO3\Jobqueue\Common\Job\Aspect;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use TYPO3\FLOW3\Annotations as FLOW3;
+use TYPO3\Flow\Annotations as Flow;
 
 /**
  * Defer method call aspect
  *
- * @FLOW3\Aspect
- * @FLOW3\Scope("singleton")
+ * @Flow\Aspect
+ * @Flow\Scope("singleton")
  */
 class DeferMethodCallAspect {
 
 	/**
-	 * @FLOW3\Inject
+	 * @Flow\Inject
 	 * @var \TYPO3\Jobqueue\Common\Job\JobManager
 	 */
 	protected $jobManager;
 
 	/**
-	 * @FLOW3\Inject
-	 * @var \TYPO3\FLOW3\Reflection\ReflectionService
+	 * @Flow\Inject
+	 * @var \TYPO3\Flow\Reflection\ReflectionService
 	 */
 	protected $reflectionService;
 
@@ -39,11 +39,11 @@ class DeferMethodCallAspect {
 	protected $processingJob = FALSE;
 
 	/**
-	 * @param \TYPO3\FLOW3\Aop\JoinPointInterface $joinPoint The current join point
+	 * @param \TYPO3\Flow\Aop\JoinPointInterface $joinPoint The current join point
 	 * @return void
-	 * @FLOW3\Around("methodAnnotatedWith(TYPO3\Jobqueue\Common\Annotations\Defer)")
+	 * @Flow\Around("methodAnnotatedWith(TYPO3\Jobqueue\Common\Annotations\Defer)")
 	 */
-	public function queueMerthodCallAsJob(\TYPO3\FLOW3\Aop\JoinPointInterface $joinPoint) {
+	public function queueMerthodCallAsJob(\TYPO3\Flow\Aop\JoinPointInterface $joinPoint) {
 		if ($this->processingJob) {
 			return $joinPoint->getAdviceChain()->proceed($joinPoint);
 		} else {

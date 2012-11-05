@@ -11,7 +11,7 @@ namespace TYPO3\Jobqueue\Common\Job;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use TYPO3\FLOW3\Annotations as FLOW3;
+use TYPO3\Flow\Annotations as Flow;
 
 /**
  * Job manager
@@ -19,14 +19,14 @@ use TYPO3\FLOW3\Annotations as FLOW3;
 class JobManager {
 
 	/**
-	 * @FLOW3\Inject
+	 * @Flow\Inject
 	 * @var \TYPO3\Jobqueue\Common\Queue\QueueManager
 	 */
 	protected $queueManager;
 
 	/**
-	 * @FLOW3\Inject
-	 * @var \TYPO3\FLOW3\Property\PropertyMapper
+	 * @Flow\Inject
+	 * @var \TYPO3\Flow\Property\PropertyMapper
 	 */
 	protected $propertyMapper;
 
@@ -64,7 +64,7 @@ class JobManager {
 				$queue->finish($message);
 				return $job;
 			} else {
-				throw new \TYPO3\FLOW3\Exception('Job execution for "' . $message->getIdentifier() . '" failed', 1334056583);
+				throw new \TYPO3\Flow\Exception('Job execution for "' . $message->getIdentifier() . '" failed', 1334056583);
 			}
 		}
 

@@ -11,7 +11,7 @@ namespace TYPO3\Jobqueue\Common\Job;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use TYPO3\FLOW3\Annotations as FLOW3;
+use TYPO3\Flow\Annotations as Flow;
 
 /**
  * Static method call job
@@ -34,14 +34,14 @@ class StaticMethodCallJob implements JobInterface {
 	protected $arguments;
 
 	/**
-	 * @FLOW3\Inject
+	 * @Flow\Inject
 	 * @var \TYPO3\Jobqueue\Common\Job\Aspect\DeferMethodCallAspect
 	 */
 	protected $deferMethodCallAspect;
 
 	/**
-	 * @FLOW3\Inject
-	 * @var \TYPO3\FLOW3\Object\ObjectManagerInterface
+	 * @Flow\Inject
+	 * @var \TYPO3\Flow\Object\ObjectManagerInterface
 	 */
 	protected $objectManager;
 

@@ -14,7 +14,7 @@ namespace TYPO3\Jobqueue\Common\Tests\Unit\Queue;
 /**
  * Queue manager
  */
-class QueueManagerTest extends \TYPO3\FLOW3\Tests\UnitTestCase {
+class QueueManagerTest extends \TYPO3\Flow\Tests\UnitTestCase {
 
 	/**
 	 * @test
