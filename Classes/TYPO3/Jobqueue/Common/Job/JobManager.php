@@ -64,7 +64,7 @@ class JobManager {
 				$queue->finish($message);
 				return $job;
 			} else {
-				throw new \TYPO3\Flow\Exception('Job execution for "' . $message->getIdentifier() . '" failed', 1334056583);
+				throw new \TYPO3\Jobqueue\Common\Exception('Job execution for "' . $message->getIdentifier() . '" failed', 1334056583);
 			}
 		}
 
