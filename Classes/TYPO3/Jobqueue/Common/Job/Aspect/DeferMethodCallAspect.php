@@ -2,7 +2,7 @@
 namespace TYPO3\Jobqueue\Common\Job\Aspect;
 
 /*                                                                        *
- * This script belongs to the FLOW3 package "Jobqueue.Common".                *
+ * This script belongs to the TYPO3 Flow package "TYPO3.Jobqueue.Common". *
  *                                                                        *
  * It is free software; you can redistribute it and/or modify it under    *
  * the terms of the GNU General Public License, either version 3 of the   *
@@ -12,6 +12,10 @@ namespace TYPO3\Jobqueue\Common\Job\Aspect;
  *                                                                        */
 
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Aop\JoinPointInterface;
+use TYPO3\Flow\Reflection\ReflectionService;
+use TYPO3\Jobqueue\Common\Job\JobManager;
+use TYPO3\Jobqueue\Common\Job\StaticMethodCallJob;
 
 /**
  * Defer method call aspect
@@ -23,13 +27,13 @@ class DeferMethodCallAspect {
 
 	/**
 	 * @Flow\Inject
-	 * @var \TYPO3\Jobqueue\Common\Job\JobManager
+	 * @var JobManager
 	 */
 	protected $jobManager;
 
 	/**
 	 * @Flow\Inject
-	 * @var \TYPO3\Flow\Reflection\ReflectionService
+	 * @var ReflectionService
 	 */
 	protected $reflectionService;
 
@@ -39,20 +43,19 @@ class DeferMethodCallAspect {
 	protected $processingJob = FALSE;
 
 	/**
-	 * @param \TYPO3\Flow\Aop\JoinPointInterface $joinPoint The current join point
-	 * @return void
+	 * @param JoinPointInterface $joinPoint The current join point
+	 * @return mixed
 	 * @Flow\Around("methodAnnotatedWith(TYPO3\Jobqueue\Common\Annotations\Defer)")
 	 */
-	public function queueMerthodCallAsJob(\TYPO3\Flow\Aop\JoinPointInterface $joinPoint) {
+	public function queueMethodCallAsJob(JoinPointInterface $joinPoint) {
 		if ($this->processingJob) {
 			return $joinPoint->getAdviceChain()->proceed($joinPoint);
-		} else {
-			$deferAnnotation = $this->reflectionService->getMethodAnnotation($joinPoint->getClassName(), $joinPoint->getMethodName(), 'TYPO3\Jobqueue\Common\Annotations\Defer');
-			$queueName = $deferAnnotation->queueName;
-			$job = new \TYPO3\Jobqueue\Common\Job\StaticMethodCallJob($joinPoint->getClassName(), $joinPoint->getMethodName(), $joinPoint->getMethodArguments());
-			$this->jobManager->queue($queueName, $job);
-			return NULL;
 		}
+		$deferAnnotation = $this->reflectionService->getMethodAnnotation($joinPoint->getClassName(), $joinPoint->getMethodName(), 'TYPO3\Jobqueue\Common\Annotations\Defer');
+		$queueName = $deferAnnotation->queueName;
+		$job = new StaticMethodCallJob($joinPoint->getClassName(), $joinPoint->getMethodName(), $joinPoint->getMethodArguments());
+		$this->jobManager->queue($queueName, $job);
+		return NULL;
 	}
 
 	/**
@@ -63,4 +66,3 @@ class DeferMethodCallAspect {
 	}
 
 }
-?>

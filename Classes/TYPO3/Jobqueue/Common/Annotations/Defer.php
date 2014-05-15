@@ -2,7 +2,7 @@
 namespace TYPO3\Jobqueue\Common\Annotations;
 
 /*                                                                        *
- * This script belongs to the FLOW3 package "Jobqueue.Common".                *
+ * This script belongs to the TYPO3 Flow package "TYPO3.Jobqueue.Common". *
  *                                                                        *
  * It is free software; you can redistribute it and/or modify it under    *
  * the terms of the GNU General Public License, either version 3 of the   *
@@ -27,6 +27,7 @@ final class Defer {
 
 	/**
 	 * @param array $values
+	 * @throws \InvalidArgumentException
 	 */
 	public function __construct(array $values) {
 		if (!isset($values['value']) && !isset($values['queueName'])) {
@@ -36,5 +37,3 @@ final class Defer {
 	}
 
 }
-
-?>

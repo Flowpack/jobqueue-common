@@ -2,7 +2,7 @@
 namespace TYPO3\Jobqueue\Common\Queue;
 
 /*                                                                        *
- * This script belongs to the FLOW3 package "Jobqueue.Common".            *
+ * This script belongs to the TYPO3 Flow package "TYPO3.Jobqueue.Common". *
  *                                                                        *
  * It is free software; you can redistribute it and/or modify it under    *
  * the terms of the GNU General Public License, either version 3 of the   *
@@ -134,4 +134,3 @@ class Message {
 	}
 
 }
-?>

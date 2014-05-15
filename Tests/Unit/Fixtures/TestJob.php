@@ -2,7 +2,7 @@
 namespace TYPO3\Jobqueue\Common\Tests\Unit\Fixtures;
 
 /*                                                                        *
- * This script belongs to the FLOW3 package "Jobqueue.Common".                *
+ * This script belongs to the TYPO3 Flow package "TYPO3.Jobqueue.Common". *
  *                                                                        *
  * It is free software; you can redistribute it and/or modify it under    *
  * the terms of the GNU General Public License, either version 3 of the   *
@@ -11,10 +11,14 @@ namespace TYPO3\Jobqueue\Common\Tests\Unit\Fixtures;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use TYPO3\Jobqueue\Common\Job\JobInterface;
+use TYPO3\Jobqueue\Common\Queue\Message;
+use TYPO3\Jobqueue\Common\Queue\QueueInterface;
+
 /**
  * Test job
  */
-class TestJob implements \TYPO3\Jobqueue\Common\Job\JobInterface {
+class TestJob implements JobInterface {
 
 	/**
 	 * @var boolean
@@ -24,10 +28,11 @@ class TestJob implements \TYPO3\Jobqueue\Common\Job\JobInterface {
 	/**
 	 * Do nothing
 	 *
-	 * @param \TYPO3\Jobqueue\Common\Queue\QueueInterface $queue
+	 * @param QueueInterface $queue
+	 * @param Message $message
 	 * @return boolean
 	 */
-	public function execute(\TYPO3\Jobqueue\Common\Queue\QueueInterface $queue, \TYPO3\Jobqueue\Common\Queue\Message $message) {
+	public function execute(QueueInterface $queue, Message $message) {
 		$this->processed = TRUE;
 		return TRUE;
 	}
@@ -57,4 +62,3 @@ class TestJob implements \TYPO3\Jobqueue\Common\Job\JobInterface {
 		return 'Test Job';
 	}
 }
-?>

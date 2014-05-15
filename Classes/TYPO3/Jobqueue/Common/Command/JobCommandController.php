@@ -2,7 +2,7 @@
 namespace TYPO3\Jobqueue\Common\Command;
 
 /*                                                                        *
- * This script belongs to the FLOW3 package "Jobqueue.Common".                *
+ * This script belongs to the TYPO3 Flow package "TYPO3.Jobqueue.Common". *
  *                                                                        *
  * It is free software; you can redistribute it and/or modify it under    *
  * the terms of the GNU General Public License, either version 3 of the   *
@@ -12,21 +12,24 @@ namespace TYPO3\Jobqueue\Common\Command;
  *                                                                        */
 
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Cli\CommandController;
+use TYPO3\Jobqueue\Common\Job\JobManager;
+use TYPO3\Jobqueue\Common\Queue\QueueManager;
 
 /**
  * Job command controller
  */
-class JobCommandController extends \TYPO3\Flow\Cli\CommandController {
+class JobCommandController extends CommandController {
 
 	/**
 	 * @Flow\Inject
-	 * @var \TYPO3\Jobqueue\Common\Job\JobManager
+	 * @var JobManager
 	 */
 	protected $jobManager;
 
 	/**
 	 * @Flow\Inject
-	 * @var \TYPO3\Jobqueue\Common\Queue\QueueManager
+	 * @var QueueManager
 	 */
 	protected $queueManager;
 
@@ -62,6 +65,4 @@ class JobCommandController extends \TYPO3\Flow\Cli\CommandController {
 		$this->outputLine('(<b>%d total</b>)', array($totalCount));
 	}
 
-
 }
-?>

@@ -2,7 +2,7 @@
 namespace TYPO3\Jobqueue\Common\Tests\Unit\Queue;
 
 /*                                                                        *
- * This script belongs to the FLOW3 package "Jobqueue.Common".                *
+ * This script belongs to the TYPO3 Flow package "TYPO3.Jobqueue.Common". *
  *                                                                        *
  * It is free software; you can redistribute it and/or modify it under    *
  * the terms of the GNU General Public License, either version 3 of the   *
@@ -11,16 +11,20 @@ namespace TYPO3\Jobqueue\Common\Tests\Unit\Queue;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use TYPO3\Flow\Tests\UnitTestCase;
+use TYPO3\Jobqueue\Common\Queue\QueueManager;
+use TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestQueue;
+
 /**
  * Queue manager
  */
-class QueueManagerTest extends \TYPO3\Flow\Tests\UnitTestCase {
+class QueueManagerTest extends UnitTestCase {
 
 	/**
 	 * @test
 	 */
 	public function getQueueCreatesInstanceByQueueName() {
-		$queueManager = new \TYPO3\Jobqueue\Common\Queue\QueueManager();
+		$queueManager = new QueueManager();
 		$queueManager->injectSettings(array(
 			'queues' => array(
 				'TestQueue' => array(
@@ -37,7 +41,7 @@ class QueueManagerTest extends \TYPO3\Flow\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function getQueueSetsOptionsOnInstance() {
-		$queueManager = new \TYPO3\Jobqueue\Common\Queue\QueueManager();
+		$queueManager = new QueueManager();
 		$queueManager->injectSettings(array(
 			'queues' => array(
 				'TestQueue' => array(
@@ -49,6 +53,7 @@ class QueueManagerTest extends \TYPO3\Flow\Tests\UnitTestCase {
 			)
 		));
 
+		/** @var TestQueue $queue */
 		$queue = $queueManager->getQueue('TestQueue');
 		$this->assertEquals(array('foo' => 'bar'), $queue->getOptions());
 	}
@@ -57,7 +62,7 @@ class QueueManagerTest extends \TYPO3\Flow\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function getQueueReusesInstances() {
-		$queueManager = new \TYPO3\Jobqueue\Common\Queue\QueueManager();
+		$queueManager = new QueueManager();
 		$queueManager->injectSettings(array(
 			'queues' => array(
 				'TestQueue' => array(

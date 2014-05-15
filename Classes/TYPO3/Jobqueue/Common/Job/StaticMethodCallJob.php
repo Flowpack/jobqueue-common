@@ -2,7 +2,7 @@
 namespace TYPO3\Jobqueue\Common\Job;
 
 /*                                                                        *
- * This script belongs to the FLOW3 package "Jobqueue.Common".                *
+ * This script belongs to the TYPO3 Flow package "TYPO3.Jobqueue.Common". *
  *                                                                        *
  * It is free software; you can redistribute it and/or modify it under    *
  * the terms of the GNU General Public License, either version 3 of the   *
@@ -12,6 +12,9 @@ namespace TYPO3\Jobqueue\Common\Job;
  *                                                                        */
 
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Object\ObjectManagerInterface;
+use TYPO3\Jobqueue\Common\Queue\Message;
+use TYPO3\Jobqueue\Common\Queue\QueueInterface;
 
 /**
  * Static method call job
@@ -35,13 +38,13 @@ class StaticMethodCallJob implements JobInterface {
 
 	/**
 	 * @Flow\Inject
-	 * @var \TYPO3\Jobqueue\Common\Job\Aspect\DeferMethodCallAspect
+	 * @var Aspect\DeferMethodCallAspect
 	 */
 	protected $deferMethodCallAspect;
 
 	/**
 	 * @Flow\Inject
-	 * @var \TYPO3\Flow\Object\ObjectManagerInterface
+	 * @var ObjectManagerInterface
 	 */
 	protected $objectManager;
 
@@ -62,11 +65,12 @@ class StaticMethodCallJob implements JobInterface {
 	 *
 	 * A job should finish itself after successful execution using the queue methods.
 	 *
-	 * @param \TYPO3\Jobqueue\Common\Queue\QueueInterface $queue
-	 * @param \TYPO3\Jobqueue\Common\Queue\Message $message
+	 * @param QueueInterface $queue
+	 * @param Message $message
 	 * @return boolean TRUE If the execution was successful
+	 * @throws \Exception
 	 */
-	public function execute(\TYPO3\Jobqueue\Common\Queue\QueueInterface $queue, \TYPO3\Jobqueue\Common\Queue\Message $message) {
+	public function execute(QueueInterface $queue, Message $message) {
 		$service = $this->objectManager->get($this->className);
 		$this->deferMethodCallAspect->setProcessingJob(TRUE);
 		try {
@@ -95,4 +99,3 @@ class StaticMethodCallJob implements JobInterface {
 	}
 
 }
-?>

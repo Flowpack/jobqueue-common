@@ -2,7 +2,7 @@
 namespace TYPO3\Jobqueue\Common\Tests\Unit\Job;
 
 /*                                                                        *
- * This script belongs to the FLOW3 package "Jobqueue.Common".                *
+ * This script belongs to the TYPO3 Flow package "TYPO3.Jobqueue.Common". *
  *                                                                        *
  * It is free software; you can redistribute it and/or modify it under    *
  * the terms of the GNU General Public License, either version 3 of the   *
@@ -11,18 +11,24 @@ namespace TYPO3\Jobqueue\Common\Tests\Unit\Job;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use TYPO3\Flow\Reflection\ObjectAccess;
+use TYPO3\Flow\Tests\UnitTestCase;
+use TYPO3\Jobqueue\Common\Job\JobManager;
+use TYPO3\Jobqueue\Common\Queue\QueueManager;
+use TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestJob;
+
 /**
- * Queue manager
+ * Unit tests for the JobManager
  */
-class JobManagerTest extends \TYPO3\Flow\Tests\UnitTestCase {
+class JobManagerTest extends UnitTestCase {
 
 	/**
-	 * @var \TYPO3\Jobqueue\Common\Queue\QueueManager
+	 * @var QueueManager
 	 */
 	protected $queueManager;
 
 	/**
-	 * @var \TYPO3\Jobqueue\Common\Job\JobManager
+	 * @var JobManager
 	 */
 	protected $jobManager;
 
@@ -30,7 +36,7 @@ class JobManagerTest extends \TYPO3\Flow\Tests\UnitTestCase {
 	 *
 	 */
 	public function setUp() {
-		$this->queueManager = new \TYPO3\Jobqueue\Common\Queue\QueueManager();
+		$this->queueManager = new QueueManager();
 		$this->queueManager->injectSettings(array(
 			'queues' => array(
 				'TestQueue' => array(
@@ -39,15 +45,15 @@ class JobManagerTest extends \TYPO3\Flow\Tests\UnitTestCase {
 			)
 		));
 
-		$this->jobManager = new \TYPO3\Jobqueue\Common\Job\JobManager();
-		\TYPO3\Flow\Reflection\ObjectAccess::setProperty($this->jobManager, 'queueManager', $this->queueManager, TRUE);
+		$this->jobManager = new JobManager();
+		ObjectAccess::setProperty($this->jobManager, 'queueManager', $this->queueManager, TRUE);
 	}
 
 	/**
 	 * @test
 	 */
 	public function queuePublishesMessageToQueue() {
-		$job = new \TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestJob();
+		$job = new TestJob();
 		$this->jobManager->queue('TestQueue', $job);
 
 		$testQueue = $this->queueManager->getQueue('TestQueue');
@@ -59,9 +65,10 @@ class JobManagerTest extends \TYPO3\Flow\Tests\UnitTestCase {
 	 * @test
 	 */
 	public function waitAndExecuteGetsAndExecutesJobFromQueue() {
-		$job = new \TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestJob();
+		$job = new TestJob();
 		$this->jobManager->queue('TestQueue', $job);
 
+		/** @var TestJob $queuedJob */
 		$queuedJob = $this->jobManager->waitAndExecute('TestQueue');
 		$this->assertTrue($queuedJob->getProcessed());
 	}

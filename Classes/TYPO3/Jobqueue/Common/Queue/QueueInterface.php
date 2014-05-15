@@ -2,7 +2,7 @@
 namespace TYPO3\Jobqueue\Common\Queue;
 
 /*                                                                        *
- * This script belongs to the FLOW3 package "Jobqueue.Common".                *
+ * This script belongs to the TYPO3 Flow package "TYPO3.Jobqueue.Common". *
  *                                                                        *
  * It is free software; you can redistribute it and/or modify it under    *
  * the terms of the GNU General Public License, either version 3 of the   *
@@ -20,42 +20,37 @@ interface QueueInterface {
 
 	/**
 	 * Publish a message to the queue
-	 *
 	 * The state of the message will be updated according
 	 * to the result of the operation.
-	 *
 	 * If the queue supports unique messages, the message should not be queued if
 	 * another message with the same identifier already exists.
 	 *
-	 * @param \TYPO3\Jobqueue\Common\Queue\Message $message
+	 * @param Message $message
 	 * @return string The identifier of the message under which it was queued
 	 * @todo rename to submit()
 	 */
-	public function publish(\TYPO3\Jobqueue\Common\Queue\Message $message);
+	public function publish(Message $message);
 
 	/**
 	 * Wait for a message in the queue and remove the message from the queue for processing
-	 *
 	 * If a non-null value was returned, the message was unqueued. Otherwise a timeout
 	 * occured and no message was available or received.
 	 *
 	 * @param integer $timeout
-	 * @return \TYPO3\Jobqueue\Common\Queue\Message The received message or NULL if a timeout occured
+	 * @return Message The received message or NULL if a timeout occurred
 	 */
 	public function waitAndTake($timeout = NULL);
 
 	/**
 	 * Wait for a message in the queue and reserve the message for processing
-	 *
 	 * NOTE: The processing of the message has to be confirmed by the consumer to
 	 * remove the message from the queue by calling finish(). Depending on the implementation
 	 * the message might be inserted to the queue after some time limit has passed.
-	 *
 	 * If a non-null value was returned, the message was reserved. Otherwise a timeout
-	 * occured and no message was available or received.
+	 * occurred and no message was available or received.
 	 *
 	 * @param integer $timeout
-	 * @return \TYPO3\Jobqueue\Common\Queue\Message The received message or NULL if a timeout occured
+	 * @return Message The received message or NULL if a timeout occurred
 	 */
 	public function waitAndReserve($timeout = NULL);
 
@@ -65,9 +60,10 @@ interface QueueInterface {
 	 * This must be called for every message that was reserved and that was
 	 * processed successfully.
 	 *
+	 * @param Message $message
 	 * @return boolean TRUE if the message could be removed
 	 */
-	public function finish(\TYPO3\Jobqueue\Common\Queue\Message $message);
+	public function finish(Message $message);
 
 	/**
 	 * Peek for messages
@@ -84,7 +80,7 @@ interface QueueInterface {
 	 * Get a message by identifier
 	 *
 	 * @param string $identifier
-	 * @return \TYPO3\Jobqueue\Common\Queue\Message The message or NULL if not present
+	 * @return Message The message or NULL if not present
 	 */
 	public function getMessage($identifier);
 
@@ -98,4 +94,3 @@ interface QueueInterface {
 	public function count();
 
 }
-?>

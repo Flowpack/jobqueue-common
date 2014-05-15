@@ -2,7 +2,7 @@
 namespace TYPO3\Jobqueue\Common\Queue;
 
 /*                                                                        *
- * This script belongs to the FLOW3 package "Jobqueue.Common".                *
+ * This script belongs to the TYPO3 Flow package "TYPO3.Jobqueue.Common". *
  *                                                                        *
  * It is free software; you can redistribute it and/or modify it under    *
  * the terms of the GNU General Public License, either version 3 of the   *
@@ -12,6 +12,8 @@ namespace TYPO3\Jobqueue\Common\Queue;
  *                                                                        */
 
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Object\ObjectManagerInterface;
+use TYPO3\Jobqueue\Common\Exception as JobQueueException;
 
 /**
  * Queue manager
@@ -21,7 +23,7 @@ class QueueManager {
 
 	/**
 	 * @Flow\Inject
-	 * @var \TYPO3\Flow\Object\ObjectManagerInterface
+	 * @var ObjectManagerInterface
 	 */
 	protected $objectManager;
 
@@ -46,7 +48,8 @@ class QueueManager {
 	/**
 	 *
 	 * @param string $queueName
-	 * @return \TYPO3\Jobqueue\Common\Queue\QueueInterface
+	 * @return QueueInterface
+	 * @throws JobQueueException
 	 */
 	public function getQueue($queueName) {
 		if (isset($this->queues[$queueName])) {
@@ -54,10 +57,10 @@ class QueueManager {
 		}
 
 		if (!isset($this->settings['queues'][$queueName])) {
-			throw new \TYPO3\Jobqueue\Common\Exception('Queue "' . $queueName . '" is not configured', 1334054137);
+			throw new JobQueueException('Queue "' . $queueName . '" is not configured', 1334054137);
 		}
 		if (!isset($this->settings['queues'][$queueName]['className'])) {
-			throw new \TYPO3\Jobqueue\Common\Exception('Option className for queue "' . $queueName . '" is not configured', 1334147126);
+			throw new JobQueueException('Option className for queue "' . $queueName . '" is not configured', 1334147126);
 		}
 		$queueObjectName = $this->settings['queues'][$queueName]['className'];
 		$options = isset($this->settings['queues'][$queueName]['options']) ? $this->settings['queues'][$queueName]['options'] : array();
@@ -69,4 +72,3 @@ class QueueManager {
 	}
 
 }
-?>
