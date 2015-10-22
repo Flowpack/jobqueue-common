@@ -19,50 +19,51 @@ use TYPO3\Jobqueue\Common\Queue\QueueManager;
 /**
  * Job command controller
  */
-class JobCommandController extends CommandController {
+class JobCommandController extends CommandController
+{
+    /**
+     * @Flow\Inject
+     * @var JobManager
+     */
+    protected $jobManager;
 
-	/**
-	 * @Flow\Inject
-	 * @var JobManager
-	 */
-	protected $jobManager;
+    /**
+     * @Flow\Inject
+     * @var QueueManager
+     */
+    protected $queueManager;
 
-	/**
-	 * @Flow\Inject
-	 * @var QueueManager
-	 */
-	protected $queueManager;
+    /**
+     * Work on a queue and execute jobs
+     *
+     * @param string $queueName The name of the queue
+     * @return void
+     */
+    public function workCommand($queueName)
+    {
+        do {
+            $this->jobManager->waitAndExecute($queueName);
+        } while (true);
+    }
 
-	/**
-	 * Work on a queue and execute jobs
-	 *
-	 * @param string $queueName The name of the queue
-	 * @return void
-	 */
-	public function workCommand($queueName) {
-		do {
-			$this->jobManager->waitAndExecute($queueName);
-		} while (TRUE);
-	}
+    /**
+     * List queued jobs
+     *
+     * @param string $queueName The name of the queue
+     * @param integer $limit Number of jobs to list
+     * @return void
+     */
+    public function listCommand($queueName, $limit = 1)
+    {
+        $jobs = $this->jobManager->peek($queueName, $limit);
+        $totalCount = $this->queueManager->getQueue($queueName)->count();
+        foreach ($jobs as $job) {
+            $this->outputLine('<u>%s</u>', array($job->getLabel()));
+        }
 
-	/**
-	 * List queued jobs
-	 *
-	 * @param string $queueName The name of the queue
-	 * @param integer $limit Number of jobs to list
-	 * @return void
-	 */
-	public function listCommand($queueName, $limit = 1) {
-		$jobs = $this->jobManager->peek($queueName, $limit);
-		$totalCount = $this->queueManager->getQueue($queueName)->count();
-		foreach ($jobs as $job) {
-			$this->outputLine('<u>%s</u>', array($job->getLabel()));
-		}
-
-		if ($totalCount > count($jobs)) {
-			$this->outputLine('(%d omitted) ...', array($totalCount - count($jobs)));
-		}
-		$this->outputLine('(<b>%d total</b>)', array($totalCount));
-	}
-
+        if ($totalCount > count($jobs)) {
+            $this->outputLine('(%d omitted) ...', array($totalCount - count($jobs)));
+        }
+        $this->outputLine('(<b>%d total</b>)', array($totalCount));
+    }
 }

@@ -18,62 +18,63 @@ use TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestQueue;
 /**
  * Queue manager
  */
-class QueueManagerTest extends UnitTestCase {
+class QueueManagerTest extends UnitTestCase
+{
+    /**
+     * @test
+     */
+    public function getQueueCreatesInstanceByQueueName()
+    {
+        $queueManager = new QueueManager();
+        $queueManager->injectSettings(array(
+            'queues' => array(
+                'TestQueue' => array(
+                    'className' => 'TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestQueue'
+                )
+            )
+        ));
 
-	/**
-	 * @test
-	 */
-	public function getQueueCreatesInstanceByQueueName() {
-		$queueManager = new QueueManager();
-		$queueManager->injectSettings(array(
-			'queues' => array(
-				'TestQueue' => array(
-					'className' => 'TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestQueue'
-				)
-			)
-		));
+        $queue = $queueManager->getQueue('TestQueue');
+        $this->assertInstanceOf('TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestQueue', $queue);
+    }
 
-		$queue = $queueManager->getQueue('TestQueue');
-		$this->assertInstanceOf('TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestQueue', $queue);
-	}
+    /**
+     * @test
+     */
+    public function getQueueSetsOptionsOnInstance()
+    {
+        $queueManager = new QueueManager();
+        $queueManager->injectSettings(array(
+            'queues' => array(
+                'TestQueue' => array(
+                    'className' => 'TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestQueue',
+                    'options' => array(
+                        'foo' => 'bar'
+                    )
+                )
+            )
+        ));
 
-	/**
-	 * @test
-	 */
-	public function getQueueSetsOptionsOnInstance() {
-		$queueManager = new QueueManager();
-		$queueManager->injectSettings(array(
-			'queues' => array(
-				'TestQueue' => array(
-					'className' => 'TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestQueue',
-					'options' => array(
-						'foo' => 'bar'
-					)
-				)
-			)
-		));
+        /** @var TestQueue $queue */
+        $queue = $queueManager->getQueue('TestQueue');
+        $this->assertEquals(array('foo' => 'bar'), $queue->getOptions());
+    }
 
-		/** @var TestQueue $queue */
-		$queue = $queueManager->getQueue('TestQueue');
-		$this->assertEquals(array('foo' => 'bar'), $queue->getOptions());
-	}
+    /**
+     * @test
+     */
+    public function getQueueReusesInstances()
+    {
+        $queueManager = new QueueManager();
+        $queueManager->injectSettings(array(
+            'queues' => array(
+                'TestQueue' => array(
+                    'className' => 'TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestQueue'
+                )
+            )
+        ));
 
-	/**
-	 * @test
-	 */
-	public function getQueueReusesInstances() {
-		$queueManager = new QueueManager();
-		$queueManager->injectSettings(array(
-			'queues' => array(
-				'TestQueue' => array(
-					'className' => 'TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestQueue'
-				)
-			)
-		));
-
-		$queue = $queueManager->getQueue('TestQueue');
-		$this->assertSame($queue, $queueManager->getQueue('TestQueue'));
-	}
-
+        $queue = $queueManager->getQueue('TestQueue');
+        $this->assertSame($queue, $queueManager->getQueue('TestQueue'));
+    }
 }
-?>

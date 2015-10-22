@@ -19,56 +19,57 @@ use TYPO3\Jobqueue\Common\Exception as JobQueueException;
  * Queue manager
  * @Flow\Scope("singleton")
  */
-class QueueManager {
+class QueueManager
+{
+    /**
+     * @Flow\Inject
+     * @var ObjectManagerInterface
+     */
+    protected $objectManager;
 
-	/**
-	 * @Flow\Inject
-	 * @var ObjectManagerInterface
-	 */
-	protected $objectManager;
+    /**
+     * @var array
+     */
+    protected $settings;
 
-	/**
-	 * @var array
-	 */
-	protected $settings;
+    /**
+     * @var array
+     */
+    protected $queues = array();
 
-	/**
-	 * @var array
-	 */
-	protected $queues = array();
+    /**
+     * @param array $settings
+     * @return void
+     */
+    public function injectSettings(array $settings)
+    {
+        $this->settings = $settings;
+    }
 
-	/**
-	 * @param array $settings
-	 * @return void
-	 */
-	public function injectSettings(array $settings) {
-		$this->settings = $settings;
-	}
+    /**
+     *
+     * @param string $queueName
+     * @return QueueInterface
+     * @throws JobQueueException
+     */
+    public function getQueue($queueName)
+    {
+        if (isset($this->queues[$queueName])) {
+            return $this->queues[$queueName];
+        }
 
-	/**
-	 *
-	 * @param string $queueName
-	 * @return QueueInterface
-	 * @throws JobQueueException
-	 */
-	public function getQueue($queueName) {
-		if (isset($this->queues[$queueName])) {
-			return $this->queues[$queueName];
-		}
+        if (!isset($this->settings['queues'][$queueName])) {
+            throw new JobQueueException('Queue "' . $queueName . '" is not configured', 1334054137);
+        }
+        if (!isset($this->settings['queues'][$queueName]['className'])) {
+            throw new JobQueueException('Option className for queue "' . $queueName . '" is not configured', 1334147126);
+        }
+        $queueObjectName = $this->settings['queues'][$queueName]['className'];
+        $options = isset($this->settings['queues'][$queueName]['options']) ? $this->settings['queues'][$queueName]['options'] : array();
+        $queue = new $queueObjectName($queueName, $options);
 
-		if (!isset($this->settings['queues'][$queueName])) {
-			throw new JobQueueException('Queue "' . $queueName . '" is not configured', 1334054137);
-		}
-		if (!isset($this->settings['queues'][$queueName]['className'])) {
-			throw new JobQueueException('Option className for queue "' . $queueName . '" is not configured', 1334147126);
-		}
-		$queueObjectName = $this->settings['queues'][$queueName]['className'];
-		$options = isset($this->settings['queues'][$queueName]['options']) ? $this->settings['queues'][$queueName]['options'] : array();
-		$queue = new $queueObjectName($queueName, $options);
+        $this->queues[$queueName] = $queue;
 
-		$this->queues[$queueName] = $queue;
-
-		return $queue;
-	}
-
+        return $queue;
+    }
 }

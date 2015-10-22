@@ -14,5 +14,6 @@ namespace TYPO3\Jobqueue\Common;
 /**
  * A generic Jobqueue Exception
  */
-class Exception extends \TYPO3\Flow\Exception {
+class Exception extends \TYPO3\Flow\Exception
+{
 }

@@ -18,47 +18,51 @@ use TYPO3\Jobqueue\Common\Queue\QueueInterface;
 /**
  * Test job
  */
-class TestJob implements JobInterface {
+class TestJob implements JobInterface
+{
+    /**
+     * @var boolean
+     */
+    protected $processed = false;
 
-	/**
-	 * @var boolean
-	 */
-	protected $processed = FALSE;
+    /**
+     * Do nothing
+     *
+     * @param QueueInterface $queue
+     * @param Message $message
+     * @return boolean
+     */
+    public function execute(QueueInterface $queue, Message $message)
+    {
+        $this->processed = true;
+        return true;
+    }
 
-	/**
-	 * Do nothing
-	 *
-	 * @param QueueInterface $queue
-	 * @param Message $message
-	 * @return boolean
-	 */
-	public function execute(QueueInterface $queue, Message $message) {
-		$this->processed = TRUE;
-		return TRUE;
-	}
+    /**
+     * @return boolean
+     */
+    public function getProcessed()
+    {
+        return $this->processed;
+    }
 
-	/**
-	 * @return boolean
-	 */
-	public function getProcessed() {
-		return $this->processed;
-	}
+    /**
+     * Get an optional identifier for the job
+     *
+     * @return string A job identifier
+     */
+    public function getIdentifier()
+    {
+        return 'testjob';
+    }
 
-	/**
-	 * Get an optional identifier for the job
-	 *
-	 * @return string A job identifier
-	 */
-	public function getIdentifier() {
-		return 'testjob';
-	}
-
-	/**
-	 * Get a readable label for the job
-	 *
-	 * @return string A label for the job
-	 */
-	public function getLabel() {
-		return 'Test Job';
-	}
+    /**
+     * Get a readable label for the job
+     *
+     * @return string A label for the job
+     */
+    public function getLabel()
+    {
+        return 'Test Job';
+    }
 }
