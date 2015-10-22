@@ -74,7 +74,7 @@ class TestQueue implements QueueInterface
      * @param Message $message
      * @return void
      */
-    public function publish(Message $message)
+    public function submit(Message $message)
     {
         // TODO Unique identifiers
         $this->messages[] = $message;

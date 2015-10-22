@@ -48,7 +48,7 @@ class JobManager
         $payload = serialize($job);
         $message = new Message($payload);
 
-        $queue->publish($message);
+        $queue->submit($message);
     }
 
     /**
