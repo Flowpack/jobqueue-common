@@ -1,7 +1,8 @@
 {
     "name": "typo3/jobqueue-common",
     "type": "typo3-flow-package",
-    "description": "",
+    "description": "Common functionality for a JobQueue in Flow applications.",
+    "license": "MIT",
     "require": {
         "typo3/flow": "*"
     },
