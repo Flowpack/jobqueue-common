@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\Jobqueue\Common\Job\Aspect;
+namespace Flowpack\JobQueue\Common\Job\Aspect;
 
 /*
- * This file is part of the TYPO3.Jobqueue.Common package.
+ * This file is part of the Flowpack.JobQueue.Common package.
  *
  * (c) Contributors to the package
  *
@@ -14,9 +14,9 @@ namespace TYPO3\Jobqueue\Common\Job\Aspect;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Aop\JoinPointInterface;
 use TYPO3\Flow\Reflection\ReflectionService;
-use TYPO3\Jobqueue\Common\Annotations\Defer;
-use TYPO3\Jobqueue\Common\Job\JobManager;
-use TYPO3\Jobqueue\Common\Job\StaticMethodCallJob;
+use Flowpack\JobQueue\Common\Annotations\Defer;
+use Flowpack\JobQueue\Common\Job\JobManager;
+use Flowpack\JobQueue\Common\Job\StaticMethodCallJob;
 
 /**
  * Defer method call aspect
@@ -46,7 +46,7 @@ class DeferMethodCallAspect
     /**
      * @param JoinPointInterface $joinPoint The current join point
      * @return mixed
-     * @Flow\Around("methodAnnotatedWith(TYPO3\Jobqueue\Common\Annotations\Defer)")
+     * @Flow\Around("methodAnnotatedWith(Flowpack\JobQueue\Common\Annotations\Defer)")
      */
     public function queueMethodCallAsJob(JoinPointInterface $joinPoint)
     {

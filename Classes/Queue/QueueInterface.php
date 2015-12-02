@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\Jobqueue\Common\Queue;
+namespace Flowpack\JobQueue\Common\Queue;
 
 /*
- * This file is part of the TYPO3.Jobqueue.Common package.
+ * This file is part of the Flowpack.JobQueue.Common package.
  *
  * (c) Contributors to the package
  *
@@ -71,7 +71,7 @@ interface QueueInterface
      * and process them, since another consumer could have received this message already!
      *
      * @param integer $limit
-     * @return array<\TYPO3\Jobqueue\Common\Queue\Message> The messages up to the length of limit or an empty array if no messages are present currently
+     * @return array<\Flowpack\JobQueue\Common\Queue\Message> The messages up to the length of limit or an empty array if no messages are present currently
      */
     public function peek($limit = 1);
 

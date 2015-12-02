@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\Jobqueue\Common\Tests\Unit\Queue;
+namespace Flowpack\JobQueue\Common\Tests\Unit\Queue;
 
 /*
- * This file is part of the TYPO3.Jobqueue.Common package.
+ * This file is part of the Flowpack.JobQueue.Common package.
  *
  * (c) Contributors to the package
  *
@@ -12,8 +12,8 @@ namespace TYPO3\Jobqueue\Common\Tests\Unit\Queue;
  */
 
 use TYPO3\Flow\Tests\UnitTestCase;
-use TYPO3\Jobqueue\Common\Queue\QueueManager;
-use TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestQueue;
+use Flowpack\JobQueue\Common\Queue\QueueManager;
+use Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestQueue;
 
 /**
  * Queue manager
@@ -29,13 +29,13 @@ class QueueManagerTest extends UnitTestCase
         $queueManager->injectSettings(array(
             'queues' => array(
                 'TestQueue' => array(
-                    'className' => 'TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestQueue'
+                    'className' => 'Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestQueue'
                 )
             )
         ));
 
         $queue = $queueManager->getQueue('TestQueue');
-        $this->assertInstanceOf('TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestQueue', $queue);
+        $this->assertInstanceOf('Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestQueue', $queue);
     }
 
     /**
@@ -47,7 +47,7 @@ class QueueManagerTest extends UnitTestCase
         $queueManager->injectSettings(array(
             'queues' => array(
                 'TestQueue' => array(
-                    'className' => 'TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestQueue',
+                    'className' => 'Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestQueue',
                     'options' => array(
                         'foo' => 'bar'
                     )
@@ -69,7 +69,7 @@ class QueueManagerTest extends UnitTestCase
         $queueManager->injectSettings(array(
             'queues' => array(
                 'TestQueue' => array(
-                    'className' => 'TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestQueue'
+                    'className' => 'Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestQueue'
                 )
             )
         ));

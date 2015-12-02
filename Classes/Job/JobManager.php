@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\Jobqueue\Common\Job;
+namespace Flowpack\JobQueue\Common\Job;
 
 /*
- * This file is part of the TYPO3.Jobqueue.Common package.
+ * This file is part of the Flowpack.JobQueue.Common package.
  *
  * (c) Contributors to the package
  *
@@ -13,9 +13,9 @@ namespace TYPO3\Jobqueue\Common\Job;
 
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Property\PropertyMapper;
-use TYPO3\Jobqueue\Common\Exception as JobQueueException;
-use TYPO3\Jobqueue\Common\Queue\Message;
-use TYPO3\Jobqueue\Common\Queue\QueueManager;
+use Flowpack\JobQueue\Common\Exception as JobQueueException;
+use Flowpack\JobQueue\Common\Queue\Message;
+use Flowpack\JobQueue\Common\Queue\QueueManager;
 
 /**
  * Job manager

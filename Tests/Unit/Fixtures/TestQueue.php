@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\Jobqueue\Common\Tests\Unit\Fixtures;
+namespace Flowpack\JobQueue\Common\Tests\Unit\Fixtures;
 
 /*
- * This file is part of the TYPO3.Jobqueue.Common package.
+ * This file is part of the Flowpack.JobQueue.Common package.
  *
  * (c) Contributors to the package
  *
@@ -11,8 +11,8 @@ namespace TYPO3\Jobqueue\Common\Tests\Unit\Fixtures;
  * source code.
  */
 
-use TYPO3\Jobqueue\Common\Queue\Message;
-use TYPO3\Jobqueue\Common\Queue\QueueInterface;
+use Flowpack\JobQueue\Common\Queue\Message;
+use Flowpack\JobQueue\Common\Queue\QueueInterface;
 
 /**
  * Test queue

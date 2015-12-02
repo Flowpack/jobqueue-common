@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\Jobqueue\Common\Annotations;
+namespace Flowpack\JobQueue\Common\Annotations;
 
 /*
- * This file is part of the TYPO3.Jobqueue.Common package.
+ * This file is part of the Flowpack.JobQueue.Common package.
  *
  * (c) Contributors to the package
  *
