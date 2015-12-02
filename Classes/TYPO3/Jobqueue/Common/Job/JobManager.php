@@ -48,7 +48,7 @@ class JobManager
         $payload = serialize($job);
         $message = new Message($payload);
 
-        $queue->publish($message);
+        $queue->submit($message);
     }
 
     /**
@@ -67,8 +67,15 @@ class JobManager
         if ($message !== null) {
             $job = unserialize($message->getPayload());
 
-            if ($job->execute($queue, $message)) {
+            try {
+                $success = $job->execute($queue, $message);
                 $queue->finish($message);
+            } catch (\Exception $exception) {
+                $queue->finish($message);
+                throw new JobQueueException('Job execution for "' . $message->getIdentifier() . '" threw an exception', 1446806185, $exception);
+            }
+
+            if ($success) {
                 return $job;
             } else {
                 throw new JobQueueException('Job execution for "' . $message->getIdentifier() . '" failed', 1334056583);

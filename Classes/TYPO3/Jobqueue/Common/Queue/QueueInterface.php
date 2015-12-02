@@ -27,9 +27,8 @@ interface QueueInterface
      *
      * @param Message $message
      * @return string The identifier of the message under which it was queued
-     * @todo rename to submit()
      */
-    public function publish(Message $message);
+    public function submit(Message $message);
 
     /**
      * Wait for a message in the queue and remove the message from the queue for processing

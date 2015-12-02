@@ -13,6 +13,7 @@ namespace TYPO3\Jobqueue\Common\Command;
 
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Cli\CommandController;
+use TYPO3\Jobqueue\Common\Exception as JobQueueException;
 use TYPO3\Jobqueue\Common\Job\JobManager;
 use TYPO3\Jobqueue\Common\Queue\QueueManager;
 
@@ -42,7 +43,16 @@ class JobCommandController extends CommandController
     public function workCommand($queueName)
     {
         do {
-            $this->jobManager->waitAndExecute($queueName);
+            try {
+                $this->jobManager->waitAndExecute($queueName);
+            } catch (JobQueueException $exception) {
+                $this->outputLine($exception->getMessage());
+                if ($exception->getPrevious() instanceof \Exception) {
+                    $this->outputLine($exception->getPrevious()->getMessage());
+                }
+            } catch (\Exception $exception) {
+                $this->outputLine('Unexpected exception during job execution: %s', array($exception->getMessage()));
+            }
         } while (true);
     }
 

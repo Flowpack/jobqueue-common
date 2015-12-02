@@ -59,12 +59,17 @@ class QueueManager
         }
 
         if (!isset($this->settings['queues'][$queueName])) {
-            throw new JobQueueException('Queue "' . $queueName . '" is not configured', 1334054137);
+            throw new JobQueueException(sprintf('Queue "%s" is not configured', $queueName), 1334054137);
         }
         if (!isset($this->settings['queues'][$queueName]['className'])) {
-            throw new JobQueueException('Option className for queue "' . $queueName . '" is not configured', 1334147126);
+            throw new JobQueueException(sprintf('Option className for queue "%s" is not configured', $queueName), 1334147126);
         }
+
         $queueObjectName = $this->settings['queues'][$queueName]['className'];
+        if (!class_exists($queueObjectName)) {
+            throw new JobQueueException(sprintf('Configured class "%s" for queue "%s" does not exist', $queueObjectName, $queueName), 1445611607);
+        }
+
         $options = isset($this->settings['queues'][$queueName]['options']) ? $this->settings['queues'][$queueName]['options'] : array();
         $queue = new $queueObjectName($queueName, $options);
 
