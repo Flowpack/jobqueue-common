@@ -38,12 +38,16 @@ class JobCommandController extends CommandController
      * Work on a queue and execute jobs
      *
      * @param string $queueName The name of the queue
+     * @param integer $limit The max number of jobs that should execute before exiting.
      * @return void
      */
-    public function workCommand($queueName)
+    public function workCommand($queueName, $limit = 0)
     {
+        $runInfiniteJobs = ($limit === 0 || $limit < 0);
+        $jobsDone = 0;
         do {
             try {
+                $jobsDone++;
                 $this->jobManager->waitAndExecute($queueName);
             } catch (JobQueueException $exception) {
                 $this->outputLine($exception->getMessage());
@@ -53,7 +57,7 @@ class JobCommandController extends CommandController
             } catch (\Exception $exception) {
                 $this->outputLine('Unexpected exception during job execution: %s', array($exception->getMessage()));
             }
-        } while (true);
+        } while ($runInfiniteJobs || $jobsDone < $limit);
     }
 
     /**
