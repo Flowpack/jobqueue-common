@@ -1,5 +1,5 @@
 {
-    "name": "typo3/jobqueue-common",
+    "name": "flowpack/jobqueue-common",
     "type": "typo3-flow-package",
     "description": "Common functionality for a JobQueue in Flow applications.",
     "license": "MIT",
@@ -7,8 +7,8 @@
         "typo3/flow": "~2.0||~3.0"
     },
     "autoload": {
-        "psr-0": {
-            "TYPO3\\Jobqueue\\Common": "Classes"
+        "psr-4": {
+            "Flowpack\\JobQueue\\Common\\": "Classes"
         }
     },
     "extra": {

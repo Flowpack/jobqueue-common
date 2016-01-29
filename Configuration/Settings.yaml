@@ -1,0 +1,8 @@
+Flowpack:
+  JobQueue:
+    Common:
+      queues: []
+#        example:
+#          className: 'Flownative\JobQueue\Sqlite\Queue\SqliteQueue'
+#          options:
+#            storageFolder: "/tmp/"

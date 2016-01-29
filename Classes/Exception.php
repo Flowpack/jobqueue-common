@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\Jobqueue\Common;
+namespace Flowpack\JobQueue\Common;
 
 /*
- * This file is part of the TYPO3.Jobqueue.Common package.
+ * This file is part of the Flowpack.JobQueue.Common package.
  *
  * (c) Contributors to the package
  *
@@ -12,7 +12,7 @@ namespace TYPO3\Jobqueue\Common;
  */
 
 /**
- * A generic Jobqueue Exception
+ * A generic JobQueue Exception
  */
 class Exception extends \TYPO3\Flow\Exception
 {

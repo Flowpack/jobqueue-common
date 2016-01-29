@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\Jobqueue\Common\Tests\Unit\Job;
+namespace Flowpack\JobQueue\Common\Tests\Unit\Job;
 
 /*
- * This file is part of the TYPO3.Jobqueue.Common package.
+ * This file is part of the Flowpack.JobQueue.Common package.
  *
  * (c) Contributors to the package
  *
@@ -13,9 +13,9 @@ namespace TYPO3\Jobqueue\Common\Tests\Unit\Job;
 
 use TYPO3\Flow\Reflection\ObjectAccess;
 use TYPO3\Flow\Tests\UnitTestCase;
-use TYPO3\Jobqueue\Common\Job\JobManager;
-use TYPO3\Jobqueue\Common\Queue\QueueManager;
-use TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestJob;
+use Flowpack\JobQueue\Common\Job\JobManager;
+use Flowpack\JobQueue\Common\Queue\QueueManager;
+use Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestJob;
 
 /**
  * Unit tests for the JobManager
@@ -41,7 +41,7 @@ class JobManagerTest extends UnitTestCase
         $this->queueManager->injectSettings(array(
             'queues' => array(
                 'TestQueue' => array(
-                    'className' => 'TYPO3\Jobqueue\Common\Tests\Unit\Fixtures\TestQueue'
+                    'className' => 'Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestQueue'
                 )
             )
         ));
@@ -60,7 +60,7 @@ class JobManagerTest extends UnitTestCase
 
         $testQueue = $this->queueManager->getQueue('TestQueue');
         $message = $testQueue->peek();
-        $this->assertInstanceOf('TYPO3\Jobqueue\Common\Queue\Message', $message);
+        $this->assertInstanceOf('Flowpack\JobQueue\Common\Queue\Message', $message);
     }
 
     /**
