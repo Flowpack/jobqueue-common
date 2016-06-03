@@ -36,6 +36,7 @@ class QueueManagerTest extends UnitTestCase
 
         $queue = $queueManager->getQueue('TestQueue');
         $this->assertInstanceOf('Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestQueue', $queue);
+        $this->assertSame('TestQueue', $queue->getName());
     }
 
     /**
@@ -76,5 +77,24 @@ class QueueManagerTest extends UnitTestCase
 
         $queue = $queueManager->getQueue('TestQueue');
         $this->assertSame($queue, $queueManager->getQueue('TestQueue'));
+    }
+
+    /**
+     * @test
+     */
+    public function queuePrefixIsProperlyUsed()
+    {
+        $queueManager = new QueueManager();
+        $queueManager->injectSettings(array(
+            'queueNamePrefix' => 'specialQueue',
+            'queues' => array(
+                'TestQueue' => array(
+                    'className' => 'Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestQueue'
+                )
+            )
+        ));
+
+        $queue = $queueManager->getQueue('TestQueue');
+        $this->assertSame('specialQueueTestQueue', $queue->getName());
     }
 }

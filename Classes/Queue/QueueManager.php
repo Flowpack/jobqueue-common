@@ -71,7 +71,15 @@ class QueueManager
         }
 
         $options = isset($this->settings['queues'][$queueName]['options']) ? $this->settings['queues'][$queueName]['options'] : array();
-        $queue = new $queueObjectName($queueName, $options);
+
+
+        if (isset($this->settings['queueNamePrefix'])) {
+            $queueNameWithPrefix = $this->settings['queueNamePrefix'] . $queueName;
+        } else {
+            $queueNameWithPrefix = $queueName;
+        }
+
+        $queue = new $queueObjectName($queueNameWithPrefix, $options);
 
         $this->queues[$queueName] = $queue;
 
