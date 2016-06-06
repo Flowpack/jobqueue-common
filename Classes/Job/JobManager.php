@@ -19,6 +19,8 @@ use Flowpack\JobQueue\Common\Queue\QueueManager;
 
 /**
  * Job manager
+ *
+ * @Flow\Scope("singleton")
  */
 class JobManager
 {
@@ -38,17 +40,18 @@ class JobManager
      * Put a job in the queue
      *
      * @param string $queueName
-     * @param JobInterface $job
+     * @param JobInterface $job The job to submit to the queue
+     * @param array $options Simple key/value array with options that will be passed to the queue for this job (optional)
      * @return void
      */
-    public function queue($queueName, JobInterface $job)
+    public function queue($queueName, JobInterface $job, array $options = [])
     {
         $queue = $this->queueManager->getQueue($queueName);
 
         $payload = serialize($job);
         $message = new Message($payload);
 
-        $queue->submit($message);
+        $queue->submit($message, $options);
     }
 
     /**
