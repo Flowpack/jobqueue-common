@@ -57,7 +57,7 @@ class JobManager
      *
      * @param string $queueName
      * @param integer $timeout
-     * @return JobInterface The job that was executed or NULL if no job was executed and a timeout occured
+     * @return JobInterface The job that was executed or NULL if no job was executed and a timeout occurred
      * @throws JobQueueException
      */
     public function waitAndExecute($queueName, $timeout = null)
@@ -65,6 +65,7 @@ class JobManager
         $queue = $this->queueManager->getQueue($queueName);
         $message = $queue->waitAndReserve($timeout);
         if ($message !== null) {
+            /** @var JobInterface $job */
             $job = unserialize($message->getPayload());
 
             try {
@@ -89,7 +90,7 @@ class JobManager
      *
      * @param string $queueName
      * @param integer $limit
-     * @return array
+     * @return JobInterface[]
      */
     public function peek($queueName, $limit = 1)
     {

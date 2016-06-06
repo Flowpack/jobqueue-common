@@ -32,8 +32,8 @@ interface QueueInterface
 
     /**
      * Wait for a message in the queue and remove the message from the queue for processing
-     * If a non-null value was returned, the message was unqueued. Otherwise a timeout
-     * occured and no message was available or received.
+     * If a non-null value was returned, the message was not queued. Otherwise a timeout
+     * occurred and no message was available or received.
      *
      * @param integer $timeout
      * @return Message The received message or NULL if a timeout occurred

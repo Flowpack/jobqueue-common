@@ -22,7 +22,7 @@ use Flowpack\JobQueue\Common\Queue\QueueInterface;
 class TestQueue implements QueueInterface
 {
     /**
-     * @var array
+     * @var Message[]
      */
     protected $messages = array();
 
@@ -86,6 +86,7 @@ class TestQueue implements QueueInterface
      */
     public function waitAndReserve($timeout = 60)
     {
+        /** @var Message $message */
         $message = array_shift($this->messages);
         if ($message !== null) {
             $this->processing[$message->getIdentifier()] = $message;
