@@ -42,6 +42,11 @@ class TestQueue implements QueueInterface
     protected $options;
 
     /**
+     * @var array
+     */
+    protected $lastSubmitOptions;
+
+    /**
      *
      * @param string $name
      * @param array $options
@@ -72,12 +77,22 @@ class TestQueue implements QueueInterface
 
     /**
      * @param Message $message
+     * @param array $options
      * @return void
      */
-    public function submit(Message $message)
+    public function submit(Message $message, array $options = [])
     {
         // TODO Unique identifiers
         $this->messages[] = $message;
+        $this->lastSubmitOptions = $options;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLastSubmitOptions()
+    {
+        return $this->lastSubmitOptions;
     }
 
     /**
