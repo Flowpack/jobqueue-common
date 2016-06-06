@@ -26,9 +26,10 @@ interface QueueInterface
      * another message with the same identifier already exists.
      *
      * @param Message $message
+     * @param array $options Simple key/value array with options, supported options depend on the queue implementation
      * @return string The identifier of the message under which it was queued
      */
-    public function submit(Message $message);
+    public function submit(Message $message, array $options = []);
 
     /**
      * Wait for a message in the queue and remove the message from the queue for processing

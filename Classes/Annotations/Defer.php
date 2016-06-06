@@ -26,6 +26,12 @@ final class Defer
     public $queueName;
 
     /**
+     * Optional key/value array of options passed to the queue (for example array('delay' => 123) - Supported options depend on the concrete queue implementation)
+     * @var array
+     */
+    public $options;
+
+    /**
      * @param array $values
      * @throws \InvalidArgumentException
      */
@@ -35,5 +41,6 @@ final class Defer
             throw new \InvalidArgumentException('A Defer annotation must specify a queueName.', 1334128835);
         }
         $this->queueName = isset($values['queueName']) ? $values['queueName'] : $values['value'];
+        $this->options = isset($values['options']) ? $values['options'] : [];
     }
 }
