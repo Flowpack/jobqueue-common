@@ -34,6 +34,7 @@ class QueueManagerTest extends UnitTestCase
             )
         ));
 
+        /** @var TestQueue $queue */
         $queue = $queueManager->getQueue('TestQueue');
         $this->assertInstanceOf('Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestQueue', $queue);
         $this->assertSame('TestQueue', $queue->getName());
@@ -94,6 +95,7 @@ class QueueManagerTest extends UnitTestCase
             )
         ));
 
+        /** @var TestQueue $queue */
         $queue = $queueManager->getQueue('TestQueue');
         $this->assertSame('specialQueueTestQueue', $queue->getName());
     }
