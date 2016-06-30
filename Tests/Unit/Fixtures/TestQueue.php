@@ -13,6 +13,7 @@ namespace Flowpack\JobQueue\Common\Tests\Unit\Fixtures;
 
 use Flowpack\JobQueue\Common\Queue\Message;
 use Flowpack\JobQueue\Common\Queue\QueueInterface;
+use TYPO3\Flow\Utility\Algorithms;
 
 /**
  * Test queue
@@ -22,14 +23,24 @@ use Flowpack\JobQueue\Common\Queue\QueueInterface;
 class TestQueue implements QueueInterface
 {
     /**
-     * @var Message[]
+     * @var string[]
      */
-    protected $messages = array();
+    protected $readyMessages = [];
 
     /**
-     * @var array
+     * @var string[]
      */
-    protected $processing = array();
+    protected $processingMessages = [];
+
+    /**
+     * @var string[]
+     */
+    protected $failedMessages = [];
+
+    /**
+     * @var int[]
+     */
+    protected $numberOfFailures = [];
 
     /**
      * @var string
@@ -42,75 +53,169 @@ class TestQueue implements QueueInterface
     protected $options;
 
     /**
-     *
+     * @var int
+     */
+    protected $defaultTimeout = 60;
+
+    /**
+     * @var array
+     */
+    protected $lastSubmitOptions;
+
+    /**
+     * @var array
+     */
+    protected $lastReleaseOptions;
+
+  /**
      * @param string $name
      * @param array $options
      */
-    public function __construct($name, $options)
+    public function __construct($name, array $options = [])
     {
         $this->name = $name;
+        if (isset($options['defaultTimeout'])) {
+            $this->defaultTimeout = (integer)$options['defaultTimeout'];
+        }
         $this->options = $options;
     }
 
-        /**
-     * @param Message $message
-     * @return void
+    /**
+     * @inheritdoc
      */
-    public function finish(Message $message)
+    public function setUp()
     {
-        unset($this->processing[$message->getIdentifier()]);
+        // The TestQueue does not require any setup
     }
 
     /**
-     * @param integer $limit
-     * @return Message
-     */
-    public function peek($limit = 1)
-    {
-        return count($this->messages) > 0 ? $this->messages[0] : null;
-    }
-
-    /**
-     * @param Message $message
-     * @return void
-     */
-    public function submit(Message $message)
-    {
-        // TODO Unique identifiers
-        $this->messages[] = $message;
-    }
-
-    /**
-     * @param integer $timeout
-     * @return Message
-     */
-    public function waitAndReserve($timeout = 60)
-    {
-        /** @var Message $message */
-        $message = array_shift($this->messages);
-        if ($message !== null) {
-            $this->processing[$message->getIdentifier()] = $message;
-        }
-        return $message;
-    }
-
-    /**
-     *
-     * @param integer $timeout
-     * @return Message
-     */
-    public function waitAndTake($timeout = 60)
-    {
-        $message = array_shift($this->messages);
-        return $message;
-    }
-
-    /**
-     * @return string
+     * @inheritdoc
      */
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function submit($payload, array $options = [])
+    {
+        $this->lastSubmitOptions = $options;
+        $messageId = Algorithms::generateUUID();
+        $this->readyMessages[$messageId] = $payload;
+        return $messageId;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function waitAndTake($timeout = null)
+    {
+        $message = $this->reserveMessage($timeout);
+        if ($message === null) {
+            return null;
+        }
+        unset($this->processingMessages[$message->getIdentifier()]);
+        return $message;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function waitAndReserve($timeout = null)
+    {
+        return $this->reserveMessage($timeout);
+    }
+
+    /**
+     * @param integer $timeout
+     * @return Message
+     */
+    protected function reserveMessage($timeout = null)
+    {
+        if ($timeout === null) {
+            $timeout = $this->defaultTimeout;
+        }
+        $startTime = time();
+        do {
+            $nextMessageIdAndPayload = array_slice($this->readyMessages, 0, 1);
+            if (time() - $startTime >= $timeout) {
+                return null;
+            }
+        } while ($nextMessageIdAndPayload === []);
+        $messageId = key($nextMessageIdAndPayload);
+        $payload = $nextMessageIdAndPayload[$messageId];
+        unset($this->readyMessages[$messageId]);
+        $this->processingMessages[$messageId] = $nextMessageIdAndPayload[$messageId];
+
+        $numberOfFailures = isset($this->numberOfFailures[$messageId]) ? $this->numberOfFailures[$messageId] : 0;
+        return new Message($messageId, $payload, $numberOfFailures);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function release($messageId, array $options = [])
+    {
+        $this->lastReleaseOptions = $options;
+        if (!isset($this->processingMessages[$messageId])) {
+            return;
+        }
+        $payload = $this->processingMessages[$messageId];
+        $this->numberOfFailures[$messageId] = isset($this->numberOfFailures[$messageId]) ? $this->numberOfFailures[$messageId] + 1 : 1;
+        unset($this->processingMessages[$messageId]);
+        $this->readyMessages[$messageId] = $payload;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function abort($messageId)
+    {
+        if (!isset($this->readyMessages[$messageId])) {
+            return;
+        }
+        $this->failedMessages[$messageId] = $this->readyMessages[$messageId];
+        unset($this->readyMessages[$messageId]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function finish($messageId)
+    {
+        unset($this->processingMessages[$messageId]);
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function peek($limit = 1)
+    {
+        $messageIdsAndPayload = array_slice($this->readyMessages, 0, $limit);
+        $messages = [];
+        foreach ($messageIdsAndPayload as $messageId => $payload) {
+            $messages[] = new Message($messageId, $payload);
+        }
+        return $messages;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function count()
+    {
+        return count($this->readyMessages);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function flush()
+    {
+        $this->readyMessages = $this->processingMessages = $this->failedMessages = $this->numberOfFailures = [];
     }
 
     /**
@@ -124,34 +229,17 @@ class TestQueue implements QueueInterface
     /**
      * @return array
      */
-    public function getMessages()
+    public function getLastSubmitOptions()
     {
-        return $this->messages;
+        return $this->lastSubmitOptions;
     }
 
     /**
      * @return array
      */
-    public function getProcessing()
+    public function getLastReleaseOptions()
     {
-        return $this->processing;
+        return $this->lastReleaseOptions;
     }
 
-    /**
-     * @return integer
-     */
-    public function count()
-    {
-        return count($this->messages);
-    }
-
-    /**
-     *
-     * @param string $identifier
-     * @return Message
-     */
-    public function getMessage($identifier)
-    {
-        return null;
-    }
 }

@@ -1,0 +1,29 @@
+type: dictionary
+properties:
+  'presets':
+    type: dictionary
+    required: TRUE
+    additionalProperties:
+      type: dictionary
+      required: TRUE
+      additionalProperties: FALSE
+      properties:
+        'maximumNumberOfReleases': { type: integer }
+        'className': { type: string, format: class-name }
+        'queueNamePrefix': { type: string }
+        'options': { type: dictionary }
+        'releaseOptions': { type: dictionary }
+  'queues':
+    type: dictionary
+    required: TRUE
+    additionalProperties:
+      type: dictionary
+      required: TRUE
+      additionalProperties: FALSE
+      properties:
+        'preset': { type: string }
+        'maximumNumberOfReleases': { type: integer }
+        'className': { type: string, format: class-name }
+        'queueNamePrefix': { type: string }
+        'options': { type: dictionary }
+        'releaseOptions': { type: dictionary }

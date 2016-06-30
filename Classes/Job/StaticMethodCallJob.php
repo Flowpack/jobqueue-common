@@ -15,6 +15,7 @@ use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Object\ObjectManagerInterface;
 use Flowpack\JobQueue\Common\Queue\Message;
 use Flowpack\JobQueue\Common\Queue\QueueInterface;
+use TYPO3\Flow\Utility\TypeHandling;
 
 /**
  * Static method call job
@@ -90,7 +91,15 @@ class StaticMethodCallJob implements JobInterface
      */
     public function getLabel()
     {
-        return $this->className . '->' . $this->methodName;
+        $arguments = [];
+        foreach($this->arguments as $argumentValue) {
+            if (TypeHandling::isSimpleType($argumentValue)) {
+                $arguments[] = $argumentValue;
+            } else {
+                $arguments[] = '[' . gettype($argumentValue) . ']';
+            }
+        }
+        return sprintf('%s::%s(%s)', $this->className, $this->methodName, implode(', ', $arguments));
     }
 
     /**

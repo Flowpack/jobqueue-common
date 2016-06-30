@@ -14,75 +14,40 @@ namespace Flowpack\JobQueue\Common\Queue;
 use TYPO3\Flow\Annotations as Flow;
 
 /**
- * Message object
+ * A DTO that wraps arbitrary payload with an identifier and a counter for failures.
  */
 class Message
 {
-    // Created locally, not published to queue
-    const STATE_NEW = 0;
-    // Message published to queue, should not be processed by client
-    const STATE_SUBMITTED = 1;
-    // Message received from queue, not deleted from queue! (a.k.a. Reserved)
-    const STATE_RESERVED = 2;
-    // Message processed and deleted from queue
-    const STATE_DONE = 3;
-
     /**
-     * Depending on the queue implementation, this identifier will
-     * allow for unique messages (e.g. prevent adding jobs twice).
+     * The message identifier allows to target messages in the queue, @see QueueInterface
+     * The format depends on the implementation
      *
      * @var string Identifier of the message
      */
     protected $identifier;
 
     /**
-     * The message payload has to be serializable.
+     * The message payload, has to be serializable.
      *
-     * @var mixed The message payload
+     * @var \Serializable The message payload
      */
     protected $payload;
 
     /**
-     * @var integer State of the message, one of the Message::STATE_* constants
+     * @var integer
      */
-    protected $state = self::STATE_NEW;
+    protected $numberOfFailures;
 
     /**
-     * @var string The original message value as encoded in a queue
-     * @todo Can be removed with new Redis implementation
-     */
-    protected $originalValue;
-
-    /**
-     * Constructor
-     *
+     * @param string $identifier
      * @param mixed $payload
-     * @param string $identifier
+     * @param integer $numberOfFailures
      */
-    public function __construct($payload, $identifier = null)
+    public function __construct($identifier, $payload, $numberOfFailures = 0)
     {
+        $this->identifier = $identifier;
         $this->payload = $payload;
-        $this->identifier = $identifier;
-    }
-
-    /**
-     * @return array
-     */
-    public function toArray()
-    {
-        return array(
-            'identifier' => $this->identifier,
-            'payload' => $this->payload,
-            'state' => $this->state
-        );
-    }
-
-    /**
-     * @param string $identifier
-     */
-    public function setIdentifier($identifier)
-    {
-        $this->identifier = $identifier;
+        $this->numberOfFailures = $numberOfFailures;
     }
 
     /**
@@ -94,14 +59,6 @@ class Message
     }
 
     /**
-     * @param mixed $payload
-     */
-    public function setPayload($payload)
-    {
-        $this->payload = $payload;
-    }
-
-    /**
      * @return mixed
      */
     public function getPayload()
@@ -110,34 +67,10 @@ class Message
     }
 
     /**
-     * @param integer $state
-     */
-    public function setState($state)
-    {
-        $this->state = $state;
-    }
-
-    /**
      * @return integer
      */
-    public function getState()
+    public function getNumberOfFailures()
     {
-        return $this->state;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOriginalValue()
-    {
-        return $this->originalValue;
-    }
-
-    /**
-     * @param string $originalValue
-     */
-    public function setOriginalValue($originalValue)
-    {
-        $this->originalValue = $originalValue;
+        return $this->numberOfFailures;
     }
 }

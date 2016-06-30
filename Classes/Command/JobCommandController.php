@@ -11,6 +11,8 @@ namespace Flowpack\JobQueue\Common\Command;
  * source code.
  */
 
+use Flowpack\JobQueue\Common\Job\JobInterface;
+use Flowpack\JobQueue\Common\Queue\Message;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Cli\CommandController;
 use Flowpack\JobQueue\Common\Exception as JobQueueException;
@@ -37,21 +39,30 @@ class JobCommandController extends CommandController
     /**
      * Work on a queue and execute jobs
      *
-     * @param string $queueName The name of the queue
+     * @param string $queue Name of the queue to fetch messages from
+     * @param boolean $verbose
      * @return void
      */
-    public function workCommand($queueName)
+    public function workCommand($queue, $verbose = false)
     {
+        $job = null;
         do {
             try {
-                $this->jobManager->waitAndExecute($queueName);
+                $job = $this->jobManager->waitAndExecute($queue);
             } catch (JobQueueException $exception) {
                 $this->outputLine($exception->getMessage());
                 if ($exception->getPrevious() instanceof \Exception) {
-                    $this->outputLine($exception->getPrevious()->getMessage());
+                    $this->outputLine('<error>%s</error>', [$exception->getPrevious()->getMessage()]);
                 }
             } catch (\Exception $exception) {
-                $this->outputLine('Unexpected exception during job execution: %s', array($exception->getMessage()));
+                $this->outputLine('<error>Unexpected exception during job execution: %s</error>', [$exception->getMessage()]);
+            }
+            if ($verbose) {
+                if ($job !== null) {
+                    $this->outputLine('Successfully executed job "%s"', [$job->getLabel()]);
+                } else {
+                    $this->outputLine('Timeout');
+                }
             }
         } while (true);
     }
@@ -59,21 +70,40 @@ class JobCommandController extends CommandController
     /**
      * List queued jobs
      *
-     * @param string $queueName The name of the queue
+     * @param string $queue The name of the queue
      * @param integer $limit Number of jobs to list
      * @return void
      */
-    public function listCommand($queueName, $limit = 1)
+    public function listCommand($queue, $limit = 1)
     {
-        $jobs = $this->jobManager->peek($queueName, $limit);
-        $totalCount = $this->queueManager->getQueue($queueName)->count();
+        $jobs = $this->jobManager->peek($queue, $limit);
+        $totalCount = $this->queueManager->getQueue($queue)->count();
         foreach ($jobs as $job) {
-            $this->outputLine('<u>%s</u>', array($job->getLabel()));
+            $this->outputLine('<b>%s</b>', [$job->getLabel()]);
         }
 
         if ($totalCount > count($jobs)) {
-            $this->outputLine('(%d omitted) ...', array($totalCount - count($jobs)));
+            $this->outputLine('(%d omitted) ...', [$totalCount - count($jobs)]);
         }
-        $this->outputLine('(<b>%d total</b>)', array($totalCount));
+        $this->outputLine('(<b>%d total</b>)', [$totalCount]);
+    }
+
+    /**
+     * Execute one job
+     *
+     * @param string $queue
+     * @param string $serializedJob An instance of JobInterface serialized and base64-encoded
+     * @return void
+     * @internal This command is mainly needed for the SerialQueue in order to execute commands in sub requests
+     */
+    public function executeCommand($queue, $serializedJob)
+    {
+        $queue = $this->queueManager->getQueue($queue);
+        $job = unserialize(base64_decode($serializedJob));
+        if (!$job instanceof JobInterface) {
+            throw new \RuntimeException('Argument could not be unserialized to a class implementing JobInterface', 1465901250);
+        }
+        $message = new Message(null, $serializedJob);
+        $job->execute($queue, $message);
     }
 }

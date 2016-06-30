@@ -4,7 +4,7 @@
     "description": "Common functionality for a JobQueue in Flow applications.",
     "license": "MIT",
     "require": {
-        "typo3/flow": "~2.0||~3.0"
+        "typo3/flow": "~3.3"
     },
     "autoload": {
         "psr-4": {
@@ -12,6 +12,9 @@
         }
     },
     "extra": {
+        "neos": {
+            "package-key": "Flowpack.JobQueue.Common"
+        },
         "applied-flow-migrations": [
             "TYPO3.Flow-201209251426",
             "TYPO3.FLOW3-201209201112",

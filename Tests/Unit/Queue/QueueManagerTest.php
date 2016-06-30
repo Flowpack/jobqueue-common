@@ -16,27 +16,92 @@ use Flowpack\JobQueue\Common\Queue\QueueManager;
 use Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestQueue;
 
 /**
- * Queue manager
+ * Queue manager tests
  */
 class QueueManagerTest extends UnitTestCase
 {
+
+    /**
+     * @var QueueManager
+     */
+    protected $queueManager;
+
+    public function setUp()
+    {
+        $this->queueManager = new QueueManager();
+        $this->inject($this->queueManager, 'settings', [
+            'queues' => [
+                'TestQueue' => [
+                    'className' => TestQueue::class
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function getQueueSettingsMergesPresetWithQueueSettings()
+    {
+        $this->inject($this->queueManager, 'settings', [
+            'presets' => [
+                'somePreset' => [
+                    'className' => 'Some\Preset\ClassName',
+                    'maximumNumberOfReleases' => 123,
+                    'queueNamePrefix' => 'presetPrefix',
+                    'options' => [
+                        'option1' => 'from preset',
+                        'option2' => 'from preset',
+                    ],
+                    'releaseOptions' => [
+                        'bar' => 'from preset',
+                    ]
+                ]
+            ],
+            'queues' => [
+                'TestQueue' => [
+                    'preset' => 'somePreset',
+                    'className' => TestQueue::class,
+                    'maximumNumberOfReleases' => 321,
+                    'queueNamePrefix' => 'queuePrefix',
+                    'options' => [
+                        'option2' => 'overridden from queue',
+                        'option3' => 'from queue',
+                    ],
+                    'releaseOptions' => [
+                        'bar' => 'from queue',
+                    ]
+                ]
+            ]
+        ]);
+
+        $expectedSettings = [
+            'className' => TestQueue::class,
+            'maximumNumberOfReleases' => 321,
+            'queueNamePrefix' => 'queuePrefix',
+            'options' => [
+                'option1' => 'from preset',
+                'option2' => 'overridden from queue',
+                'option3' => 'from queue',
+            ],
+            'releaseOptions' => [
+                'bar' => 'from queue',
+            ],
+            'preset' => 'somePreset'
+        ];
+
+        $queueSettings = $this->queueManager->getQueueSettings('TestQueue');
+        $this->assertSame($expectedSettings, $queueSettings);
+    }
+
     /**
      * @test
      */
     public function getQueueCreatesInstanceByQueueName()
     {
-        $queueManager = new QueueManager();
-        $queueManager->injectSettings(array(
-            'queues' => array(
-                'TestQueue' => array(
-                    'className' => 'Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestQueue'
-                )
-            )
-        ));
-
         /** @var TestQueue $queue */
-        $queue = $queueManager->getQueue('TestQueue');
-        $this->assertInstanceOf('Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestQueue', $queue);
+        $queue = $this->queueManager->getQueue('TestQueue');
+        $this->assertInstanceOf(TestQueue::class, $queue);
         $this->assertSame('TestQueue', $queue->getName());
     }
 
@@ -45,21 +110,20 @@ class QueueManagerTest extends UnitTestCase
      */
     public function getQueueSetsOptionsOnInstance()
     {
-        $queueManager = new QueueManager();
-        $queueManager->injectSettings(array(
-            'queues' => array(
-                'TestQueue' => array(
-                    'className' => 'Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestQueue',
-                    'options' => array(
+        $this->inject($this->queueManager, 'settings', [
+            'queues' => [
+                'TestQueue' => [
+                    'className' => TestQueue::class,
+                    'options' => [
                         'foo' => 'bar'
-                    )
-                )
-            )
-        ));
+                    ]
+                ]
+            ]
+        ]);
 
         /** @var TestQueue $queue */
-        $queue = $queueManager->getQueue('TestQueue');
-        $this->assertEquals(array('foo' => 'bar'), $queue->getOptions());
+        $queue = $this->queueManager->getQueue('TestQueue');
+        $this->assertEquals(['foo' => 'bar'], $queue->getOptions());
     }
 
     /**
@@ -67,36 +131,69 @@ class QueueManagerTest extends UnitTestCase
      */
     public function getQueueReusesInstances()
     {
-        $queueManager = new QueueManager();
-        $queueManager->injectSettings(array(
-            'queues' => array(
-                'TestQueue' => array(
-                    'className' => 'Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestQueue'
-                )
-            )
-        ));
+        $queue = $this->queueManager->getQueue('TestQueue');
+        $this->assertSame($queue, $this->queueManager->getQueue('TestQueue'));
+    }
 
-        $queue = $queueManager->getQueue('TestQueue');
-        $this->assertSame($queue, $queueManager->getQueue('TestQueue'));
+    /**
+     * @test
+     * @expectedException \Flowpack\JobQueue\Common\Exception
+     */
+    public function getQueueThrowsExceptionWhenSettingsReferToNonExistingPreset()
+    {
+        $this->inject($this->queueManager, 'settings', [
+            'queues' => [
+                'TestQueue' => [
+                    'className' => TestQueue::class,
+                    'preset' => 'NonExistingPreset'
+                ]
+            ]
+        ]);
+        $this->queueManager->getQueue('TestQueue');
+    }
+
+
+    /**
+     * @test
+     */
+    public function queueNamesArePrefixedWithDefaultQueueNamePrefix()
+    {
+        $this->inject($this->queueManager, 'settings', [
+            'queues' => [
+                'TestQueue' => [
+                    'className' => TestQueue::class,
+                    'queueNamePrefix' => 'specialQueue',
+                ]
+            ]
+        ]);
+
+        /** @var TestQueue $queue */
+        $queue = $this->queueManager->getQueue('TestQueue');
+        $this->assertSame('specialQueueTestQueue', $queue->getName());
     }
 
     /**
      * @test
      */
-    public function queuePrefixIsProperlyUsed()
+    public function queueNamePrefixFromPresetCanBeOverruled()
     {
-        $queueManager = new QueueManager();
-        $queueManager->injectSettings(array(
-            'queueNamePrefix' => 'specialQueue',
-            'queues' => array(
-                'TestQueue' => array(
-                    'className' => 'Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestQueue'
-                )
-            )
-        ));
+        $this->inject($this->queueManager, 'settings', [
+            'presets' => [
+                'somePreset' => [
+                    'queueNamePrefix' => 'presetPrefix',
+                ]
+            ],
+            'queues' => [
+                'TestQueue' => [
+                    'preset' => 'somePreset',
+                    'queueNamePrefix' => 'overriddenPrefix',
+                    'className' => TestQueue::class,
+                ]
+            ]
+        ]);
 
         /** @var TestQueue $queue */
-        $queue = $queueManager->getQueue('TestQueue');
-        $this->assertSame('specialQueueTestQueue', $queue->getName());
+        $queue = $this->queueManager->getQueue('TestQueue');
+        $this->assertSame('overriddenPrefixTestQueue', $queue->getName());
     }
 }

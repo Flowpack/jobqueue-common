@@ -1,11 +1,19 @@
 Flowpack:
   JobQueue:
     Common:
-      # if defined, all queues are prefixed with the configured "queueNamePrefix". This helps if multiple
-      # Flow instances share the same queue service.
-      queueNamePrefix: ''
+      presets:
+        'default':
+          className: 'Flownative\JobQueue\Sqlite\Queue\SqliteQueue'
+          # if defined, all queues are prefixed with the configured "queueNamePrefix". This helps if multiple
+          # Flow instances share the same queue service.
+          queueNamePrefix: ''
+          options:
+            'foo': 'bar'
+          releaseOptions:
+            delay: 300
+          maximumNumberOfReleases: 3
       queues: []
-#        example:
-#          className: 'Flownative\JobQueue\Sqlite\Queue\SqliteQueue'
+#        'example':
+#          preset: 'default'
 #          options:
-#            storageFolder: "/tmp/"
+#            overridden: 'option'

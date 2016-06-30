@@ -41,7 +41,7 @@ class TestJob implements JobInterface
     /**
      * @return boolean
      */
-    public function getProcessed()
+    public function isProcessed()
     {
         return $this->processed;
     }
