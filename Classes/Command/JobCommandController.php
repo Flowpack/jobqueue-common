@@ -18,6 +18,7 @@ use TYPO3\Flow\Cli\CommandController;
 use Flowpack\JobQueue\Common\Exception as JobQueueException;
 use Flowpack\JobQueue\Common\Job\JobManager;
 use Flowpack\JobQueue\Common\Queue\QueueManager;
+use TYPO3\Flow\Utility\Arrays;
 
 /**
  * Job command controller
@@ -39,29 +40,41 @@ class JobCommandController extends CommandController
     /**
      * Work on a queue and execute jobs
      *
-     * @param string $queue Name of the queue to fetch messages from
+     * @param string $queue Name of the queue to fetch messages from. Can also be a comma-separated list of queues.
      * @param boolean $verbose
      * @return void
      */
     public function workCommand($queue, $verbose = false)
     {
         $job = null;
+        if (strpos($queue, ',') === false) {
+            $queues = [ $queue ];
+        } else {
+            $queues = Arrays::trimExplode(',', $queue);
+        }
+
+        if ($verbose) {
+            $this->outputLine('Watching queue%s %s ...', [count($queues) > 1 ? 's' : '', implode(', ', $queues)]);
+        }
+
         do {
-            try {
-                $job = $this->jobManager->waitAndExecute($queue);
-            } catch (JobQueueException $exception) {
-                $this->outputLine($exception->getMessage());
-                if ($exception->getPrevious() instanceof \Exception) {
-                    $this->outputLine('<error>%s</error>', [$exception->getPrevious()->getMessage()]);
+            foreach ($queues as $queue) {
+                try {
+                    $job = $this->jobManager->waitAndExecute($queue);
+                } catch (JobQueueException $exception) {
+                    $this->outputLine($exception->getMessage());
+                    if ($exception->getPrevious() instanceof \Exception) {
+                        $this->outputLine('<error>%s</error>', [$exception->getPrevious()->getMessage()]);
+                    }
+                } catch (\Exception $exception) {
+                    $this->outputLine('%s: <error>Unexpected exception during job execution: %s</error>', [$queue, $exception->getMessage()]);
                 }
-            } catch (\Exception $exception) {
-                $this->outputLine('<error>Unexpected exception during job execution: %s</error>', [$exception->getMessage()]);
-            }
-            if ($verbose) {
-                if ($job !== null) {
-                    $this->outputLine('Successfully executed job "%s"', [$job->getLabel()]);
-                } else {
-                    $this->outputLine('Timeout');
+                if ($verbose) {
+                    if ($job !== null) {
+                        $this->outputLine('%s: Successfully executed job "%s"', [$queue, $job->getLabel()]);
+                    } else {
+                        $this->outputLine('$s: Timeout', [$queue]);
+                    }
                 }
             }
         } while (true);
