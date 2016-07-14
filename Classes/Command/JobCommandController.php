@@ -57,10 +57,11 @@ class JobCommandController extends CommandController
             $this->outputLine('Watching queue%s %s ...', [count($queues) > 1 ? 's' : '', implode(', ', $queues)]);
         }
 
+        $timeout = (count($queues) > 1 ? 5 : null);
         do {
             foreach ($queues as $queue) {
                 try {
-                    $job = $this->jobManager->waitAndExecute($queue);
+                    $job = $this->jobManager->waitAndExecute($queue, $timeout);
                 } catch (JobQueueException $exception) {
                     $this->outputLine($exception->getMessage());
                     if ($exception->getPrevious() instanceof \Exception) {
@@ -71,9 +72,7 @@ class JobCommandController extends CommandController
                 }
                 if ($verbose) {
                     if ($job !== null) {
-                        $this->outputLine('%s: Successfully executed job "%s"', [$queue, $job->getLabel()]);
-                    } else {
-                        $this->outputLine('$s: Timeout', [$queue]);
+                        $this->outputLine("%s: Successfully executed job '%s'", [$queue, $job->getLabel()]);
                     }
                 }
             }
