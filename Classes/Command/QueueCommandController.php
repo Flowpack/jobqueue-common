@@ -59,6 +59,23 @@ class QueueCommandController extends CommandController
     }
 
     /**
+     * Show details of a queue
+     *
+     * @param string $queue
+     * @return void
+     */
+    public function showCommand($queue)
+    {
+        $queueSettings = $this->queueManager->getQueueSettings($queue);
+        $this->outputLine('Configuration options for Queue <b>%s</b>:', [$queue]);
+        $rows = [];
+        foreach ($queueSettings as $name => $value) {
+            $rows[] = [$name, is_array($value) ? json_encode($value, JSON_PRETTY_PRINT) : $value];
+        }
+        $this->output->outputTable($rows, ['Option', 'Value']);
+    }
+
+    /**
      * Initializes a queue
      *
      * @param string $queue
