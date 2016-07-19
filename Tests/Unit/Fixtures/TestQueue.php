@@ -40,7 +40,7 @@ class TestQueue implements QueueInterface
     /**
      * @var int[]
      */
-    protected $numberOfFailures = [];
+    protected $numberOfReleases = [];
 
     /**
      * @var string
@@ -149,8 +149,8 @@ class TestQueue implements QueueInterface
         unset($this->readyMessages[$messageId]);
         $this->processingMessages[$messageId] = $nextMessageIdAndPayload[$messageId];
 
-        $numberOfFailures = isset($this->numberOfFailures[$messageId]) ? $this->numberOfFailures[$messageId] : 0;
-        return new Message($messageId, $payload, $numberOfFailures);
+        $numberOfReleases = isset($this->numberOfReleases[$messageId]) ? $this->numberOfReleases[$messageId] : 0;
+        return new Message($messageId, $payload, $numberOfReleases);
     }
 
     /**
@@ -163,7 +163,7 @@ class TestQueue implements QueueInterface
             return;
         }
         $payload = $this->processingMessages[$messageId];
-        $this->numberOfFailures[$messageId] = isset($this->numberOfFailures[$messageId]) ? $this->numberOfFailures[$messageId] + 1 : 1;
+        $this->numberOfReleases[$messageId] = isset($this->numberOfReleases[$messageId]) ? $this->numberOfReleases[$messageId] + 1 : 1;
         unset($this->processingMessages[$messageId]);
         $this->readyMessages[$messageId] = $payload;
     }
@@ -215,7 +215,7 @@ class TestQueue implements QueueInterface
      */
     public function flush()
     {
-        $this->readyMessages = $this->processingMessages = $this->failedMessages = $this->numberOfFailures = [];
+        $this->readyMessages = $this->processingMessages = $this->failedMessages = $this->numberOfReleases = [];
     }
 
     /**

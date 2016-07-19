@@ -78,7 +78,7 @@ class StaticMethodCallJob implements JobInterface
         $this->deferMethodCallAspect->setProcessingJob(true);
         try {
             $methodName = $this->methodName;
-            call_user_func_array(array($service, $methodName), $this->arguments);
+            call_user_func_array([$service, $methodName], $this->arguments);
             return true;
         } catch (\Exception $exception) {
             $this->deferMethodCallAspect->setProcessingJob(false);
@@ -100,13 +100,5 @@ class StaticMethodCallJob implements JobInterface
             }
         }
         return sprintf('%s::%s(%s)', $this->className, $this->methodName, implode(', ', $arguments));
-    }
-
-    /**
-     * @return string
-     */
-    public function getIdentifier()
-    {
-        return null;
     }
 }

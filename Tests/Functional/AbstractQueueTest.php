@@ -153,20 +153,20 @@ abstract class AbstractQueueTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function releaseIncreasesNumberOfFailures()
+    public function releaseIncreasesNumberOfReleases()
     {
         $messageId = $this->queue->submit('A message');
 
         $message = $this->queue->waitAndReserve(1);
-        $this->assertSame(0, $message->getNumberOfFailures());
+        $this->assertSame(0, $message->getNumberOfReleases());
 
         $this->queue->release($messageId);
         $message = $this->queue->waitAndReserve(1);
-        $this->assertSame(1, $message->getNumberOfFailures());
+        $this->assertSame(1, $message->getNumberOfReleases());
 
         $this->queue->release($messageId);
         $message = $this->queue->waitAndReserve(1);
-        $this->assertSame(2, $message->getNumberOfFailures());
+        $this->assertSame(2, $message->getNumberOfReleases());
     }
 
     /**

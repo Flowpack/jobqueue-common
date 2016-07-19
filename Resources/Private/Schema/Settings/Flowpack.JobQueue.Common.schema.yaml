@@ -11,6 +11,7 @@ properties:
         'maximumNumberOfReleases': { type: integer }
         'className': { type: string, format: class-name }
         'queueNamePrefix': { type: string }
+        'executeIsolated': { type: boolean }
         'options': { type: dictionary }
         'releaseOptions': { type: dictionary }
   'queues':
@@ -25,5 +26,6 @@ properties:
         'maximumNumberOfReleases': { type: integer }
         'className': { type: string, format: class-name }
         'queueNamePrefix': { type: string }
+        'executeIsolated': { type: boolean }
         'options': { type: dictionary }
         'releaseOptions': { type: dictionary }

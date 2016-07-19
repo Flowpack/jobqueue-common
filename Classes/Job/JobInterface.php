@@ -32,13 +32,6 @@ interface JobInterface
     public function execute(QueueInterface $queue, Message $message);
 
     /**
-     * Get an optional identifier for the job
-     *
-     * @return string A job identifier
-     */
-    public function getIdentifier();
-
-    /**
      * Get a readable label for the job
      *
      * @return string A label for the job

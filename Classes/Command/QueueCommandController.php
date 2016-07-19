@@ -11,13 +11,9 @@ namespace Flowpack\JobQueue\Common\Command;
  * source code.
  */
 
-use Flowpack\JobQueue\Common\Job\JobInterface;
-use Flowpack\JobQueue\Common\Queue\Message;
+use Flowpack\JobQueue\Common\Queue\QueueManager;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Cli\CommandController;
-use Flowpack\JobQueue\Common\Exception as JobQueueException;
-use Flowpack\JobQueue\Common\Job\JobManager;
-use Flowpack\JobQueue\Common\Queue\QueueManager;
 use TYPO3\Flow\Utility\TypeHandling;
 
 /**

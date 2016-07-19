@@ -72,17 +72,4 @@ class JobManagerTest extends UnitTestCase
 
         $this->assertSame($mockOptions, $this->testQueue->getLastSubmitOptions());
     }
-
-    /**
-     * @test
-     */
-    public function waitAndExecuteGetsAndExecutesJobFromQueue()
-    {
-        $job = new TestJob();
-        $this->jobManager->queue('TestQueue', $job);
-
-        /** @var TestJob $queuedJob */
-        $queuedJob = $this->jobManager->waitAndExecute('TestQueue');
-        $this->assertTrue($queuedJob->isProcessed());
-    }
 }

@@ -38,6 +38,11 @@ class QueueManager
     /**
      * @var array
      */
+    protected $queueSettingsRuntimeCache = [];
+
+    /**
+     * @var array
+     */
     protected $queues = [];
 
     /**
@@ -46,6 +51,7 @@ class QueueManager
      * @param string $queueName
      * @return QueueInterface
      * @throws JobQueueException
+     * @api
      */
     public function getQueue($queueName)
     {
@@ -78,12 +84,18 @@ class QueueManager
     }
 
     /**
+     * Returns the settings for the requested queue, merged with the preset defaults if any
+     *
      * @param string $queueName
      * @return array
-     * @throws JobQueueException
+     * @throws JobQueueException if no queue for the given $queueName is configured
+     * @api
      */
     public function getQueueSettings($queueName)
     {
+        if (isset($this->queueSettingsRuntimeCache[$queueName])) {
+            return $this->queueSettingsRuntimeCache[$queueName];
+        }
         if (!isset($this->settings['queues'][$queueName])) {
             throw new JobQueueException(sprintf('Queue "%s" is not configured', $queueName), 1334054137);
         }
@@ -95,8 +107,8 @@ class QueueManager
             }
             $queueSettings = Arrays::arrayMergeRecursiveOverrule($this->settings['presets'][$presetName], $queueSettings);
         }
-
-        return $queueSettings;
+        $this->queueSettingsRuntimeCache[$queueName] = $queueSettings;
+        return $this->queueSettingsRuntimeCache[$queueName];
     }
 
 }

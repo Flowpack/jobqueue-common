@@ -11,13 +11,12 @@ namespace Flowpack\JobQueue\Common\Command;
  * source code.
  */
 
-use Flowpack\JobQueue\Common\Job\JobInterface;
-use Flowpack\JobQueue\Common\Queue\Message;
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Cli\CommandController;
 use Flowpack\JobQueue\Common\Exception as JobQueueException;
 use Flowpack\JobQueue\Common\Job\JobManager;
+use Flowpack\JobQueue\Common\Queue\Message;
 use Flowpack\JobQueue\Common\Queue\QueueManager;
+use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Cli\CommandController;
 
 /**
  * Job command controller
@@ -39,31 +38,49 @@ class JobCommandController extends CommandController
     /**
      * Work on a queue and execute jobs
      *
-     * @param string $queue Name of the queue to fetch messages from
+     * @param string $queue Name of the queue to fetch messages from. Can also be a comma-separated list of queues.
+     * @param int $exitAfter If set, this command will exit after the given amount of seconds
      * @param boolean $verbose
      * @return void
      */
-    public function workCommand($queue, $verbose = false)
+    public function workCommand($queue, $exitAfter = null, $verbose = false)
     {
-        $job = null;
+        if ($verbose) {
+            $this->output('Watching queue <b>"%s"</b>', [$queue]);
+            if ($exitAfter !== null) {
+                $this->output(' for <b>%d</b> seconds', [$exitAfter]);
+            }
+            $this->outputLine('...');
+        }
+        $startTime = time();
+        $timeout = null;
         do {
+            $message = null;
+            if ($exitAfter !== null) {
+                $timeout = max(1, $exitAfter - (time() - $startTime));
+            }
             try {
-                $job = $this->jobManager->waitAndExecute($queue);
+                $message = $this->jobManager->waitAndExecute($queue, $timeout);
             } catch (JobQueueException $exception) {
-                $this->outputLine($exception->getMessage());
-                if ($exception->getPrevious() instanceof \Exception) {
-                    $this->outputLine('<error>%s</error>', [$exception->getPrevious()->getMessage()]);
+                $this->outputLine('<error>%s</error>', [$exception->getMessage()]);
+                if ($verbose && $exception->getPrevious() instanceof \Exception) {
+                    $this->outputLine('  Reason: %s', [$exception->getPrevious()->getMessage()]);
                 }
             } catch (\Exception $exception) {
-                $this->outputLine('<error>Unexpected exception during job execution: %s</error>', [$exception->getMessage()]);
+                $this->outputLine('<error>Unexpected exception during job execution: %s, aborting...</error>', [$exception->getMessage()]);
+                $this->quit(1);
             }
-            if ($verbose) {
-                if ($job !== null) {
-                    $this->outputLine('Successfully executed job "%s"', [$job->getLabel()]);
-                } else {
-                    $this->outputLine('Timeout');
+            if ($message !== null && $verbose) {
+                $messagePayload = strlen($message->getPayload()) <= 50 ? $message->getPayload() : substr($message->getPayload(), 0, 50) . '...';
+                $this->outputLine('<success>Successfully executed job "%s" (%s)</success>', [$message->getIdentifier(), $messagePayload]);
+            }
+            if ($exitAfter !== null && (time() - $startTime) >= $exitAfter) {
+                if ($verbose) {
+                    $this->outputLine('Quitting after %d seconds due to <i>--exit-after</i> flag', [time() - $startTime]);
                 }
+                $this->quit();
             }
+
         } while (true);
     }
 
@@ -92,18 +109,15 @@ class JobCommandController extends CommandController
      * Execute one job
      *
      * @param string $queue
-     * @param string $serializedJob An instance of JobInterface serialized and base64-encoded
+     * @param string $serializedMessage An instance of Message serialized and base64-encoded
      * @return void
-     * @internal This command is mainly needed for the SerialQueue in order to execute commands in sub requests
+     * @internal This command is mainly used by the JobManager and FakeQueue in order to execute commands in sub requests
      */
-    public function executeCommand($queue, $serializedJob)
+    public function executeCommand($queue, $serializedMessage)
     {
+        /** @var Message $message */
+        $message = unserialize(base64_decode($serializedMessage));
         $queue = $this->queueManager->getQueue($queue);
-        $job = unserialize(base64_decode($serializedJob));
-        if (!$job instanceof JobInterface) {
-            throw new \RuntimeException('Argument could not be unserialized to a class implementing JobInterface', 1465901250);
-        }
-        $message = new Message(null, $serializedJob);
-        $job->execute($queue, $message);
+        $this->jobManager->executeJobForMessage($queue, $message);
     }
 }

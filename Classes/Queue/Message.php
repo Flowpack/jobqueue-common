@@ -34,20 +34,22 @@ class Message
     protected $payload;
 
     /**
+     * How often this message was released (i.e. after failures for retrial)
+     *
      * @var integer
      */
-    protected $numberOfFailures;
+    protected $numberOfReleases;
 
     /**
      * @param string $identifier
      * @param mixed $payload
-     * @param integer $numberOfFailures
+     * @param integer $numberOfReleases
      */
-    public function __construct($identifier, $payload, $numberOfFailures = 0)
+    public function __construct($identifier, $payload, $numberOfReleases = 0)
     {
         $this->identifier = $identifier;
         $this->payload = $payload;
-        $this->numberOfFailures = $numberOfFailures;
+        $this->numberOfReleases = $numberOfReleases;
     }
 
     /**
@@ -69,8 +71,8 @@ class Message
     /**
      * @return integer
      */
-    public function getNumberOfFailures()
+    public function getNumberOfReleases()
     {
-        return $this->numberOfFailures;
+        return $this->numberOfReleases;
     }
 }
