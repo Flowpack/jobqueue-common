@@ -45,14 +45,18 @@ class JobCommandController extends CommandController
      * Alternatively the <i>exit-after</i> flag can be used in conjunction with cron-jobs in order to manually (re)start
      * the worker after a given amount of time.
      *
+     * With the <i>limit</i> flag the number of executed jobs can be limited before the script exits.
+     * This can be combined with <i>exit-after</i> to exit when either the time or job limit is reached
+     *
      * The <i>verbose</i> flag can be used to gain some insight about which jobs are executed etc.
      *
      * @param string $queue Name of the queue to fetch messages from. Can also be a comma-separated list of queues.
      * @param int $exitAfter If set, this command will exit after the given amount of seconds
+     * @param int $limit If set, only the given amount of jobs are processed (successful or not) before the script exits
      * @param bool $verbose Output debugging information
      * @return void
      */
-    public function workCommand($queue, $exitAfter = null, $verbose = false)
+    public function workCommand($queue, $exitAfter = null, $limit = null, $verbose = false)
     {
         if ($verbose) {
             $this->output('Watching queue <b>"%s"</b>', [$queue]);
@@ -63,6 +67,7 @@ class JobCommandController extends CommandController
         }
         $startTime = time();
         $timeout = null;
+        $numberOfJobExecutions = 0;
         do {
             $message = null;
             if ($exitAfter !== null) {
@@ -71,6 +76,7 @@ class JobCommandController extends CommandController
             try {
                 $message = $this->jobManager->waitAndExecute($queue, $timeout);
             } catch (JobQueueException $exception) {
+                $numberOfJobExecutions ++;
                 $this->outputLine('<error>%s</error>', [$exception->getMessage()]);
                 if ($verbose && $exception->getPrevious() instanceof \Exception) {
                     $this->outputLine('  Reason: %s', [$exception->getPrevious()->getMessage()]);
@@ -79,13 +85,22 @@ class JobCommandController extends CommandController
                 $this->outputLine('<error>Unexpected exception during job execution: %s, aborting...</error>', [$exception->getMessage()]);
                 $this->quit(1);
             }
-            if ($message !== null && $verbose) {
-                $messagePayload = strlen($message->getPayload()) <= 50 ? $message->getPayload() : substr($message->getPayload(), 0, 50) . '...';
-                $this->outputLine('<success>Successfully executed job "%s" (%s)</success>', [$message->getIdentifier(), $messagePayload]);
+            if ($message !== null) {
+                $numberOfJobExecutions ++;
+                if ($verbose) {
+                    $messagePayload = strlen($message->getPayload()) <= 50 ? $message->getPayload() : substr($message->getPayload(), 0, 50) . '...';
+                    $this->outputLine('<success>Successfully executed job "%s" (%s)</success>', [$message->getIdentifier(), $messagePayload]);
+                }
             }
             if ($exitAfter !== null && (time() - $startTime) >= $exitAfter) {
                 if ($verbose) {
                     $this->outputLine('Quitting after %d seconds due to <i>--exit-after</i> flag', [time() - $startTime]);
+                }
+                $this->quit();
+            }
+            if ($limit !== null && $numberOfJobExecutions >= $limit) {
+                if ($verbose) {
+                    $this->outputLine('Quitting after %d executed job%s due to <i>--limit</i> flag', [$numberOfJobExecutions, $numberOfJobExecutions > 1 ? 's' : '']);
                 }
                 $this->quit();
             }
