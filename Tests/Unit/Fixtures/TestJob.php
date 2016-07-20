@@ -21,9 +21,18 @@ use Flowpack\JobQueue\Common\Queue\QueueInterface;
 class TestJob implements JobInterface
 {
     /**
-     * @var boolean
+     * @var int How often the job execution should fail
      */
-    protected $processed = false;
+    protected $failNumberOfTimes;
+
+    /**
+     * @param int $failNumberOfTimes How often should this job fail before it returns true in execute()
+     */
+    public function __construct($failNumberOfTimes = 0)
+    {
+        $this->failNumberOfTimes = $failNumberOfTimes;
+    }
+
 
     /**
      * Do nothing
@@ -34,26 +43,10 @@ class TestJob implements JobInterface
      */
     public function execute(QueueInterface $queue, Message $message)
     {
-        $this->processed = true;
+        if ($this->failNumberOfTimes > $message->getNumberOfReleases()) {
+            return false;
+        }
         return true;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getProcessed()
-    {
-        return $this->processed;
-    }
-
-    /**
-     * Get an optional identifier for the job
-     *
-     * @return string A job identifier
-     */
-    public function getIdentifier()
-    {
-        return 'testjob';
     }
 
     /**

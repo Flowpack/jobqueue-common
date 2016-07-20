@@ -53,10 +53,11 @@ class DeferMethodCallAspect
         if ($this->processingJob) {
             return $joinPoint->getAdviceChain()->proceed($joinPoint);
         }
+        /** @var Defer $deferAnnotation */
         $deferAnnotation = $this->reflectionService->getMethodAnnotation($joinPoint->getClassName(), $joinPoint->getMethodName(), Defer::class);
         $queueName = $deferAnnotation->queueName;
         $job = new StaticMethodCallJob($joinPoint->getClassName(), $joinPoint->getMethodName(), $joinPoint->getMethodArguments());
-        $this->jobManager->queue($queueName, $job);
+        $this->jobManager->queue($queueName, $job, $deferAnnotation->options);
         return null;
     }
 

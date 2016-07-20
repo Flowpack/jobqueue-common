@@ -15,6 +15,7 @@ use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Object\ObjectManagerInterface;
 use Flowpack\JobQueue\Common\Queue\Message;
 use Flowpack\JobQueue\Common\Queue\QueueInterface;
+use TYPO3\Flow\Utility\TypeHandling;
 
 /**
  * Static method call job
@@ -77,7 +78,7 @@ class StaticMethodCallJob implements JobInterface
         $this->deferMethodCallAspect->setProcessingJob(true);
         try {
             $methodName = $this->methodName;
-            call_user_func_array(array($service, $methodName), $this->arguments);
+            call_user_func_array([$service, $methodName], $this->arguments);
             return true;
         } catch (\Exception $exception) {
             $this->deferMethodCallAspect->setProcessingJob(false);
@@ -90,14 +91,14 @@ class StaticMethodCallJob implements JobInterface
      */
     public function getLabel()
     {
-        return $this->className . '->' . $this->methodName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getIdentifier()
-    {
-        return null;
+        $arguments = [];
+        foreach($this->arguments as $argumentValue) {
+            if (TypeHandling::isSimpleType($argumentValue)) {
+                $arguments[] = $argumentValue;
+            } else {
+                $arguments[] = '[' . gettype($argumentValue) . ']';
+            }
+        }
+        return sprintf('%s::%s(%s)', $this->className, $this->methodName, implode(', ', $arguments));
     }
 }

@@ -11,7 +11,8 @@ namespace Flowpack\JobQueue\Common\Tests\Unit\Job;
  * source code.
  */
 
-use TYPO3\Flow\Reflection\ObjectAccess;
+use Flowpack\JobQueue\Common\Queue\Message;
+use Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestQueue;
 use TYPO3\Flow\Tests\UnitTestCase;
 use Flowpack\JobQueue\Common\Job\JobManager;
 use Flowpack\JobQueue\Common\Queue\QueueManager;
@@ -23,56 +24,52 @@ use Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestJob;
 class JobManagerTest extends UnitTestCase
 {
     /**
-     * @var QueueManager
-     */
-    protected $queueManager;
-
-    /**
      * @var JobManager
      */
     protected $jobManager;
 
     /**
-     *
+     * @var QueueManager|\PHPUnit_Framework_MockObject_MockObject
      */
+    protected $mockQueueManager;
+
+    /**
+     * @var TestQueue
+     */
+    protected $testQueue;
+
+
     public function setUp()
     {
-        $this->queueManager = new QueueManager();
-        $this->queueManager->injectSettings(array(
-            'queues' => array(
-                'TestQueue' => array(
-                    'className' => 'Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestQueue'
-                )
-            )
-        ));
+        $this->mockQueueManager = $this->getMockBuilder(QueueManager::class)->disableOriginalConstructor()->getMock();
+        $this->testQueue = new TestQueue('TestQueue');
+        $this->mockQueueManager->expects($this->any())->method('getQueue')->with('TestQueue')->will($this->returnValue($this->testQueue));
 
         $this->jobManager = new JobManager();
-        ObjectAccess::setProperty($this->jobManager, 'queueManager', $this->queueManager, true);
+        $this->inject($this->jobManager, 'queueManager', $this->mockQueueManager);
     }
 
     /**
      * @test
      */
-    public function queuePublishesMessageToQueue()
+    public function queueSubmitsMessageToQueue()
     {
         $job = new TestJob();
         $this->jobManager->queue('TestQueue', $job);
 
-        $testQueue = $this->queueManager->getQueue('TestQueue');
-        $message = $testQueue->peek();
-        $this->assertInstanceOf('Flowpack\JobQueue\Common\Queue\Message', $message);
+        $messageId = $this->testQueue->peek();
+        $this->assertNotNull($messageId);
     }
 
     /**
      * @test
      */
-    public function waitAndExecuteGetsAndExecutesJobFromQueue()
+    public function queuePassesOptionsToQueue()
     {
+        $mockOptions = ['foo' => 'Bar', 'baz' => 'Foos'];
         $job = new TestJob();
-        $this->jobManager->queue('TestQueue', $job);
+        $this->jobManager->queue('TestQueue', $job, $mockOptions);
 
-        /** @var TestJob $queuedJob */
-        $queuedJob = $this->jobManager->waitAndExecute('TestQueue');
-        $this->assertTrue($queuedJob->getProcessed());
+        $this->assertSame($mockOptions, $this->testQueue->getLastSubmitOptions());
     }
 }

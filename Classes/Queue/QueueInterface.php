@@ -19,16 +19,25 @@ use TYPO3\Flow\Annotations as Flow;
 interface QueueInterface
 {
     /**
-     * Publish a message to the queue
-     * The state of the message will be updated according
-     * to the result of the operation.
-     * If the queue supports unique messages, the message should not be queued if
-     * another message with the same identifier already exists.
+     * @return void
+     */
+    public function setUp();
+
+    /**
+     * The unique name of this queue
      *
-     * @param Message $message
+     * @return string
+     */
+    public function getName();
+
+    /**
+     * Submit a message to the queue
+     *
+     * @param mixed $payload
+     * @param array $options Simple key/value array with options, supported options depend on the queue implementation
      * @return string The identifier of the message under which it was queued
      */
-    public function submit(Message $message);
+    public function submit($payload, array $options = []);
 
     /**
      * Wait for a message in the queue and remove the message from the queue for processing
@@ -54,15 +63,32 @@ interface QueueInterface
     public function waitAndReserve($timeout = null);
 
     /**
+     * Puts a reserved message back to the queue
+     *
+     * @param string $messageId
+     * @param array $options Simple key/value array with options that can be interpreted by the concrete implementation (optional)
+     * @return void
+     */
+    public function release($messageId, array $options = []);
+
+    /**
+     * Removes a message from the active queue and marks it failed (bury)
+     *
+     * @param string $messageId
+     * @return void
+     */
+    public function abort($messageId);
+
+    /**
      * Mark a message as done
      *
      * This must be called for every message that was reserved and that was
      * processed successfully.
      *
-     * @param Message $message
+     * @param string $messageId
      * @return boolean TRUE if the message could be removed
      */
-    public function finish(Message $message);
+    public function finish($messageId);
 
     /**
      * Peek for messages
@@ -71,24 +97,26 @@ interface QueueInterface
      * and process them, since another consumer could have received this message already!
      *
      * @param integer $limit
-     * @return array<\Flowpack\JobQueue\Common\Queue\Message> The messages up to the length of limit or an empty array if no messages are present currently
+     * @return Message[] The messages up to the length of limit or an empty array if no messages are present currently
      */
     public function peek($limit = 1);
 
     /**
-     * Get a message by identifier
-     *
-     * @param string $identifier
-     * @return Message The message or NULL if not present
-     */
-    public function getMessage($identifier);
-
-    /**
-     * Count messages in the queue
+     * Count ready messages in the queue
      *
      * Get a count of messages currently in the queue.
      *
      * @return integer The number of messages in the queue
      */
     public function count();
+
+    /**
+     * Removes all messages from this queue
+     *
+     * Danger, all queued items will be lost!
+     * This is a method primarily used in testing, not part of the API.
+     *
+     * @return void
+     */
+    public function flush();
 }

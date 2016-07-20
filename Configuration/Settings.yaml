@@ -1,11 +1,30 @@
 Flowpack:
   JobQueue:
     Common:
-      # if defined, all queues are prefixed with the configured "queueNamePrefix". This helps if multiple
-      # Flow instances share the same queue service.
-      queueNamePrefix: ''
-      queues: []
-#        example:
+      presets: []
+#        'example':
+#          # FQN of the queue implementation to use
 #          className: 'Flownative\JobQueue\Sqlite\Queue\SqliteQueue'
+#
+#          # if defined, all queues are prefixed with the configured "queueNamePrefix". This helps if multiple
+#          # Flow instances share the same queue service.
+#          queueNamePrefix: ''
+#
+#          # If set jobs are executed on a separate thread avoiding side-effects and memory-leaks
+#          executeIsolated: true
+#
+#          # The max number of times a message is released when job execution failed
+#          maximumNumberOfReleases: 3
+#
+#          # Default options when submitting new jobs
 #          options:
-#            storageFolder: "/tmp/"
+#            'foo': 'bar'
+#          # Default options when a message is released again
+#          releaseOptions:
+#            delay: 300
+#
+      queues: []
+#        'example':
+#          preset: 'example'
+#          options:
+#            'overridden': 'option'
