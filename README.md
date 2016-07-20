@@ -305,7 +305,7 @@ Use the `flowpack.jobqueue.common:queue:*` and `flowpack.jobqueue.common:job:*` 
 | Command         | Description                                                                |
 | --------------- |----------------------------------------------------------------------------|
 | queue:list      | List configured queues                                                     |
-| queue:show      | Shows details for a given queue (settings, ..)                             |
+| queue:describe  | Shows details for a given queue (settings, ..)                             |
 | queue:setup     | Initialize a queue (i.e. create required db tables, check connection, ...) |
 | queue:flush     | Remove all messages from a queue (requires --force flag)                   |
 | queue:submit    | Submit a message to a queue (mainly for testing)                           |

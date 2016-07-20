@@ -17,7 +17,7 @@ use Flowpack\JobQueue\Common\Exception as JobQueueException;
 use TYPO3\Flow\Utility\Arrays;
 
 /**
- * A factory for queues
+ * The Queue Manager, mainly used to instantiate QueueInterface instances
  *
  * @Flow\Scope("singleton")
  */

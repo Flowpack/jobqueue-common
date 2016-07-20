@@ -38,9 +38,18 @@ class JobCommandController extends CommandController
     /**
      * Work on a queue and execute jobs
      *
+     * This command is used to execute jobs that are submitted to a queue.
+     * It is meant to run in a "server loop" and should be backed by some Process Control System (e.g. supervisord) that
+     * will restart the script if it died (due to exceptions or memory limits for example).
+     *
+     * Alternatively the <i>exit-after</i> flag can be used in conjunction with cron-jobs in order to manually (re)start
+     * the worker after a given amount of time.
+     *
+     * The <i>verbose</i> flag can be used to gain some insight about which jobs are executed etc.
+     *
      * @param string $queue Name of the queue to fetch messages from. Can also be a comma-separated list of queues.
      * @param int $exitAfter If set, this command will exit after the given amount of seconds
-     * @param boolean $verbose
+     * @param bool $verbose Output debugging information
      * @return void
      */
     public function workCommand($queue, $exitAfter = null, $verbose = false)
@@ -87,8 +96,10 @@ class JobCommandController extends CommandController
     /**
      * List queued jobs
      *
+     * Shows the label of the next <i>$limit</i> Jobs in a given queue.
+     *
      * @param string $queue The name of the queue
-     * @param integer $limit Number of jobs to list
+     * @param integer $limit Number of jobs to list (some queues only support a limit of 1)
      * @return void
      */
     public function listCommand($queue, $limit = 1)

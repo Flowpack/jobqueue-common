@@ -162,6 +162,7 @@ class JobManager
      * @param array $options Optional array of options passed to JobManager::queue()
      * @return void
      * @Flow\Signal
+     * @api
      */
     protected function emitMessageSubmitted(QueueInterface $queue, $messageId, $payload, array $options = [])
     {
@@ -173,6 +174,7 @@ class JobManager
      * @param QueueInterface $queue The queue that returned with a timeout
      * @return void
      * @Flow\Signal
+     * @api
      */
     protected function emitMessageTimeout(QueueInterface $queue)
     {
@@ -185,6 +187,7 @@ class JobManager
      * @param Message $message The message that was reserved
      * @return void
      * @Flow\Signal
+     * @api
      */
     protected function emitMessageReserved(QueueInterface $queue, Message $message)
     {
@@ -197,6 +200,7 @@ class JobManager
      * @param Message $message The message that was finished successfully
      * @return void
      * @Flow\Signal
+     * @api
      */
     protected function emitMessageFinished(QueueInterface $queue, Message $message)
     {
@@ -211,6 +215,7 @@ class JobManager
      * @param \Exception $jobExecutionException The exception (if any) thrown by the job execution
      * @return void
      * @Flow\Signal
+     * @api
      */
     protected function emitMessageReleased(QueueInterface $queue, Message $message, array $releaseOptions, \Exception $jobExecutionException = null)
     {
@@ -224,6 +229,7 @@ class JobManager
      * @param \Exception $jobExecutionException The exception (if any) thrown by the job execution
      * @return void
      * @Flow\Signal
+     * @api
      */
     protected function emitMessageFailed(QueueInterface $queue, Message $message, \Exception $jobExecutionException = null)
     {

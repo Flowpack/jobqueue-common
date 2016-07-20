@@ -37,6 +37,8 @@ class QueueCommandController extends CommandController
     /**
      * List configured queues
      *
+     * Displays all configured queues, their type and the number of messages that are ready to be processed.
+     *
      * @return void
      */
     public function listCommand()
@@ -55,12 +57,14 @@ class QueueCommandController extends CommandController
     }
 
     /**
-     * Show details of a queue
+     * Describe a single queue
      *
-     * @param string $queue
+     * Displays the configuration for a queue, merged with the preset settings if any.
+     *
+     * @param string $queue Name of the queue to describe (e.g. "some-queue")
      * @return void
      */
-    public function showCommand($queue)
+    public function describeCommand($queue)
     {
         $queueSettings = $this->queueManager->getQueueSettings($queue);
         $this->outputLine('Configuration options for Queue <b>%s</b>:', [$queue]);
@@ -72,9 +76,12 @@ class QueueCommandController extends CommandController
     }
 
     /**
-     * Initializes a queue
+     * Initialize a queue
      *
-     * @param string $queue
+     * Checks connection to the queue backend and sets up prerequisites (e.g. required database tables)
+     * Most queue implementations don't need to be initialized explicitly, but it doesn't harm and might help to find misconfigurations
+     *
+     * @param string $queue Name of the queue to initialize (e.g. "some-queue")
      * @return void
      */
     public function setupCommand($queue)
@@ -91,10 +98,13 @@ class QueueCommandController extends CommandController
     }
 
     /**
-     * Removes all messages from a queue!
+     * Remove all messages from a queue!
      *
-     * @param string $queue
-     * @param bool $force
+     * This command will delete <u>all</u> messages from the given queue.
+     * Thus it should only be used in tests or with great care!
+     *
+     * @param string $queue Name of the queue to flush (e.g. "some-queue")
+     * @param bool $force This flag is required in order to avoid accidental flushes
      * @return void
      */
     public function flushCommand($queue, $force = false)
@@ -106,15 +116,23 @@ class QueueCommandController extends CommandController
             $this->quit(1);
         }
         $queue->flush();
-        $this->outputLine('Flushed queue "%s".', [$queue->getName()]);
+        $this->outputLine('<success>Flushed queue "%s".</success>', [$queue->getName()]);
     }
 
     /**
      * Submit a message to a given queue
      *
-     * @param string $queue
-     * @param string $payload
-     * @param string $options JSON encoded
+     * This command can be used to "manually" add messages to a given queue.
+     *
+     * <b>Example:</b>
+     * <i>flow queue:submit some-queue "some payload" --options '{"delay": 14}'</i>
+     *
+     * To make this work with the <i>JobManager</i> the payload has to be a serialized
+     * instance of an object implementing <i>JobInterface</i>.
+     *
+     * @param string $queue Name of the queue to submit a message to (e.g. "some-queue")
+     * @param string $payload Arbitrary payload, for example a serialized instance of a class implementing JobInterface
+     * @param string $options JSON encoded, for example '{"some-option": "some-value"}'
      * @return void
      */
     public function submitCommand($queue, $payload, $options = null)
@@ -124,7 +142,7 @@ class QueueCommandController extends CommandController
             $options = json_decode($options, true);
         }
         $messageId = $queue->submit($payload, $options !== null ? $options : []);
-        $this->outputLine('Submitted payload to queue "%s" with ID "%s".', [$queue->getName(), $messageId]);
+        $this->outputLine('<success>Submitted payload to queue "%s" with ID "%s".</success>', [$queue->getName(), $messageId]);
     }
 
 }
