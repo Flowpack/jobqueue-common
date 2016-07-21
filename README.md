@@ -65,9 +65,15 @@ Neos Flow package that allows for asynchronous and distributed execution of task
 
   *Note:* The method needs to be *public* and it must not return anything
 
-5. **Done.**
+5. **Start the worker (if required)**
 
-  Whenever the method `SomeClass::sendEmail()` is about to be called that method call is converted into a job that is executed asynchronously[1].
+  With the above code in place, whenever the method `SomeClass::sendEmail()` is about to be called that method call is converted into a job that is executed asynchronously[1].
+
+  Unless you use the `FakeQueue` like in the example, a so called `worker` has to be started, to listen for new jobs and execute them::
+  
+  ```
+  ./flow flowpack.jobqueue.common:job:work some-queue --verbose
+  ```
 
 ## Introduction
 

@@ -55,7 +55,7 @@ class FakeQueue implements QueueInterface
      */
     public function setUp()
     {
-        // The SynchronousQueue does not require any setup but we use it to verify the options
+        // The FakeQueue does not require any setup but we use it to verify the options
         if ($this->async && !method_exists(Scripts::class, 'executeCommandAsync')) {
             throw new \RuntimeException('The "async" flag is set, but the currently used Flow version doesn\'t support this (Flow 3.3+ is required)', 1468940734);
         }
@@ -78,6 +78,9 @@ class FakeQueue implements QueueInterface
         $message = new Message($messageId, $payload);
         $commandArguments = [$this->name, base64_encode(serialize($message))];
         if ($this->async) {
+            if (!method_exists(Scripts::class, 'executeCommandAsync')) {
+                throw new \RuntimeException('The "async" flag is set, but the currently used Flow version doesn\'t support this (Flow 3.3+ is required)', 1469116604);
+            }
             Scripts::executeCommandAsync('flowpack.jobqueue.common:job:execute', $this->flowSettings, $commandArguments);
         } else {
             Scripts::executeCommand('flowpack.jobqueue.common:job:execute', $this->flowSettings, true, $commandArguments);
