@@ -11,11 +11,11 @@ namespace Flowpack\JobQueue\Common\Job;
  * source code.
  */
 
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\ObjectManagement\ObjectManagerInterface;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\ObjectManagement\ObjectManagerInterface;
 use Flowpack\JobQueue\Common\Queue\Message;
 use Flowpack\JobQueue\Common\Queue\QueueInterface;
-use TYPO3\Flow\Utility\TypeHandling;
+use Neos\Flow\Utility\TypeHandling;
 
 /**
  * Static method call job

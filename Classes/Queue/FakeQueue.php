@@ -11,9 +11,9 @@ namespace Flowpack\JobQueue\Common\Queue;
  * source code.
  */
 
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Core\Booting\Scripts;
-use TYPO3\Flow\Utility\Algorithms;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Core\Booting\Scripts;
+use Neos\Flow\Utility\Algorithms;
 
 /**
  * A very basic queue that immediately dispatches messages upon submission.
@@ -23,7 +23,7 @@ use TYPO3\Flow\Utility\Algorithms;
 class FakeQueue implements QueueInterface
 {
     /**
-     * @Flow\InjectConfiguration(package="TYPO3.Flow")
+     * @Flow\InjectConfiguration(package="Neos.Flow")
      * @var array
      */
     protected $flowSettings;

@@ -12,9 +12,9 @@ namespace Flowpack\JobQueue\Common\Command;
  */
 
 use Flowpack\JobQueue\Common\Queue\QueueManager;
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Cli\CommandController;
-use TYPO3\Flow\Utility\TypeHandling;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Cli\CommandController;
+use Neos\Flow\Utility\TypeHandling;
 
 /**
  * CLI controller to manage message queues

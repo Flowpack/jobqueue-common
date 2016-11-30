@@ -11,7 +11,7 @@ namespace Flowpack\JobQueue\Common\Queue;
  * source code.
  */
 
-use TYPO3\Flow\Annotations as Flow;
+use Neos\Flow\Annotations as Flow;
 
 /**
  * Message queue interface

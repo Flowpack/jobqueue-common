@@ -12,9 +12,9 @@ namespace Flowpack\JobQueue\Common\Job;
  */
 
 use Flowpack\JobQueue\Common\Queue\QueueInterface;
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Core\Booting\Scripts;
-use TYPO3\Flow\Property\PropertyMapper;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Core\Booting\Scripts;
+use Neos\Flow\Property\PropertyMapper;
 use Flowpack\JobQueue\Common\Exception as JobQueueException;
 use Flowpack\JobQueue\Common\Queue\Message;
 use Flowpack\JobQueue\Common\Queue\QueueManager;
@@ -45,7 +45,7 @@ class JobManager
     protected $settings;
 
     /**
-     * @Flow\InjectConfiguration(package="TYPO3.Flow")
+     * @Flow\InjectConfiguration(package="Neos.Flow")
      * @var array
      */
     protected $flowSettings;
