@@ -11,10 +11,10 @@ namespace Flowpack\JobQueue\Common\Queue;
  * source code.
  */
 
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Object\ObjectManagerInterface;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\ObjectManagement\ObjectManagerInterface;
 use Flowpack\JobQueue\Common\Exception as JobQueueException;
-use TYPO3\Flow\Utility\Arrays;
+use Neos\Utility\Arrays;
 
 /**
  * The Queue Manager, mainly used to instantiate QueueInterface instances

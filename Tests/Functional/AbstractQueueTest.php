@@ -13,9 +13,9 @@ namespace Flowpack\JobQueue\Common\Tests\Functional;
 
 use Flowpack\JobQueue\Common\Queue\Message;
 use Flowpack\JobQueue\Common\Queue\QueueInterface;
-use TYPO3\Flow\Configuration\ConfigurationManager;
-use TYPO3\Flow\Tests\FunctionalTestCase;
-use TYPO3\Flow\Utility\TypeHandling;
+use Neos\Flow\Configuration\ConfigurationManager;
+use Neos\Flow\Tests\FunctionalTestCase;
+use Neos\Utility\TypeHandling;
 
 abstract class AbstractQueueTest extends FunctionalTestCase
 {

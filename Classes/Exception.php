@@ -14,6 +14,6 @@ namespace Flowpack\JobQueue\Common;
 /**
  * A generic JobQueue Exception
  */
-class Exception extends \TYPO3\Flow\Exception
+class Exception extends \Neos\Flow\Exception
 {
 }

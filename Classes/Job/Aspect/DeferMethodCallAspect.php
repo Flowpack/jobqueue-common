@@ -11,9 +11,9 @@ namespace Flowpack\JobQueue\Common\Job\Aspect;
  * source code.
  */
 
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Aop\JoinPointInterface;
-use TYPO3\Flow\Reflection\ReflectionService;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Aop\JoinPointInterface;
+use Neos\Flow\Reflection\ReflectionService;
 use Flowpack\JobQueue\Common\Annotations\Defer;
 use Flowpack\JobQueue\Common\Job\JobManager;
 use Flowpack\JobQueue\Common\Job\StaticMethodCallJob;

@@ -17,7 +17,7 @@ use Flowpack\JobQueue\Common\Queue\Message;
 use Flowpack\JobQueue\Common\Queue\QueueManager;
 use Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestJob;
 use Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestQueue;
-use TYPO3\Flow\Tests\FunctionalTestCase;
+use Neos\Flow\Tests\FunctionalTestCase;
 
 /**
  * Functional tests for the JobManager

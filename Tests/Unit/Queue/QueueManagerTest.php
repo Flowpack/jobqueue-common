@@ -11,7 +11,7 @@ namespace Flowpack\JobQueue\Common\Tests\Unit\Queue;
  * source code.
  */
 
-use TYPO3\Flow\Tests\UnitTestCase;
+use Neos\Flow\Tests\UnitTestCase;
 use Flowpack\JobQueue\Common\Queue\QueueManager;
 use Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestQueue;
 

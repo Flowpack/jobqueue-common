@@ -13,7 +13,7 @@ namespace Flowpack\JobQueue\Common\Tests\Unit\Job;
 
 use Flowpack\JobQueue\Common\Queue\Message;
 use Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestQueue;
-use TYPO3\Flow\Tests\UnitTestCase;
+use Neos\Flow\Tests\UnitTestCase;
 use Flowpack\JobQueue\Common\Job\JobManager;
 use Flowpack\JobQueue\Common\Queue\QueueManager;
 use Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestJob;
