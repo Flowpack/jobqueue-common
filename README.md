@@ -283,7 +283,7 @@ With that in place, the new job can be added to a queue like this:
 ```php
 use Flowpack\JobQueue\Common\Job\JobInterface;
 use Flowpack\JobQueue\Common\Job\JobManager;
-use TYPO3\Flow\Annotations as Flow;
+use Neos\Flow\Annotations as Flow;
 
 class SomeClass {
 
@@ -339,9 +339,9 @@ namespace Your\Package;
 use Flowpack\JobQueue\Common\Job\JobManager;
 use Flowpack\JobQueue\Common\Queue\Message;
 use Flowpack\JobQueue\Common\Queue\QueueInterface;
-use TYPO3\Flow\Core\Bootstrap;
-use TYPO3\Flow\Log\SystemLoggerInterface;
-use TYPO3\Flow\Package\Package as BasePackage;
+use Neos\Flow\Core\Bootstrap;
+use Neos\Flow\Log\SystemLoggerInterface;
+use Neos\Flow\Package\Package as BasePackage;
 
 class Package extends BasePackage
 {
