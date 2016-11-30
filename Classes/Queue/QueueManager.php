@@ -14,7 +14,7 @@ namespace Flowpack\JobQueue\Common\Queue;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\ObjectManagement\ObjectManagerInterface;
 use Flowpack\JobQueue\Common\Exception as JobQueueException;
-use Neos\Flow\Utility\Arrays;
+use Neos\Utility\Arrays;
 
 /**
  * The Queue Manager, mainly used to instantiate QueueInterface instances

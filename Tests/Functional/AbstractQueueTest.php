@@ -15,7 +15,7 @@ use Flowpack\JobQueue\Common\Queue\Message;
 use Flowpack\JobQueue\Common\Queue\QueueInterface;
 use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Flow\Tests\FunctionalTestCase;
-use Neos\Flow\Utility\TypeHandling;
+use Neos\Utility\TypeHandling;
 
 abstract class AbstractQueueTest extends FunctionalTestCase
 {

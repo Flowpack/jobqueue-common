@@ -14,7 +14,7 @@ namespace Flowpack\JobQueue\Common\Command;
 use Flowpack\JobQueue\Common\Queue\QueueManager;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Cli\CommandController;
-use Neos\Flow\Utility\TypeHandling;
+use Neos\Utility\TypeHandling;
 
 /**
  * CLI controller to manage message queues
