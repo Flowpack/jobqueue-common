@@ -51,7 +51,8 @@
             "Neos.Flow-20161124224015",
             "Neos.Eel-20161124230101",
             "Neos.Kickstart-20161124230102",
-            "Neos.Kickstarter-20161125110814"
+            "Neos.Kickstarter-20161125110814",
+            "Neos.Flow-20161125124112"
         ]
     }
 }
