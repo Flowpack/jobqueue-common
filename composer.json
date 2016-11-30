@@ -4,7 +4,7 @@
     "description": "Common functionality for a JobQueue in Flow applications.",
     "license": "MIT",
     "require": {
-        "typo3/flow": "*"
+        "neos/flow": "*"
     },
     "autoload": {
         "psr-4": {
