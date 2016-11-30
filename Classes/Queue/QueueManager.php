@@ -12,7 +12,7 @@ namespace Flowpack\JobQueue\Common\Queue;
  */
 
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Object\ObjectManagerInterface;
+use TYPO3\Flow\ObjectManagement\ObjectManagerInterface;
 use Flowpack\JobQueue\Common\Exception as JobQueueException;
 use TYPO3\Flow\Utility\Arrays;
 
