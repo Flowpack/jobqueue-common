@@ -36,6 +36,12 @@ class JobCommandController extends CommandController
     protected $queueManager;
 
     /**
+     * @Flow\Inject
+     * @var \TYPO3\Flow\Log\SystemLoggerInterface
+     */
+    protected $systemLogger;
+
+    /**
      * Work on a queue and execute jobs
      *
      * This command is used to execute jobs that are submitted to a queue.
@@ -77,11 +83,13 @@ class JobCommandController extends CommandController
                 $message = $this->jobManager->waitAndExecute($queue, $timeout);
             } catch (JobQueueException $exception) {
                 $numberOfJobExecutions ++;
+                $this->systemLogger->logException($exception->getPrevious() !== null ? $exception->getPrevious() : $exception, ['queue' => $queue]);
                 $this->outputLine('<error>%s</error>', [$exception->getMessage()]);
                 if ($verbose && $exception->getPrevious() instanceof \Exception) {
                     $this->outputLine('  Reason: %s', [$exception->getPrevious()->getMessage()]);
                 }
             } catch (\Exception $exception) {
+                $this->systemLogger->logException($exception, ['queue' => $queue]);
                 $this->outputLine('<error>Unexpected exception during job execution: %s, aborting...</error>', [$exception->getMessage()]);
                 $this->quit(1);
             }
