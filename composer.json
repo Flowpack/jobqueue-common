@@ -55,7 +55,8 @@
             "Neos.Flow-20161125124112",
             "TYPO3.FluidAdaptor-20161130112935",
             "TYPO3.Form-20160601101500",
-            "Neos.Twitter.Bootstrap-20161124204912"
+            "Neos.Twitter.Bootstrap-20161124204912",
+            "Neos.Form-20161124205254"
         ]
     }
 }
