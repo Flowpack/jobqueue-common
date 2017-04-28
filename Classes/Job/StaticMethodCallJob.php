@@ -81,8 +81,9 @@ class StaticMethodCallJob implements JobInterface
             call_user_func_array([$service, $methodName], $this->arguments);
             return true;
         } catch (\Exception $exception) {
-            $this->deferMethodCallAspect->setProcessingJob(false);
             throw $exception;
+        } finally {
+            $this->deferMethodCallAspect->setProcessingJob(false);
         }
     }
 
