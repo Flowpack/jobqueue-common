@@ -94,10 +94,14 @@ class StaticMethodCallJob implements JobInterface
     {
         $arguments = [];
         foreach($this->arguments as $argumentValue) {
-            if (TypeHandling::isSimpleType($argumentValue)) {
-                $arguments[] = $argumentValue;
+            if (TypeHandling::isSimpleType(gettype($argumentValue))) {
+                if (is_array($argumentValue)) {
+                    $arguments[] = gettype($argumentValue);
+                } else {
+                    $arguments[] = $argumentValue;
+                }
             } else {
-                $arguments[] = '[' . gettype($argumentValue) . ']';
+                $arguments[] = '[' . TypeHandling::getTypeForValue($argumentValue) . ']';
             }
         }
         return sprintf('%s::%s(%s)', $this->className, $this->methodName, implode(', ', $arguments));
