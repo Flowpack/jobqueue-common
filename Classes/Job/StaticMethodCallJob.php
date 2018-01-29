@@ -11,6 +11,7 @@ namespace Flowpack\JobQueue\Common\Job;
  * source code.
  */
 
+use Flowpack\JobQueue\Common\Utility\VariableDumper;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\ObjectManagement\ObjectManagerInterface;
 use Flowpack\JobQueue\Common\Queue\Message;
@@ -92,18 +93,7 @@ class StaticMethodCallJob implements JobInterface
      */
     public function getLabel()
     {
-        $arguments = [];
-        foreach($this->arguments as $argumentValue) {
-            if (TypeHandling::isSimpleType(gettype($argumentValue))) {
-                if (is_array($argumentValue)) {
-                    $arguments[] = gettype($argumentValue);
-                } else {
-                    $arguments[] = $argumentValue;
-                }
-            } else {
-                $arguments[] = '[' . TypeHandling::getTypeForValue($argumentValue) . ']';
-            }
-        }
+        $arguments = array_map([VariableDumper::class, 'dumpValue'], $this->arguments);
         return sprintf('%s::%s(%s)', $this->className, $this->methodName, implode(', ', $arguments));
     }
 }
