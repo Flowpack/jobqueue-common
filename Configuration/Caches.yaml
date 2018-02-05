@@ -1,0 +1,3 @@
+FlowPackJobQueueCommon_MessageCache:
+  frontend: Neos\Cache\Frontend\VariableFrontend
+  persistent: true

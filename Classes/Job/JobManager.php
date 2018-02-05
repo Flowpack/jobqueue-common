@@ -12,6 +12,7 @@ namespace Flowpack\JobQueue\Common\Job;
  */
 
 use Flowpack\JobQueue\Common\Queue\QueueInterface;
+use Neos\Cache\Frontend\VariableFrontend;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Core\Booting\Scripts;
 use Neos\Flow\Property\PropertyMapper;
@@ -37,6 +38,12 @@ class JobManager
      * @var PropertyMapper
      */
     protected $propertyMapper;
+
+    /**
+     * @Flow\Inject
+     * @var VariableFrontend
+     */
+    protected $messageCache;
 
     /**
      * @Flow\InjectConfiguration
@@ -92,7 +99,10 @@ class JobManager
         $queueSettings = $this->queueManager->getQueueSettings($queueName);
         try {
             if (isset($queueSettings['executeIsolated']) && $queueSettings['executeIsolated'] === true) {
-                Scripts::executeCommand('flowpack.jobqueue.common:job:execute', $this->flowSettings, false, [$queue->getName(), base64_encode(serialize($message))]);
+                $messageCacheIdentifier = sha1(serialize($message));
+                $this->messageCache->set($messageCacheIdentifier, serialize($message));
+                Scripts::executeCommand('flowpack.jobqueue.common:job:execute', $this->flowSettings, false, [$queue->getName(), $messageCacheIdentifier]);
+                $this->messageCache->remove($messageCacheIdentifier);
             } else {
                 $this->executeJobForMessage($queue, $message);
             }

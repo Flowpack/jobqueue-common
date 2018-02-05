@@ -15,6 +15,7 @@ use Flowpack\JobQueue\Common\Exception as JobQueueException;
 use Flowpack\JobQueue\Common\Job\JobManager;
 use Flowpack\JobQueue\Common\Queue\Message;
 use Flowpack\JobQueue\Common\Queue\QueueManager;
+use Neos\Cache\Frontend\VariableFrontend;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Cli\CommandController;
 
@@ -34,6 +35,12 @@ class JobCommandController extends CommandController
      * @var QueueManager
      */
     protected $queueManager;
+
+    /**
+     * @Flow\Inject
+     * @var VariableFrontend
+     */
+    protected $messageCache;
 
     /**
      * Work on a queue and execute jobs
@@ -135,14 +142,19 @@ class JobCommandController extends CommandController
      * Execute one job
      *
      * @param string $queue
-     * @param string $serializedMessage An instance of Message serialized and base64-encoded
+     * @param string $messageCacheIdentifier An identifier to receive the message from the cache
      * @return void
      * @internal This command is mainly used by the JobManager and FakeQueue in order to execute commands in sub requests
+     * @throws JobQueueException
      */
-    public function executeCommand($queue, $serializedMessage)
+    public function executeCommand($queue, $messageCacheIdentifier)
     {
+        if(!$this->messageCache->has($messageCacheIdentifier)) {
+            throw new JobQueueException(sprintf('No message with identifier %s was found in the message cache.', $messageCacheIdentifier), 1517868903);
+        }
+
         /** @var Message $message */
-        $message = unserialize(base64_decode($serializedMessage));
+        $message = unserialize($this->messageCache->get($messageCacheIdentifier));
         $queue = $this->queueManager->getQueue($queue);
         $this->jobManager->executeJobForMessage($queue, $message);
     }
