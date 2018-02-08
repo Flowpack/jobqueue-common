@@ -1,0 +1,19 @@
+Flowpack\JobQueue\Common\Job\JobManager:
+  properties:
+    messageCache:
+      object:
+        factoryObjectName: Neos\Flow\Cache\CacheManager
+        factoryMethodName: getCache
+        arguments:
+          1:
+            value: FlowPackJobQueueCommon_MessageCache
+
+Flowpack\JobQueue\Common\Command\JobCommandController:
+  properties:
+    messageCache:
+      object:
+        factoryObjectName: Neos\Flow\Cache\CacheManager
+        factoryMethodName: getCache
+        arguments:
+          1:
+            value: FlowPackJobQueueCommon_MessageCache
