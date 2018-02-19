@@ -88,9 +88,6 @@ class FakeQueue implements QueueInterface
         $this->messageCache->set($messageCacheIdentifier, serialize($message));
 
         if ($this->async) {
-            if (!method_exists(Scripts::class, 'executeCommandAsync')) {
-                throw new \RuntimeException('The "async" flag is set, but the currently used Flow version doesn\'t support this (Flow 3.3+ is required)', 1469116604);
-            }
             Scripts::executeCommandAsync('flowpack.jobqueue.common:job:execute', $this->flowSettings, [$this->name, $messageCacheIdentifier]);
         } else {
             Scripts::executeCommand('flowpack.jobqueue.common:job:execute', $this->flowSettings, true, [$this->name, $messageCacheIdentifier]);
