@@ -4,7 +4,8 @@
     "description": "Common functionality for a JobQueue in Flow applications.",
     "license": "MIT",
     "require": {
-        "neos/flow": "~4.0"
+        "neos/flow": "~4.0",
+        "neos/cache": "*"
     },
     "autoload": {
         "psr-4": {
