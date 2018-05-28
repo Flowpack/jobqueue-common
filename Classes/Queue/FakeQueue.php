@@ -85,7 +85,7 @@ class FakeQueue implements QueueInterface
         $message = new Message($messageId, $payload);
 
         $messageCacheIdentifier = sha1(serialize($message));
-        $this->messageCache->set($messageCacheIdentifier, serialize($message));
+        $this->messageCache->set($messageCacheIdentifier, $message);
         $commandArguments = ['queue' => $this->name, 'messageCacheIdentifier' => $messageCacheIdentifier];
 
         if ($this->async) {
