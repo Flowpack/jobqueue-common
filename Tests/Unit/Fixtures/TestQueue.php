@@ -30,12 +30,17 @@ class TestQueue implements QueueInterface
     /**
      * @var string[]
      */
-    protected $processingMessages = [];
+    protected $reservedMessages = [];
 
     /**
      * @var string[]
      */
     protected $failedMessages = [];
+
+    /**
+     * @var string[]
+     */
+    protected $processingMessages = [];
 
     /**
      * @var int[]
@@ -205,9 +210,33 @@ class TestQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function count()
+    public function count(): int
+    {
+        return $this->countReady();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function countReady():int
     {
         return count($this->readyMessages);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function countReserved(): int
+    {
+        return count($this->reservedMessages);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function countFailed(): int
+    {
+        return count($this->failedMessages);
     }
 
     /**
