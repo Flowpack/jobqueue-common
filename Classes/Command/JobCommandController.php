@@ -18,6 +18,7 @@ use Flowpack\JobQueue\Common\Queue\QueueManager;
 use Neos\Cache\Frontend\VariableFrontend;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Cli\CommandController;
+use Neos\Flow\Mvc\Exception\StopActionException;
 
 /**
  * Job command controller
@@ -62,6 +63,7 @@ class JobCommandController extends CommandController
      * @param int $limit If set, only the given amount of jobs are processed (successful or not) before the script exits
      * @param bool $verbose Output debugging information
      * @return void
+     * @throws StopActionException
      */
     public function workCommand($queue, $exitAfter = null, $limit = null, $verbose = false)
     {
@@ -123,11 +125,12 @@ class JobCommandController extends CommandController
      * @param string $queue The name of the queue
      * @param integer $limit Number of jobs to list (some queues only support a limit of 1)
      * @return void
+     * @throws JobQueueException
      */
     public function listCommand($queue, $limit = 1)
     {
         $jobs = $this->jobManager->peek($queue, $limit);
-        $totalCount = $this->queueManager->getQueue($queue)->count();
+        $totalCount = $this->queueManager->getQueue($queue)->countReady();
         foreach ($jobs as $job) {
             $this->outputLine('<b>%s</b>', [$job->getLabel()]);
         }

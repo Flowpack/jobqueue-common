@@ -146,14 +146,6 @@ class FakeQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function count(): int
-    {
-        return $this->countReady();
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function countReady(): int
     {
         return 0;

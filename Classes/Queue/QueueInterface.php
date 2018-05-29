@@ -105,14 +105,6 @@ interface QueueInterface
      * Get a count of ready messages currently in the queue.
      *
      * @return int The number of ready messages in the queue
-     * @deprecated Will be removed with the next major. Use countReady instead.
-     */
-    public function count(): int;
-
-    /**
-     * Get a count of ready messages currently in the queue.
-     *
-     * @return int The number of ready messages in the queue
      */
     public function countReady(): int;
 
