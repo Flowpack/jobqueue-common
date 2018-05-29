@@ -85,7 +85,7 @@ class FakeQueue implements QueueInterface
         $message = new Message($messageId, $payload);
 
         $messageCacheIdentifier = sha1(serialize($message));
-        $this->messageCache->set($messageCacheIdentifier, serialize($message));
+        $this->messageCache->set($messageCacheIdentifier, $message);
 
         if ($this->async) {
             Scripts::executeCommandAsync('flowpack.jobqueue.common:job:execute', $this->flowSettings, [$this->name, $messageCacheIdentifier]);
