@@ -167,6 +167,8 @@ abstract class AbstractQueueTest extends FunctionalTestCase
         $this->queue->release($messageId);
         $message = $this->queue->waitAndReserve(1);
         $this->assertSame(2, $message->getNumberOfReleases());
+
+        $this->queue->abort($messageId);
     }
 
     /**
@@ -194,9 +196,34 @@ abstract class AbstractQueueTest extends FunctionalTestCase
     /**
      * @test
      */
+    public function countReadyReturnsNumberOfReadyJobs()
+    {
+        $this->queue->submit('First message');
+        $this->queue->submit('Second message');
+
+        $this->assertSame(2, $this->queue->countReady());
+    }
+
+    /**
+     * @test
+     */
     public function countFailedReturnsZeroByDefault()
     {
         $this->assertSame(0, $this->queue->countFailed());
+    }
+
+    /**
+     * @test
+     */
+    public function countFailedReturnsNumberOfFailedMessages()
+    {
+        $messageId = $this->queue->submit('A message');
+
+        $this->queue->waitAndReserve(1);
+        $this->assertSame(0, $this->queue->countFailed());
+
+        $this->queue->abort($messageId);
+        $this->assertSame(1, $this->queue->countFailed());
     }
 
     /**
@@ -210,11 +237,14 @@ abstract class AbstractQueueTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function countReturnsNumberOfReadyJobs()
+    public function countReservedReturnsNumberOfReservedMessages()
     {
-        $this->queue->submit('First message');
-        $this->queue->submit('Second message');
+        $messageId = $this->queue->submit('A message');
 
-        $this->assertSame(2, $this->queue->countReady());
+        $this->queue->waitAndReserve(1);
+        $this->assertSame(1, $this->queue->countReserved());
+
+        $this->queue->abort($messageId);
+        $this->assertSame(0, $this->queue->countReserved());
     }
 }
