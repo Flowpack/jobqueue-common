@@ -65,14 +65,14 @@ class TestQueue implements QueueInterface
     /**
      * @var array
      */
-    protected $lastSubmitOptions;
+    protected $lastSubmitOptions = [];
 
     /**
      * @var array
      */
-    protected $lastReleaseOptions;
+    protected $lastReleaseOptions = [];
 
-  /**
+    /**
      * @param string $name
      * @param array $options
      */
@@ -88,7 +88,7 @@ class TestQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         // The TestQueue does not require any setup
     }
@@ -96,7 +96,7 @@ class TestQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -104,7 +104,7 @@ class TestQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function submit($payload, array $options = [])
+    public function submit($payload, array $options = []): string
     {
         $this->lastSubmitOptions = $options;
         $messageId = Algorithms::generateUUID();
@@ -115,40 +115,43 @@ class TestQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function waitAndTake($timeout = null)
+    public function waitAndTake(int $timeout = null): ?Message
     {
         $message = $this->reserveMessage($timeout);
         if ($message === null) {
             return null;
         }
         unset($this->processingMessages[$message->getIdentifier()]);
+
         return $message;
     }
 
     /**
      * @inheritdoc
      */
-    public function waitAndReserve($timeout = null)
+    public function waitAndReserve(int $timeout = null): ?Message
     {
         return $this->reserveMessage($timeout);
     }
 
     /**
-     * @param integer $timeout
+     * @param int $timeout
      * @return Message
      */
-    protected function reserveMessage($timeout = null)
+    protected function reserveMessage(int $timeout = null): ?Message
     {
         if ($timeout === null) {
             $timeout = $this->defaultTimeout;
         }
         $startTime = time();
+
         do {
             $nextMessageIdAndPayload = array_slice($this->readyMessages, 0, 1);
             if (time() - $startTime >= $timeout) {
                 return null;
             }
         } while ($nextMessageIdAndPayload === []);
+
         $messageId = key($nextMessageIdAndPayload);
         $payload = $nextMessageIdAndPayload[$messageId];
         unset($this->readyMessages[$messageId]);
@@ -161,7 +164,7 @@ class TestQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function release($messageId, array $options = [])
+    public function release(string $messageId, array $options = []): void
     {
         $this->lastReleaseOptions = $options;
         if (!isset($this->processingMessages[$messageId])) {
@@ -176,7 +179,7 @@ class TestQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function abort($messageId)
+    public function abort(string $messageId): void
     {
         if (!isset($this->readyMessages[$messageId])) {
             return;
@@ -188,7 +191,7 @@ class TestQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function finish($messageId)
+    public function finish(string $messageId): bool
     {
         unset($this->processingMessages[$messageId]);
         return true;
@@ -197,7 +200,7 @@ class TestQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function peek($limit = 1)
+    public function peek(int $limit = 1): array
     {
         $messageIdsAndPayload = array_slice($this->readyMessages, 0, $limit);
         $messages = [];
@@ -210,7 +213,7 @@ class TestQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function countReady():int
+    public function countReady(): int
     {
         return count($this->readyMessages);
     }
@@ -234,7 +237,7 @@ class TestQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function flush()
+    public function flush(): void
     {
         $this->readyMessages = $this->processingMessages = $this->failedMessages = $this->numberOfReleases = [];
     }
@@ -242,7 +245,7 @@ class TestQueue implements QueueInterface
     /**
      * @return array
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }
@@ -250,7 +253,7 @@ class TestQueue implements QueueInterface
     /**
      * @return array
      */
-    public function getLastSubmitOptions()
+    public function getLastSubmitOptions(): array
     {
         return $this->lastSubmitOptions;
     }
@@ -258,7 +261,7 @@ class TestQueue implements QueueInterface
     /**
      * @return array
      */
-    public function getLastReleaseOptions()
+    public function getLastReleaseOptions(): array
     {
         return $this->lastReleaseOptions;
     }

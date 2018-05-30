@@ -33,15 +33,14 @@ class TestJob implements JobInterface
         $this->failNumberOfTimes = $failNumberOfTimes;
     }
 
-
     /**
      * Do nothing
      *
      * @param QueueInterface $queue
      * @param Message $message
-     * @return boolean
+     * @return bool
      */
-    public function execute(QueueInterface $queue, Message $message)
+    public function execute(QueueInterface $queue, Message $message): bool
     {
         if ($this->failNumberOfTimes > $message->getNumberOfReleases()) {
             return false;
@@ -54,7 +53,7 @@ class TestJob implements JobInterface
      *
      * @return string A label for the job
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         return 'Test Job';
     }
