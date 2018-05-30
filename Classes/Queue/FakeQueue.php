@@ -146,7 +146,23 @@ class FakeQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function count()
+    public function countReady(): int
+    {
+        return 0;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function countReserved(): int
+    {
+        return 0;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function countFailed(): int
     {
         return 0;
     }

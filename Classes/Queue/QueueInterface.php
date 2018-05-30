@@ -102,13 +102,25 @@ interface QueueInterface
     public function peek($limit = 1);
 
     /**
-     * Count ready messages in the queue
+     * Get a count of ready messages currently in the queue.
      *
-     * Get a count of messages currently in the queue.
-     *
-     * @return integer The number of messages in the queue
+     * @return int The number of ready messages in the queue
      */
-    public function count();
+    public function countReady(): int;
+
+    /**
+     * Get a count of reserved messages currently in the queue.
+     *
+     * @return int The number of reserved messages in the queue
+     */
+    public function countReserved(): int;
+
+    /**
+     * Get a count of failed messages currently in the queue.
+     *
+     * @return int The number of failed messages in the queue
+     */
+    public function countFailed(): int;
 
     /**
      * Removes all messages from this queue

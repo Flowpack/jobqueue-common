@@ -11,9 +11,11 @@ namespace Flowpack\JobQueue\Common\Command;
  * source code.
  */
 
+use Flowpack\JobQueue\Common\Exception;
 use Flowpack\JobQueue\Common\Queue\QueueManager;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Cli\CommandController;
+use Neos\Flow\Mvc\Exception\StopActionException;
 use Neos\Utility\TypeHandling;
 
 /**
@@ -40,6 +42,7 @@ class QueueCommandController extends CommandController
      * Displays all configured queues, their type and the number of messages that are ready to be processed.
      *
      * @return void
+     * @throws Exception
      */
     public function listCommand()
     {
@@ -47,7 +50,7 @@ class QueueCommandController extends CommandController
         foreach ($this->queueConfigurations as $queueName => $queueConfiguration) {
             $queue = $this->queueManager->getQueue($queueName);
             try {
-                $numberOfMessages = $queue->count();
+                $numberOfMessages = $queue->countReady();
             } catch (\Exception $e) {
                 $numberOfMessages = '-';
             }
@@ -63,6 +66,7 @@ class QueueCommandController extends CommandController
      *
      * @param string $queue Name of the queue to describe (e.g. "some-queue")
      * @return void
+     * @throws Exception
      */
     public function describeCommand($queue)
     {
@@ -83,6 +87,8 @@ class QueueCommandController extends CommandController
      *
      * @param string $queue Name of the queue to initialize (e.g. "some-queue")
      * @return void
+     * @throws Exception
+     * @throws StopActionException
      */
     public function setupCommand($queue)
     {
@@ -106,6 +112,8 @@ class QueueCommandController extends CommandController
      * @param string $queue Name of the queue to flush (e.g. "some-queue")
      * @param bool $force This flag is required in order to avoid accidental flushes
      * @return void
+     * @throws Exception
+     * @throws StopActionException
      */
     public function flushCommand($queue, $force = false)
     {
@@ -134,6 +142,7 @@ class QueueCommandController extends CommandController
      * @param string $payload Arbitrary payload, for example a serialized instance of a class implementing JobInterface
      * @param string $options JSON encoded, for example '{"some-option": "some-value"}'
      * @return void
+     * @throws Exception
      */
     public function submitCommand($queue, $payload, $options = null)
     {
