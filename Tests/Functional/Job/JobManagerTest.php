@@ -18,6 +18,9 @@ use Flowpack\JobQueue\Common\Queue\QueueManager;
 use Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestJob;
 use Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestQueue;
 use Neos\Flow\Tests\FunctionalTestCase;
+use PHPUnit\Framework\Constraint\Constraint;
+use PHPUnit\Framework\Constraint\IsInstanceOf;
+use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Functional tests for the JobManager
@@ -32,7 +35,7 @@ class JobManagerTest extends FunctionalTestCase
 
 
     /**
-     * @var QueueManager|\PHPUnit_Framework_MockObject_MockObject
+     * @var QueueManager|MockObject
      */
     protected $mockQueueManager;
 
@@ -104,7 +107,7 @@ class JobManagerTest extends FunctionalTestCase
         $this->assertCount(1, $this->emittedSignals[$fullSignalName]);
         foreach ($arguments as $argumentIndex => $expectedArgument) {
             $actualArgument = $this->emittedSignals[$fullSignalName][0][$argumentIndex];
-            if ($expectedArgument instanceof \PHPUnit_Framework_Constraint) {
+            if ($expectedArgument instanceof Constraint) {
                 $expectedArgument->evaluate($actualArgument);
             } else {
                 $this->assertSame($expectedArgument, $actualArgument);
@@ -139,7 +142,7 @@ class JobManagerTest extends FunctionalTestCase
     {
         $this->jobManager->queue('TestQueue', new TestJob());
         $this->jobManager->waitAndExecute('TestQueue');
-        $this->assertSignalEmitted('messageReserved', [0 => $this->testQueue, 1 => new \PHPUnit_Framework_Constraint_IsInstanceOf(Message::class)]);
+        $this->assertSignalEmitted('messageReserved', [0 => $this->testQueue, 1 => new IsInstanceOf(Message::class)]);
     }
 
     /**
@@ -149,7 +152,7 @@ class JobManagerTest extends FunctionalTestCase
     {
         $this->jobManager->queue('TestQueue', new TestJob());
         $this->jobManager->waitAndExecute('TestQueue');
-        $this->assertSignalEmitted('messageFinished', [0 => $this->testQueue, 1 => new \PHPUnit_Framework_Constraint_IsInstanceOf(Message::class)]);
+        $this->assertSignalEmitted('messageFinished', [0 => $this->testQueue, 1 => new IsInstanceOf(Message::class)]);
     }
 
     /**
@@ -164,7 +167,7 @@ class JobManagerTest extends FunctionalTestCase
             $this->jobManager->waitAndExecute('TestQueue');
         } catch (JobQueueException $exception) {
         }
-        $this->assertSignalEmitted('messageReleased', [$this->testQueue, new \PHPUnit_Framework_Constraint_IsInstanceOf(Message::class), $releaseOptions, new \PHPUnit_Framework_Constraint_IsInstanceOf(JobQueueException::class)]);
+        $this->assertSignalEmitted('messageReleased', [$this->testQueue, new IsInstanceOf(Message::class), $releaseOptions, new IsInstanceOf(JobQueueException::class)]);
     }
 
     /**
@@ -177,6 +180,6 @@ class JobManagerTest extends FunctionalTestCase
             $this->jobManager->waitAndExecute('TestQueue');
         } catch (JobQueueException $exception) {
         }
-        $this->assertSignalEmitted('messageFailed', [$this->testQueue, new \PHPUnit_Framework_Constraint_IsInstanceOf(Message::class)]);
+        $this->assertSignalEmitted('messageFailed', [$this->testQueue, new IsInstanceOf(Message::class)]);
     }
 }
