@@ -11,8 +11,6 @@ namespace Flowpack\JobQueue\Common\Queue;
  * source code.
  */
 
-use Neos\Flow\Annotations as Flow;
-
 /**
  * Message queue interface
  */

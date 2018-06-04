@@ -11,8 +11,6 @@ namespace Flowpack\JobQueue\Common\Queue;
  * source code.
  */
 
-use Neos\Flow\Annotations as Flow;
-
 /**
  * A DTO that wraps arbitrary payload with an identifier and a counter for failures.
  */
@@ -45,7 +43,7 @@ class Message
      * @param mixed $payload
      * @param integer $numberOfReleases
      */
-    public function __construct($identifier, $payload, $numberOfReleases = 0)
+    public function __construct(string $identifier, $payload, int $numberOfReleases = 0)
     {
         $this->identifier = $identifier;
         $this->payload = $payload;
@@ -55,7 +53,7 @@ class Message
     /**
      * @return string
      */
-    public function getIdentifier()
+    public function getIdentifier(): string
     {
         return $this->identifier;
     }
@@ -69,9 +67,9 @@ class Message
     }
 
     /**
-     * @return integer
+     * @return int
      */
-    public function getNumberOfReleases()
+    public function getNumberOfReleases(): int
     {
         return $this->numberOfReleases;
     }

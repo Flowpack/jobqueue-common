@@ -66,7 +66,7 @@ class JobManager
      * @return void
      * @api
      */
-    public function queue($queueName, JobInterface $job, array $options = [])
+    public function queue(string $queueName, JobInterface $job, array $options = []): void
     {
         $queue = $this->queueManager->getQueue($queueName);
 
@@ -85,7 +85,7 @@ class JobManager
      * @throws \Exception
      * @api
      */
-    public function waitAndExecute($queueName, $timeout = null)
+    public function waitAndExecute(string $queueName, $timeout = null): ?Message
     {
         $queue = $this->queueManager->getQueue($queueName);
         $message = $queue->waitAndReserve($timeout);
@@ -133,7 +133,7 @@ class JobManager
      * @throws JobQueueException
      * @internal This method has to be public so that it can be run from the command handler (when "executeIsolated" is set). It is not meant to be called from "user land"
      */
-    public function executeJobForMessage(QueueInterface $queue, Message $message)
+    public function executeJobForMessage(QueueInterface $queue, Message $message): void
     {
         // TODO stabilize unserialize() call (maybe using PHPs unserialize_callback_func directive)
         $job = unserialize($message->getPayload());
@@ -153,7 +153,7 @@ class JobManager
      * @return JobInterface[]
      * @api
      */
-    public function peek($queueName, $limit = 1)
+    public function peek(string $queueName, int $limit = 1): array
     {
         $queue = $this->queueManager->getQueue($queueName);
         $messages = $queue->peek($limit);
@@ -174,7 +174,7 @@ class JobManager
      * @Flow\Signal
      * @api
      */
-    protected function emitMessageSubmitted(QueueInterface $queue, $messageId, $payload, array $options = [])
+    protected function emitMessageSubmitted(QueueInterface $queue, $messageId, $payload, array $options = []): void
     {
     }
 
@@ -186,7 +186,7 @@ class JobManager
      * @Flow\Signal
      * @api
      */
-    protected function emitMessageTimeout(QueueInterface $queue)
+    protected function emitMessageTimeout(QueueInterface $queue): void
     {
     }
 
@@ -199,7 +199,7 @@ class JobManager
      * @Flow\Signal
      * @api
      */
-    protected function emitMessageReserved(QueueInterface $queue, Message $message)
+    protected function emitMessageReserved(QueueInterface $queue, Message $message): void
     {
     }
 
@@ -212,7 +212,7 @@ class JobManager
      * @Flow\Signal
      * @api
      */
-    protected function emitMessageFinished(QueueInterface $queue, Message $message)
+    protected function emitMessageFinished(QueueInterface $queue, Message $message): void
     {
     }
 
@@ -227,7 +227,7 @@ class JobManager
      * @Flow\Signal
      * @api
      */
-    protected function emitMessageReleased(QueueInterface $queue, Message $message, array $releaseOptions, \Exception $jobExecutionException = null)
+    protected function emitMessageReleased(QueueInterface $queue, Message $message, array $releaseOptions, \Exception $jobExecutionException = null): void
     {
     }
 
@@ -241,7 +241,7 @@ class JobManager
      * @Flow\Signal
      * @api
      */
-    protected function emitMessageFailed(QueueInterface $queue, Message $message, \Exception $jobExecutionException = null)
+    protected function emitMessageFailed(QueueInterface $queue, Message $message, \Exception $jobExecutionException = null): void
     {
     }
 

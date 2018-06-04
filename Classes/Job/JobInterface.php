@@ -11,7 +11,6 @@ namespace Flowpack\JobQueue\Common\Job;
  * source code.
  */
 
-use Neos\Flow\Annotations as Flow;
 use Flowpack\JobQueue\Common\Queue\Message;
 use Flowpack\JobQueue\Common\Queue\QueueInterface;
 

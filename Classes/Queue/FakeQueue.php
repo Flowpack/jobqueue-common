@@ -49,7 +49,7 @@ class FakeQueue implements QueueInterface
      * @param string $name
      * @param array $options
      */
-    public function __construct($name, array $options = [])
+    public function __construct(string $name, array $options = [])
     {
         $this->name = $name;
         if (isset($options['async']) && $options['async'] === true) {
@@ -133,6 +133,7 @@ class FakeQueue implements QueueInterface
     public function finish(string $messageId): bool
     {
         // The FakeQueue does not support message finishing
+        return false;
     }
 
     /**

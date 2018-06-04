@@ -53,7 +53,7 @@ class QueueManager
      * @throws JobQueueException
      * @api
      */
-    public function getQueue($queueName)
+    public function getQueue(string $queueName): QueueInterface
     {
         if (isset($this->queues[$queueName])) {
             return $this->queues[$queueName];
@@ -91,7 +91,7 @@ class QueueManager
      * @throws JobQueueException if no queue for the given $queueName is configured
      * @api
      */
-    public function getQueueSettings($queueName)
+    public function getQueueSettings(string $queueName): array
     {
         if (isset($this->queueSettingsRuntimeCache[$queueName])) {
             return $this->queueSettingsRuntimeCache[$queueName];
