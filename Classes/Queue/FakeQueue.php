@@ -49,7 +49,7 @@ class FakeQueue implements QueueInterface
      * @param string $name
      * @param array $options
      */
-    public function __construct($name, array $options = [])
+    public function __construct(string $name, array $options = [])
     {
         $this->name = $name;
         if (isset($options['async']) && $options['async'] === true) {
@@ -60,7 +60,7 @@ class FakeQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         // The FakeQueue does not require any setup but we use it to verify the options
         if ($this->async && !method_exists(Scripts::class, 'executeCommandAsync')) {
@@ -71,7 +71,7 @@ class FakeQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -79,7 +79,7 @@ class FakeQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function submit($payload, array $options = [])
+    public function submit($payload, array $options = []): string
     {
         $messageId = Algorithms::generateUUID();
         $message = new Message($messageId, $payload);
@@ -98,7 +98,7 @@ class FakeQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function waitAndTake($timeout = null)
+    public function waitAndTake(int $timeout = null): Message
     {
         throw new \BadMethodCallException('The FakeQueue does not support reserving of messages.' . chr(10) . 'It is not required to use a worker for this queue as messages are handled immediately upon submission.', 1468425275);
     }
@@ -106,7 +106,7 @@ class FakeQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function waitAndReserve($timeout = null)
+    public function waitAndReserve(int $timeout = null): Message
     {
         throw new \BadMethodCallException('The FakeQueue does not support reserving of messages.' . chr(10) . 'It is not required to use a worker for this queue as messages are handled immediately upon submission.', 1468425280);
     }
@@ -114,7 +114,7 @@ class FakeQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function release($messageId, array $options = [])
+    public function release(string $messageId, array $options = []): void
     {
         throw new \BadMethodCallException('The FakeQueue does not support releasing of failed messages.' . chr(10) . 'The "maximumNumberOfReleases" setting should be removed or set to 0 for this queue!', 1468425285);
     }
@@ -122,7 +122,7 @@ class FakeQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function abort($messageId)
+    public function abort(string $messageId): void
     {
         // The FakeQueue does not support message abortion
     }
@@ -130,15 +130,16 @@ class FakeQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function finish($messageId)
+    public function finish(string $messageId): bool
     {
         // The FakeQueue does not support message finishing
+        return false;
     }
 
     /**
      * @inheritdoc
      */
-    public function peek($limit = 1)
+    public function peek(int $limit = 1): array
     {
         return [];
     }
@@ -170,7 +171,7 @@ class FakeQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function flush()
+    public function flush(): void
     {
         // The FakeQueue does not support message flushing
     }

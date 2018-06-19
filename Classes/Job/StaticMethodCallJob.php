@@ -16,7 +16,6 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\ObjectManagement\ObjectManagerInterface;
 use Flowpack\JobQueue\Common\Queue\Message;
 use Flowpack\JobQueue\Common\Queue\QueueInterface;
-use Neos\Utility\TypeHandling;
 
 /**
  * Static method call job
@@ -73,7 +72,7 @@ class StaticMethodCallJob implements JobInterface
      * @return boolean TRUE If the execution was successful
      * @throws \Exception
      */
-    public function execute(QueueInterface $queue, Message $message)
+    public function execute(QueueInterface $queue, Message $message): bool
     {
         $service = $this->objectManager->get($this->className);
         $this->deferMethodCallAspect->setProcessingJob(true);
@@ -91,7 +90,7 @@ class StaticMethodCallJob implements JobInterface
     /**
      * @return string
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         $arguments = array_map([VariableDumper::class, 'dumpValue'], $this->arguments);
         return sprintf('%s::%s(%s)', $this->className, $this->methodName, implode(', ', $arguments));

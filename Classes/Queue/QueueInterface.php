@@ -11,8 +11,6 @@ namespace Flowpack\JobQueue\Common\Queue;
  * source code.
  */
 
-use Neos\Flow\Annotations as Flow;
-
 /**
  * Message queue interface
  */
@@ -21,14 +19,14 @@ interface QueueInterface
     /**
      * @return void
      */
-    public function setUp();
+    public function setUp(): void;
 
     /**
      * The unique name of this queue
      *
      * @return string
      */
-    public function getName();
+    public function getName(): string;
 
     /**
      * Submit a message to the queue
@@ -37,17 +35,17 @@ interface QueueInterface
      * @param array $options Simple key/value array with options, supported options depend on the queue implementation
      * @return string The identifier of the message under which it was queued
      */
-    public function submit($payload, array $options = []);
+    public function submit($payload, array $options = []): string;
 
     /**
      * Wait for a message in the queue and remove the message from the queue for processing
      * If a non-null value was returned, the message was not queued. Otherwise a timeout
      * occurred and no message was available or received.
      *
-     * @param integer $timeout
+     * @param int $timeout
      * @return Message The received message or NULL if a timeout occurred
      */
-    public function waitAndTake($timeout = null);
+    public function waitAndTake(?int $timeout = null): ?Message;
 
     /**
      * Wait for a message in the queue and reserve the message for processing
@@ -57,10 +55,10 @@ interface QueueInterface
      * If a non-null value was returned, the message was reserved. Otherwise a timeout
      * occurred and no message was available or received.
      *
-     * @param integer $timeout
+     * @param int $timeout
      * @return Message The received message or NULL if a timeout occurred
      */
-    public function waitAndReserve($timeout = null);
+    public function waitAndReserve(?int $timeout = null): ?Message;
 
     /**
      * Puts a reserved message back to the queue
@@ -69,7 +67,7 @@ interface QueueInterface
      * @param array $options Simple key/value array with options that can be interpreted by the concrete implementation (optional)
      * @return void
      */
-    public function release($messageId, array $options = []);
+    public function release(string $messageId, array $options = []): void;
 
     /**
      * Removes a message from the active queue and marks it failed (bury)
@@ -77,7 +75,7 @@ interface QueueInterface
      * @param string $messageId
      * @return void
      */
-    public function abort($messageId);
+    public function abort(string $messageId): void;
 
     /**
      * Mark a message as done
@@ -86,9 +84,9 @@ interface QueueInterface
      * processed successfully.
      *
      * @param string $messageId
-     * @return boolean TRUE if the message could be removed
+     * @return bool TRUE if the message could be removed
      */
-    public function finish($messageId);
+    public function finish(string $messageId): bool;
 
     /**
      * Peek for messages
@@ -99,7 +97,7 @@ interface QueueInterface
      * @param integer $limit
      * @return Message[] The messages up to the length of limit or an empty array if no messages are present currently
      */
-    public function peek($limit = 1);
+    public function peek(int $limit = 1): array;
 
     /**
      * Get a count of ready messages currently in the queue.
@@ -130,5 +128,5 @@ interface QueueInterface
      *
      * @return void
      */
-    public function flush();
+    public function flush(): void;
 }
