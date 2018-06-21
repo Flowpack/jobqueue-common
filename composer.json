@@ -5,7 +5,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.1",
-        "neos/flow": "~4.0",
+        "neos/flow": ">=4.0",
         "neos/cache": "*"
     },
     "autoload": {
