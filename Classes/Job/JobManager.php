@@ -87,6 +87,8 @@ class JobManager
      */
     public function waitAndExecute(string $queueName, $timeout = null): ?Message
     {
+
+        $messageCacheIdentifier = null;
         $queue = $this->queueManager->getQueue($queueName);
         $message = $queue->waitAndReserve($timeout);
         if ($message === null) {
@@ -102,7 +104,6 @@ class JobManager
                 $messageCacheIdentifier = sha1(serialize($message));
                 $this->messageCache->set($messageCacheIdentifier, $message);
                 Scripts::executeCommand('flowpack.jobqueue.common:job:execute', $this->flowSettings, false, [$queue->getName(), $messageCacheIdentifier]);
-                $this->messageCache->remove($messageCacheIdentifier);
             } else {
                 $this->executeJobForMessage($queue, $message);
             }
@@ -117,6 +118,10 @@ class JobManager
                 $queue->abort($message->getIdentifier());
                 $this->emitMessageFailed($queue, $message, $exception);
                 throw new JobQueueException(sprintf('Job execution for job (message: "%s", queue: "%s") failed (%d/%d trials) - ABORTING', $message->getIdentifier(), $queue->getName(), $message->getNumberOfReleases() + 1, $maximumNumberOfReleases + 1), 1334056584, $exception);
+            }
+        } finally {
+            if($messageCacheIdentifier !== null) {
+                $this->messageCache->remove($messageCacheIdentifier);
             }
         }
 
