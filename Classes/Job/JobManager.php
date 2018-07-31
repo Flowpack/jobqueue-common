@@ -120,7 +120,7 @@ class JobManager
                 throw new JobQueueException(sprintf('Job execution for job (message: "%s", queue: "%s") failed (%d/%d trials) - ABORTING', $message->getIdentifier(), $queue->getName(), $message->getNumberOfReleases() + 1, $maximumNumberOfReleases + 1), 1334056584, $exception);
             }
         } finally {
-            if($messageCacheIdentifier !== null) {
+            if ($messageCacheIdentifier !== null) {
                 $this->messageCache->remove($messageCacheIdentifier);
             }
         }
