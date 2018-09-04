@@ -92,7 +92,7 @@ class JobManager
         $queueSettings = $this->queueManager->getQueueSettings($queueName);
         try {
             if (isset($queueSettings['executeIsolated']) && $queueSettings['executeIsolated'] === true) {
-                Scripts::executeCommand('flowpack.jobqueue.common:job:execute', $this->flowSettings, false, [$queue->getName(), base64_encode(serialize($message))]);
+                Scripts::executeCommand('flowpack.jobqueue.common:job:execute', $this->flowSettings, false, ['queue' => $queue->getName(), 'serializedMessage' => base64_encode(serialize($message))]);
             } else {
                 $this->executeJobForMessage($queue, $message);
             }
