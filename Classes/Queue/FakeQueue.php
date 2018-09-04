@@ -88,9 +88,9 @@ class FakeQueue implements QueueInterface
         $this->messageCache->set($messageCacheIdentifier, $message);
 
         if ($this->async) {
-            Scripts::executeCommandAsync('flowpack.jobqueue.common:job:execute', $this->flowSettings, [$this->name, $messageCacheIdentifier]);
+            Scripts::executeCommandAsync('flowpack.jobqueue.common:job:execute', $this->flowSettings, ['queue' => $this->name, 'messageCacheIdentifier' => $messageCacheIdentifier]);
         } else {
-            Scripts::executeCommand('flowpack.jobqueue.common:job:execute', $this->flowSettings, true, [$this->name, $messageCacheIdentifier]);
+            Scripts::executeCommand('flowpack.jobqueue.common:job:execute', $this->flowSettings, true, ['queue' => $this->name, 'messageCacheIdentifier' => $messageCacheIdentifier]);
         }
         return $messageId;
     }
