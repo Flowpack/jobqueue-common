@@ -76,7 +76,7 @@ class FakeQueue implements QueueInterface
     {
         $messageId = Algorithms::generateUUID();
         $message = new Message($messageId, $payload);
-        $commandArguments = [$this->name, base64_encode(serialize($message))];
+        $commandArguments = ['queue' => $this->name, 'messageCacheIdentifier' => base64_encode(serialize($message))];
         if ($this->async) {
             if (!method_exists(Scripts::class, 'executeCommandAsync')) {
                 throw new \RuntimeException('The "async" flag is set, but the currently used Flow version doesn\'t support this (Flow 3.3+ is required)', 1469116604);
