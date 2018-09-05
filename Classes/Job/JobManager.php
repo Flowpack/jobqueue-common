@@ -100,8 +100,8 @@ class JobManager
         try {
             if (isset($queueSettings['executeIsolated']) && $queueSettings['executeIsolated'] === true) {
                 $messageCacheIdentifier = sha1(serialize($message));
-                $this->messageCache->set($messageCacheIdentifier, serialize($message));
-                Scripts::executeCommand('flowpack.jobqueue.common:job:execute', $this->flowSettings, false, [$queue->getName(), $messageCacheIdentifier]);
+                $this->messageCache->set($messageCacheIdentifier, $message);
+                Scripts::executeCommand('flowpack.jobqueue.common:job:execute', $this->flowSettings, false, ['queue' => $queue->getName(), 'messageCacheIdentifier' => $messageCacheIdentifier]);
                 $this->messageCache->remove($messageCacheIdentifier);
             } else {
                 $this->executeJobForMessage($queue, $message);

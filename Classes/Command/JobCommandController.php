@@ -154,7 +154,7 @@ class JobCommandController extends CommandController
         }
 
         /** @var Message $message */
-        $message = unserialize($this->messageCache->get($messageCacheIdentifier));
+        $message = $this->messageCache->get($messageCacheIdentifier);
         $queue = $this->queueManager->getQueue($queue);
         $this->jobManager->executeJobForMessage($queue, $message);
     }

@@ -12,6 +12,7 @@ namespace Flowpack\JobQueue\Common\Queue;
  */
 
 use Neos\Flow\Annotations as Flow;
+use Neos\Cache\Frontend\VariableFrontend;
 use Neos\Flow\Core\Booting\Scripts;
 use Neos\Flow\Utility\Algorithms;
 
@@ -37,6 +38,12 @@ class FakeQueue implements QueueInterface
      * @var bool
      */
     protected $async = false;
+
+    /**
+     * @Flow\Inject
+     * @var VariableFrontend
+     */
+    protected $messageCache;
 
     /**
      * @param string $name
@@ -76,7 +83,11 @@ class FakeQueue implements QueueInterface
     {
         $messageId = Algorithms::generateUUID();
         $message = new Message($messageId, $payload);
-        $commandArguments = [$this->name, base64_encode(serialize($message))];
+
+        $messageCacheIdentifier = sha1(serialize($message));
+        $this->messageCache->set($messageCacheIdentifier, $message);
+        $commandArguments = ['queue' => $this->name, 'messageCacheIdentifier' => $messageCacheIdentifier];
+
         if ($this->async) {
             if (!method_exists(Scripts::class, 'executeCommandAsync')) {
                 throw new \RuntimeException('The "async" flag is set, but the currently used Flow version doesn\'t support this (Flow 3.3+ is required)', 1469116604);
@@ -149,7 +160,7 @@ class FakeQueue implements QueueInterface
      */
     public function flush()
     {
-        //
+        // The FakeQueue does not support message flushing
     }
 
 }
