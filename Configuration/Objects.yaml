@@ -17,3 +17,13 @@ Flowpack\JobQueue\Common\Command\JobCommandController:
         arguments:
           1:
             value: FlowPackJobQueueCommon_MessageCache
+
+Flowpack\JobQueue\Common\Queue\FakeQueue:
+  properties:
+    messageCache:
+      object:
+        factoryObjectName: Neos\Flow\Cache\CacheManager
+        factoryMethodName: getCache
+        arguments:
+          1:
+            value: FlowPackJobQueueCommon_MessageCache
