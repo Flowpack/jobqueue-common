@@ -33,7 +33,6 @@ class JobManagerTest extends FunctionalTestCase
      */
     protected $jobManager;
 
-
     /**
      * @var QueueManager|MockObject
      */
@@ -54,7 +53,7 @@ class JobManagerTest extends FunctionalTestCase
      */
     protected $emittedSignals = [];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->mockQueueManager = $this->getMockBuilder(QueueManager::class)->disableOriginalConstructor()->getMock();
@@ -104,13 +103,13 @@ class JobManagerTest extends FunctionalTestCase
         if (!isset($this->emittedSignals[$fullSignalName])) {
             $this->fail('Signal "' . $signalName . '" has not been emitted!');
         }
-        $this->assertCount(1, $this->emittedSignals[$fullSignalName]);
+        self::assertCount(1, $this->emittedSignals[$fullSignalName]);
         foreach ($arguments as $argumentIndex => $expectedArgument) {
             $actualArgument = $this->emittedSignals[$fullSignalName][0][$argumentIndex];
             if ($expectedArgument instanceof Constraint) {
                 $expectedArgument->evaluate($actualArgument);
             } else {
-                $this->assertSame($expectedArgument, $actualArgument);
+                self::assertSame($expectedArgument, $actualArgument);
             }
         }
     }

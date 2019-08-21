@@ -29,7 +29,7 @@ class VariableDumperTest extends UnitTestCase
     public function dumpValueReturnsStringifiedValue($input, $expectedOutput)
     {
         $output = VariableDumper::dumpValue($input);
-        $this->assertSame($expectedOutput, $output);
+        self::assertSame($expectedOutput, $output);
     }
 
     public function dumpValueExamples()

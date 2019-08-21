@@ -20,13 +20,12 @@ use Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestQueue;
  */
 class QueueManagerTest extends UnitTestCase
 {
-
     /**
      * @var QueueManager
      */
     protected $queueManager;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->queueManager = new QueueManager();
         $this->inject($this->queueManager, 'settings', [
@@ -91,7 +90,7 @@ class QueueManagerTest extends UnitTestCase
         ];
 
         $queueSettings = $this->queueManager->getQueueSettings('TestQueue');
-        $this->assertSame($expectedSettings, $queueSettings);
+        self::assertSame($expectedSettings, $queueSettings);
     }
 
     /**
@@ -101,8 +100,8 @@ class QueueManagerTest extends UnitTestCase
     {
         /** @var TestQueue $queue */
         $queue = $this->queueManager->getQueue('TestQueue');
-        $this->assertInstanceOf(TestQueue::class, $queue);
-        $this->assertSame('TestQueue', $queue->getName());
+        self::assertInstanceOf(TestQueue::class, $queue);
+        self::assertSame('TestQueue', $queue->getName());
     }
 
     /**
@@ -123,7 +122,7 @@ class QueueManagerTest extends UnitTestCase
 
         /** @var TestQueue $queue */
         $queue = $this->queueManager->getQueue('TestQueue');
-        $this->assertEquals(['foo' => 'bar'], $queue->getOptions());
+        self::assertEquals(['foo' => 'bar'], $queue->getOptions());
     }
 
     /**
@@ -132,15 +131,15 @@ class QueueManagerTest extends UnitTestCase
     public function getQueueReusesInstances()
     {
         $queue = $this->queueManager->getQueue('TestQueue');
-        $this->assertSame($queue, $this->queueManager->getQueue('TestQueue'));
+        self::assertSame($queue, $this->queueManager->getQueue('TestQueue'));
     }
 
     /**
      * @test
-     * @expectedException \Flowpack\JobQueue\Common\Exception
      */
     public function getQueueThrowsExceptionWhenSettingsReferToNonExistingPreset()
     {
+        self::expectException(\Flowpack\JobQueue\Common\Exception::class);
         $this->inject($this->queueManager, 'settings', [
             'queues' => [
                 'TestQueue' => [
@@ -169,7 +168,7 @@ class QueueManagerTest extends UnitTestCase
 
         /** @var TestQueue $queue */
         $queue = $this->queueManager->getQueue('TestQueue');
-        $this->assertSame('specialQueueTestQueue', $queue->getName());
+        self::assertSame('specialQueueTestQueue', $queue->getName());
     }
 
     /**
@@ -194,6 +193,6 @@ class QueueManagerTest extends UnitTestCase
 
         /** @var TestQueue $queue */
         $queue = $this->queueManager->getQueue('TestQueue');
-        $this->assertSame('overriddenPrefixTestQueue', $queue->getName());
+        self::assertSame('overriddenPrefixTestQueue', $queue->getName());
     }
 }

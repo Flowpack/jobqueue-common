@@ -33,7 +33,7 @@ abstract class AbstractQueueTest extends FunctionalTestCase
     /**
      * Set up dependencies
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $configurationManager = $this->objectManager->get(ConfigurationManager::class);
@@ -65,7 +65,7 @@ abstract class AbstractQueueTest extends FunctionalTestCase
     public function submitReturnsMessageId()
     {
         $messageId = $this->queue->submit('some message payload');
-        $this->assertInternalType('string', $messageId);
+        self::assertInternalType('string', $messageId);
     }
 
     /**
@@ -77,8 +77,8 @@ abstract class AbstractQueueTest extends FunctionalTestCase
         $this->queue->submit($payload);
 
         $message = $this->queue->waitAndTake(1);
-        $this->assertInstanceOf(Message::class, $message, 'waitAndTake should return message');
-        $this->assertEquals($payload, $message->getPayload(), 'message should have payload as before');
+        self::assertInstanceOf(Message::class, $message, 'waitAndTake should return message');
+        self::assertEquals($payload, $message->getPayload(), 'message should have payload as before');
     }
 
     /**
@@ -86,7 +86,7 @@ abstract class AbstractQueueTest extends FunctionalTestCase
      */
     public function waitForMessageTimesOut()
     {
-        $this->assertNull($this->queue->waitAndTake(1), 'wait should return NULL after timeout');
+        self::assertNull($this->queue->waitAndTake(1), 'wait should return NULL after timeout');
     }
 
     /**
@@ -98,16 +98,16 @@ abstract class AbstractQueueTest extends FunctionalTestCase
         $this->queue->submit('Another message');
 
         $messages = $this->queue->peek(1);
-        $this->assertCount(1, $messages, 'peek should return a message');
+        self::assertCount(1, $messages, 'peek should return a message');
         /** @var Message $firstMessage */
         $firstMessage = array_shift($messages);
-        $this->assertEquals('First message', $firstMessage->getPayload());
+        self::assertEquals('First message', $firstMessage->getPayload());
 
         $messages = $this->queue->peek(1);
-        $this->assertCount(1, $messages, 'peek should return a message again');
+        self::assertCount(1, $messages, 'peek should return a message again');
         /** @var Message $firstMessage */
         $firstMessage = array_shift($messages);
-        $this->assertEquals('First message', $firstMessage->getPayload(), 'second peek should return the same message again');
+        self::assertEquals('First message', $firstMessage->getPayload(), 'second peek should return the same message again');
     }
 
     /**
@@ -115,7 +115,7 @@ abstract class AbstractQueueTest extends FunctionalTestCase
      */
     public function peekReturnsEmptyArrayIfQueueHasNoMessage()
     {
-        $this->assertEquals([], $this->queue->peek(), 'peek should not return a message');
+        self::assertEquals([], $this->queue->peek(), 'peek should not return a message');
     }
 
     /**
@@ -127,13 +127,13 @@ abstract class AbstractQueueTest extends FunctionalTestCase
         $messageId = $this->queue->submit($payload);
 
         $message = $this->queue->waitAndReserve(1);
-        $this->assertNotNull($message, 'waitAndReserve should receive message');
-        $this->assertSame($payload, $message->getPayload(), 'message should have payload as before');
+        self::assertNotNull($message, 'waitAndReserve should receive message');
+        self::assertSame($payload, $message->getPayload(), 'message should have payload as before');
 
         $message = $this->queue->peek();
-        $this->assertEquals([], $message, 'no message should be present in queue');
+        self::assertEquals([], $message, 'no message should be present in queue');
 
-        $this->assertTrue($this->queue->finish($messageId));
+        self::assertTrue($this->queue->finish($messageId));
     }
 
     /**
@@ -144,10 +144,10 @@ abstract class AbstractQueueTest extends FunctionalTestCase
         $messageId = $this->queue->submit('A message');
 
         $this->queue->waitAndReserve(1);
-        $this->assertSame(0, $this->queue->countReady());
+        self::assertSame(0, $this->queue->countReady());
 
         $this->queue->release($messageId);
-        $this->assertSame(1, $this->queue->countReady());
+        self::assertSame(1, $this->queue->countReady());
     }
 
     /**
@@ -158,15 +158,15 @@ abstract class AbstractQueueTest extends FunctionalTestCase
         $messageId = $this->queue->submit('A message');
 
         $message = $this->queue->waitAndReserve(1);
-        $this->assertSame(0, $message->getNumberOfReleases());
+        self::assertSame(0, $message->getNumberOfReleases());
 
         $this->queue->release($messageId);
         $message = $this->queue->waitAndReserve(1);
-        $this->assertSame(1, $message->getNumberOfReleases());
+        self::assertSame(1, $message->getNumberOfReleases());
 
         $this->queue->release($messageId);
         $message = $this->queue->waitAndReserve(1);
-        $this->assertSame(2, $message->getNumberOfReleases());
+        self::assertSame(2, $message->getNumberOfReleases());
 
         $this->queue->abort($messageId);
     }
@@ -181,8 +181,8 @@ abstract class AbstractQueueTest extends FunctionalTestCase
         $this->queue->waitAndReserve(1);
 
         $this->queue->abort($messageId);
-        $this->assertSame(0, $this->queue->countReady());
-        $this->assertNull($this->queue->waitAndTake(1));
+        self::assertSame(0, $this->queue->countReady());
+        self::assertNull($this->queue->waitAndTake(1));
     }
 
     /**
@@ -190,7 +190,7 @@ abstract class AbstractQueueTest extends FunctionalTestCase
      */
     public function countReadyReturnsZeroByDefault()
     {
-        $this->assertSame(0, $this->queue->countReady());
+        self::assertSame(0, $this->queue->countReady());
     }
 
     /**
@@ -201,7 +201,7 @@ abstract class AbstractQueueTest extends FunctionalTestCase
         $this->queue->submit('First message');
         $this->queue->submit('Second message');
 
-        $this->assertSame(2, $this->queue->countReady());
+        self::assertSame(2, $this->queue->countReady());
     }
 
     /**
@@ -209,7 +209,7 @@ abstract class AbstractQueueTest extends FunctionalTestCase
      */
     public function countFailedReturnsZeroByDefault()
     {
-        $this->assertSame(0, $this->queue->countFailed());
+        self::assertSame(0, $this->queue->countFailed());
     }
 
     /**
@@ -220,10 +220,10 @@ abstract class AbstractQueueTest extends FunctionalTestCase
         $messageId = $this->queue->submit('A message');
 
         $this->queue->waitAndReserve(1);
-        $this->assertSame(0, $this->queue->countFailed());
+        self::assertSame(0, $this->queue->countFailed());
 
         $this->queue->abort($messageId);
-        $this->assertSame(1, $this->queue->countFailed());
+        self::assertSame(1, $this->queue->countFailed());
     }
 
     /**
@@ -231,7 +231,7 @@ abstract class AbstractQueueTest extends FunctionalTestCase
      */
     public function countReservedReturnsZeroByDefault()
     {
-        $this->assertSame(0, $this->queue->countReserved());
+        self::assertSame(0, $this->queue->countReserved());
     }
 
     /**
@@ -242,9 +242,9 @@ abstract class AbstractQueueTest extends FunctionalTestCase
         $messageId = $this->queue->submit('A message');
 
         $this->queue->waitAndReserve(1);
-        $this->assertSame(1, $this->queue->countReserved());
+        self::assertSame(1, $this->queue->countReserved());
 
         $this->queue->abort($messageId);
-        $this->assertSame(0, $this->queue->countReserved());
+        self::assertSame(0, $this->queue->countReserved());
     }
 }

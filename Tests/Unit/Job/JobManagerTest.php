@@ -17,6 +17,7 @@ use Neos\Flow\Tests\UnitTestCase;
 use Flowpack\JobQueue\Common\Job\JobManager;
 use Flowpack\JobQueue\Common\Queue\QueueManager;
 use Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestJob;
+use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Unit tests for the JobManager
@@ -29,7 +30,7 @@ class JobManagerTest extends UnitTestCase
     protected $jobManager;
 
     /**
-     * @var QueueManager|\PHPUnit_Framework_MockObject_MockObject
+     * @var QueueManager|MockObject
      */
     protected $mockQueueManager;
 
@@ -39,11 +40,11 @@ class JobManagerTest extends UnitTestCase
     protected $testQueue;
 
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->mockQueueManager = $this->getMockBuilder(QueueManager::class)->disableOriginalConstructor()->getMock();
         $this->testQueue = new TestQueue('TestQueue');
-        $this->mockQueueManager->expects($this->any())->method('getQueue')->with('TestQueue')->will($this->returnValue($this->testQueue));
+        $this->mockQueueManager->expects($this->any())->method('getQueue')->with('TestQueue')->will(self::returnValue($this->testQueue));
 
         $this->jobManager = new JobManager();
         $this->inject($this->jobManager, 'queueManager', $this->mockQueueManager);
@@ -58,7 +59,7 @@ class JobManagerTest extends UnitTestCase
         $this->jobManager->queue('TestQueue', $job);
 
         $messageId = $this->testQueue->peek();
-        $this->assertNotNull($messageId);
+        self::assertNotNull($messageId);
     }
 
     /**
@@ -70,6 +71,6 @@ class JobManagerTest extends UnitTestCase
         $job = new TestJob();
         $this->jobManager->queue('TestQueue', $job, $mockOptions);
 
-        $this->assertSame($mockOptions, $this->testQueue->getLastSubmitOptions());
+        self::assertSame($mockOptions, $this->testQueue->getLastSubmitOptions());
     }
 }
