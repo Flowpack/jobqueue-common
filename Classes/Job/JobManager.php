@@ -108,7 +108,7 @@ class JobManager
                 $this->executeJobForMessage($queue, $message);
             }
         } catch (\Exception $exception) {
-            $maximumNumberOfReleases = isset($queueSettings['maximumNumberOfReleases']) ? (integer)$queueSettings['maximumNumberOfReleases'] : 0;
+            $maximumNumberOfReleases = isset($queueSettings['maximumNumberOfReleases']) ? (integer)$queueSettings['maximumNumberOfReleases'] : 3;
             if ($message->getNumberOfReleases() < $maximumNumberOfReleases) {
                 $releaseOptions = isset($queueSettings['releaseOptions']) ? $queueSettings['releaseOptions'] : [];
                 $queue->release($message->getIdentifier(), $releaseOptions);
