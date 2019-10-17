@@ -48,7 +48,7 @@ abstract class AbstractQueueTest extends FunctionalTestCase
         $this->queue->flush();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         $this->queue->flush();

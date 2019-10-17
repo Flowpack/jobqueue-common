@@ -72,7 +72,7 @@ class JobManagerTest extends FunctionalTestCase
         self::$bootstrap->getSignalSlotDispatcher()->connect(JobManager::class, 'messageFailed', $this, 'logSignal');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         $this->emittedSignals = [];
