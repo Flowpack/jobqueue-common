@@ -28,6 +28,11 @@ use Flowpack\JobQueue\Common\Queue\QueueManager;
 class JobManager
 {
     /**
+     * @var int
+     */
+    const DEFAULT_MAXIMUM_NUMBER_RELEASES = 3;
+
+    /**
      * @Flow\Inject
      * @var QueueManager
      */
@@ -108,7 +113,9 @@ class JobManager
                 $this->executeJobForMessage($queue, $message);
             }
         } catch (\Exception $exception) {
-            $maximumNumberOfReleases = isset($queueSettings['maximumNumberOfReleases']) ? (integer)$queueSettings['maximumNumberOfReleases'] : 0;
+            $maximumNumberOfReleases = isset($queueSettings['maximumNumberOfReleases']) ?
+                (int)$queueSettings['maximumNumberOfReleases'] :
+                self::DEFAULT_MAXIMUM_NUMBER_RELEASES;
             if ($message->getNumberOfReleases() < $maximumNumberOfReleases) {
                 $releaseOptions = isset($queueSettings['releaseOptions']) ? $queueSettings['releaseOptions'] : [];
                 $queue->release($message->getIdentifier(), $releaseOptions);
