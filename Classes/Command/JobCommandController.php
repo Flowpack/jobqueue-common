@@ -88,7 +88,8 @@ class JobCommandController extends CommandController
                 $numberOfJobExecutions ++;
                 $this->outputLine('<error>%s</error>', [$exception->getMessage()]);
                 if ($verbose && $exception->getPrevious() instanceof \Exception) {
-                    $this->outputLine('  Reason: %s', [$exception->getPrevious()->getMessage()]);
+                    $this->outputLine('Reason:');
+                    $this->outputLine($exception->getPrevious()->getMessage());
                 }
             } catch (\Exception $exception) {
                 $this->outputLine('<error>Unexpected exception during job execution: %s, aborting...</error>', [$exception->getMessage()]);
