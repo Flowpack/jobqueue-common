@@ -18,6 +18,7 @@ use Flowpack\JobQueue\Common\Queue\QueueManager;
 use Neos\Cache\Frontend\VariableFrontend;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Cli\CommandController;
+use Neos\Flow\Core\Booting\Scripts;
 use Neos\Flow\Mvc\Exception\StopActionException;
 
 /**
@@ -42,6 +43,39 @@ class JobCommandController extends CommandController
      * @var VariableFrontend
      */
     protected $messageCache;
+
+    /**
+     * @Flow\InjectConfiguration(package="Neos.Flow")
+     * @var array
+     */
+    protected $flowSettings;
+
+    /**
+     * Start multiple workers
+     *
+     * To get more information about the arguments <i>exit-after</i> and <i>limit</i> see the explanation of the work
+     * command.
+     *
+     * @param string $queue Name of the queue to fetch messages from. Can also be a comma-separated list of queues.
+     * @param int $exitAfter If set, this command will exit after the given amount of seconds
+     * @param int $limit If set, only the given amount of jobs are processed (successful or not) before the script exits
+     * @param int $numberOfWorkers Number of workers this command should start
+     * @return void
+     */
+    public function workMultipleCommand($queue, $exitAfter = null, $limit = null, $numberOfWorkers = 1)
+    {
+        $commandArguments = ['queue' => $queue];
+        if (! is_null($exitAfter)) {
+            $commandArguments['exitAfter'] = $exitAfter;
+        }
+        if (! is_null($limit)) {
+            $commandArguments['limit'] = $limit;
+        }
+
+        for ($i = 0; $i < $numberOfWorkers; $i++) {
+            Scripts::executeCommandAsync('flowpack.jobqueue.common:job:work', $this->flowSettings, $commandArguments);
+        }
+    }
 
     /**
      * Work on a queue and execute jobs
