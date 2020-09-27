@@ -12,6 +12,7 @@ namespace Flowpack\JobQueue\Common\Command;
  */
 
 use Flowpack\JobQueue\Common\Exception as JobQueueException;
+use Flowpack\JobQueue\Common\InterruptException;
 use Flowpack\JobQueue\Common\Job\JobManager;
 use Flowpack\JobQueue\Common\Queue\Message;
 use Flowpack\JobQueue\Common\Queue\QueueManager;
@@ -74,6 +75,11 @@ class JobCommandController extends CommandController
             }
             $this->outputLine('...');
         }
+        if (function_exists('pcntl_signal')) {
+            pcntl_signal(SIGINT, static function () {
+                throw new InterruptException('Interrupted by SIGINT');
+            });
+        }
         $startTime = time();
         $timeout = null;
         $numberOfJobExecutions = 0;
@@ -84,6 +90,12 @@ class JobCommandController extends CommandController
             }
             try {
                 $message = $this->jobManager->waitAndExecute($queue, $timeout);
+                $this->jobManager->interruptMe();
+            } catch (InterruptException $exception) {
+                if ($verbose) {
+                    $this->outputLine('Quitting after %d seconds due to received interruption', [time() - $startTime]);
+                }
+                $this->quit();
             } catch (JobQueueException $exception) {
                 $numberOfJobExecutions ++;
                 $this->outputLine('<error>%s</error>', [$exception->getMessage()]);
