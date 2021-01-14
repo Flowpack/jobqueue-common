@@ -15,10 +15,13 @@ use Flowpack\JobQueue\Common\Queue\QueueInterface;
 use Neos\Cache\Frontend\VariableFrontend;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Core\Booting\Scripts;
+use Neos\Flow\Log\ThrowableStorageInterface;
+use Neos\Flow\Log\Utility\LogEnvironment;
 use Neos\Flow\Property\PropertyMapper;
 use Flowpack\JobQueue\Common\Exception as JobQueueException;
 use Flowpack\JobQueue\Common\Queue\Message;
 use Flowpack\JobQueue\Common\Queue\QueueManager;
+use Psr\Log\LoggerInterface;
 
 /**
  * Job manager
@@ -61,6 +64,18 @@ class JobManager
      * @var array
      */
     protected $flowSettings;
+
+    /**
+     * @Flow\Inject
+     * @var ThrowableStorageInterface
+     */
+    protected $throwableStorage;
+
+    /**
+     * @Flow\Inject
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     /**
      * Put a job in the queue
@@ -120,10 +135,14 @@ class JobManager
                 $releaseOptions = isset($queueSettings['releaseOptions']) ? $queueSettings['releaseOptions'] : [];
                 $queue->release($message->getIdentifier(), $releaseOptions);
                 $this->emitMessageReleased($queue, $message, $releaseOptions, $exception);
+                $logMessage = $this->throwableStorage->logThrowable($exception);
+                $this->logger->error($logMessage, LogEnvironment::fromMethodName(__METHOD__));
                 throw new JobQueueException(sprintf('Job execution for job (message: "%s", queue: "%s") failed (%d/%d trials) - RELEASE', $message->getIdentifier(), $queue->getName(), $message->getNumberOfReleases() + 1, $maximumNumberOfReleases + 1), 1334056583, $exception);
             } else {
                 $queue->abort($message->getIdentifier());
                 $this->emitMessageFailed($queue, $message, $exception);
+                $logMessage = $this->throwableStorage->logThrowable($exception);
+                $this->logger->error($logMessage, LogEnvironment::fromMethodName(__METHOD__));
                 throw new JobQueueException(sprintf('Job execution for job (message: "%s", queue: "%s") failed (%d/%d trials) - ABORTING', $message->getIdentifier(), $queue->getName(), $message->getNumberOfReleases() + 1, $maximumNumberOfReleases + 1), 1334056584, $exception);
             }
         } finally {
