@@ -163,7 +163,7 @@ Flowpack:
 
 With this a queue named `test` will be available.
 
-*Note:* For reusable packages you should consider adding a vendor specific prefixes to avoid collisions
+*Note:* For reusable packages you should consider adding a vendor specific prefixes to avoid collisions. We recommend to use a classname or the package name with the function name (e.g. Flowpack.ElasticSearch.ContentRepositoryQueueIndexer. 
 
 ### Queue parameters
 
