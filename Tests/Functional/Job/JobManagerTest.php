@@ -174,10 +174,12 @@ class JobManagerTest extends FunctionalTestCase
      */
     public function waitAndExecuteEmitsMessageFailedSignal()
     {
-        $this->jobManager->queue('TestQueue', new TestJob(1));
-        try {
-            $this->jobManager->waitAndExecute('TestQueue');
-        } catch (JobQueueException $exception) {
+        $this->jobManager->queue('TestQueue', new TestJob(JobManager::DEFAULT_MAXIMUM_NUMBER_RELEASES + 1));
+        for ($i = 0; $i <= JobManager::DEFAULT_MAXIMUM_NUMBER_RELEASES; $i ++) {
+            try {
+                $this->jobManager->waitAndExecute('TestQueue');
+            } catch (JobQueueException $exception) {
+            }
         }
         $this->assertSignalEmitted('messageFailed', [$this->testQueue, new IsInstanceOf(Message::class)]);
     }
