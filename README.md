@@ -63,6 +63,21 @@ Neos Flow package that allows for asynchronous and distributed execution of task
   }
   ```
 
+  or use attributes instead of annotations (PHP 8.0 and later):
+  
+  ```php
+  use Flowpack\JobQueue\Common\Annotations as Job;
+  
+  class SomeClass {
+  
+      #[Job\Defer(queueName: "some-queue")]
+      public function sendEmail($emailAddress)
+      {
+          // send some email to $emailAddress
+      }
+  }
+  ```
+  
   *Note:* The method needs to be *public* and it must not return anything
 
 5. **Start the worker (if required)**
