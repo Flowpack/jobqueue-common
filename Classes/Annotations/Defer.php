@@ -11,12 +11,14 @@ namespace Flowpack\JobQueue\Common\Annotations;
  * source code.
  */
 
-use Doctrine\Common\Annotations\Annotation as DoctrineAnnotation;
+use Doctrine\Common\Annotations\Annotation\NamedArgumentConstructor;
 
 /**
  * @Annotation
- * @DoctrineAnnotation\Target("METHOD")
+ * @NamedArgumentConstructor
+ * @Target("METHOD")
  */
+#[\Attribute(\Attribute::TARGET_METHOD)]
 final class Defer
 {
     /**
@@ -32,15 +34,16 @@ final class Defer
     public $options;
 
     /**
-     * @param array $values
-     * @throws \InvalidArgumentException
+     * @param string|null $queueName
+     * @param array|null $options
+     * @param string|null $value
      */
-    public function __construct(array $values)
+    public function __construct(?string $queueName = null, ?array $options = null, ?string $value = null)
     {
-        if (!isset($values['value']) && !isset($values['queueName'])) {
-            throw new \InvalidArgumentException('A Defer annotation must specify a queueName.', 1334128835);
+        if ($value === null && $queueName === null) {
+            throw new \InvalidArgumentException('A Defer attribute must specify a queueName.', 1334128835);
         }
-        $this->queueName = isset($values['queueName']) ? $values['queueName'] : $values['value'];
-        $this->options = isset($values['options']) ? $values['options'] : [];
+        $this->queueName = $queueName ?? $value;
+        $this->options = $options ?? [];
     }
 }
