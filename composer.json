@@ -4,8 +4,8 @@
     "description": "Common functionality for a JobQueue in Flow applications.",
     "license": "MIT",
     "require": {
-        "php": "^7.1 || ^8.0",
-        "neos/flow": "^5.0 || ^6.0 || ^7.0 || ^8.0 || dev-master",
+        "php": "^7.4 || ^8.0",
+        "neos/flow": "^6.3 || ^7.0 || ^8.0 || dev-master",
         "neos/cache": "*"
     },
     "autoload": {
