@@ -253,12 +253,12 @@ class JobManager
      * @param QueueInterface $queue The queue the released message belongs to
      * @param Message $message The message that was released to the queue again
      * @param array $releaseOptions The options that were passed to the release call
-     * @param \Exception $jobExecutionException The exception (if any) thrown by the job execution
+     * @param \Throwable|null $jobExecutionThrowable The exception or error (if any) thrown by the job execution
      * @return void
      * @Flow\Signal
      * @api
      */
-    protected function emitMessageReleased(QueueInterface $queue, Message $message, array $releaseOptions, \Exception $jobExecutionException = null): void
+    protected function emitMessageReleased(QueueInterface $queue, Message $message, array $releaseOptions, \Throwable $jobExecutionThrowable = null): void
     {
     }
 
@@ -267,12 +267,12 @@ class JobManager
      *
      * @param QueueInterface $queue The queue the failed message belongs to
      * @param Message $message The message that could not be executed successfully
-     * @param \Exception $jobExecutionException The exception (if any) thrown by the job execution
+     * @param \Throwable|null $jobExecutionThrowable The exception or error (if any) thrown by the job execution
      * @return void
      * @Flow\Signal
      * @api
      */
-    protected function emitMessageFailed(QueueInterface $queue, Message $message, \Exception $jobExecutionException = null): void
+    protected function emitMessageFailed(QueueInterface $queue, Message $message, \Throwable $jobExecutionThrowable = null): void
     {
     }
 
