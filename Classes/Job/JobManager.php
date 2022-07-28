@@ -134,13 +134,13 @@ class JobManager
             if ($message->getNumberOfReleases() < $maximumNumberOfReleases) {
                 $releaseOptions = isset($queueSettings['releaseOptions']) ? $queueSettings['releaseOptions'] : [];
                 $queue->release($message->getIdentifier(), $releaseOptions);
-                $this->emitMessageReleased($queue, $message, $releaseOptions, $throwable);
+                $this->emitMessageReleased($queue, $message, $releaseOptions, new \RuntimeException($throwable->getMessage(), 1659019014, $throwable));
                 $logMessage = $this->throwableStorage->logThrowable($throwable);
                 $this->logger->error($logMessage, LogEnvironment::fromMethodName(__METHOD__));
                 throw new JobQueueException(sprintf('Job execution for job (message: "%s", queue: "%s") failed (%d/%d trials) - RELEASE', $message->getIdentifier(), $queue->getName(), $message->getNumberOfReleases() + 1, $maximumNumberOfReleases + 1), 1334056583, $throwable);
             } else {
                 $queue->abort($message->getIdentifier());
-                $this->emitMessageFailed($queue, $message, $throwable);
+                $this->emitMessageFailed($queue, $message, new \RuntimeException($throwable->getMessage(), 1659019015, $throwable));
                 $logMessage = $this->throwableStorage->logThrowable($throwable);
                 $this->logger->error($logMessage, LogEnvironment::fromMethodName(__METHOD__));
                 throw new JobQueueException(sprintf('Job execution for job (message: "%s", queue: "%s") failed (%d/%d trials) - ABORTING', $message->getIdentifier(), $queue->getName(), $message->getNumberOfReleases() + 1, $maximumNumberOfReleases + 1), 1334056584, $throwable);
@@ -253,12 +253,12 @@ class JobManager
      * @param QueueInterface $queue The queue the released message belongs to
      * @param Message $message The message that was released to the queue again
      * @param array $releaseOptions The options that were passed to the release call
-     * @param \Throwable|null $jobExecutionThrowable The exception or error (if any) thrown by the job execution
+     * @param \Exception|null $jobExecutionException The exception (if any) thrown by the job execution
      * @return void
      * @Flow\Signal
      * @api
      */
-    protected function emitMessageReleased(QueueInterface $queue, Message $message, array $releaseOptions, \Throwable $jobExecutionThrowable = null): void
+    protected function emitMessageReleased(QueueInterface $queue, Message $message, array $releaseOptions, \Exception $jobExecutionException = null): void
     {
     }
 
@@ -267,12 +267,12 @@ class JobManager
      *
      * @param QueueInterface $queue The queue the failed message belongs to
      * @param Message $message The message that could not be executed successfully
-     * @param \Throwable|null $jobExecutionThrowable The exception or error (if any) thrown by the job execution
+     * @param \Exception|null $jobExecutionException The exception (if any) thrown by the job execution
      * @return void
      * @Flow\Signal
      * @api
      */
-    protected function emitMessageFailed(QueueInterface $queue, Message $message, \Throwable $jobExecutionThrowable = null): void
+    protected function emitMessageFailed(QueueInterface $queue, Message $message, \Exception $jobExecutionException = null): void
     {
     }
 
