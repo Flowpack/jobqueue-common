@@ -127,23 +127,23 @@ class JobManager
             } else {
                 $this->executeJobForMessage($queue, $message);
             }
-        } catch (\Exception $exception) {
+        } catch (\Throwable $throwable) {
             $maximumNumberOfReleases = isset($queueSettings['maximumNumberOfReleases']) ?
                 (int)$queueSettings['maximumNumberOfReleases'] :
                 self::DEFAULT_MAXIMUM_NUMBER_RELEASES;
             if ($message->getNumberOfReleases() < $maximumNumberOfReleases) {
                 $releaseOptions = isset($queueSettings['releaseOptions']) ? $queueSettings['releaseOptions'] : [];
                 $queue->release($message->getIdentifier(), $releaseOptions);
-                $this->emitMessageReleased($queue, $message, $releaseOptions, $exception);
-                $logMessage = $this->throwableStorage->logThrowable($exception);
+                $this->emitMessageReleased($queue, $message, $releaseOptions, $throwable);
+                $logMessage = $this->throwableStorage->logThrowable($throwable);
                 $this->logger->error($logMessage, LogEnvironment::fromMethodName(__METHOD__));
-                throw new JobQueueException(sprintf('Job execution for job (message: "%s", queue: "%s") failed (%d/%d trials) - RELEASE', $message->getIdentifier(), $queue->getName(), $message->getNumberOfReleases() + 1, $maximumNumberOfReleases + 1), 1334056583, $exception);
+                throw new JobQueueException(sprintf('Job execution for job (message: "%s", queue: "%s") failed (%d/%d trials) - RELEASE', $message->getIdentifier(), $queue->getName(), $message->getNumberOfReleases() + 1, $maximumNumberOfReleases + 1), 1334056583, $throwable);
             } else {
                 $queue->abort($message->getIdentifier());
-                $this->emitMessageFailed($queue, $message, $exception);
-                $logMessage = $this->throwableStorage->logThrowable($exception);
+                $this->emitMessageFailed($queue, $message, $throwable);
+                $logMessage = $this->throwableStorage->logThrowable($throwable);
                 $this->logger->error($logMessage, LogEnvironment::fromMethodName(__METHOD__));
-                throw new JobQueueException(sprintf('Job execution for job (message: "%s", queue: "%s") failed (%d/%d trials) - ABORTING', $message->getIdentifier(), $queue->getName(), $message->getNumberOfReleases() + 1, $maximumNumberOfReleases + 1), 1334056584, $exception);
+                throw new JobQueueException(sprintf('Job execution for job (message: "%s", queue: "%s") failed (%d/%d trials) - ABORTING', $message->getIdentifier(), $queue->getName(), $message->getNumberOfReleases() + 1, $maximumNumberOfReleases + 1), 1334056584, $throwable);
             }
         } finally {
             if ($messageCacheIdentifier !== null) {
