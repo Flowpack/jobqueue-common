@@ -65,7 +65,7 @@ abstract class AbstractQueueTest extends FunctionalTestCase
     public function submitReturnsMessageId()
     {
         $messageId = $this->queue->submit('some message payload');
-        self::assertInternalType('string', $messageId);
+        self::assertIsString($messageId);
     }
 
     /**
