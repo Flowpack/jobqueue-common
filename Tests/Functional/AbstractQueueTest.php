@@ -84,6 +84,17 @@ abstract class AbstractQueueTest extends FunctionalTestCase
     /**
      * @test
      */
+    public function submitWithDelaySchedulesMessage()
+    {
+        $messageId = $this->queue->submit('some message payload', ['delay' => 2]);
+        self::assertNull($this->queue->waitAndTake(1), 'message was available too soon');
+        $message = $this->queue->waitAndTake(2);
+        self::assertInstanceOf(Message::class, $message, 'waitAndTake should return message');
+    }
+
+    /**
+     * @test
+     */
     public function waitForMessageTimesOut()
     {
         self::assertNull($this->queue->waitAndTake(1), 'wait should return NULL after timeout');
