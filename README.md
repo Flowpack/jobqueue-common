@@ -184,14 +184,14 @@ With this a queue named `test` will be available.
 
 The following parameters are supported by all queues:
 
-| Parameter               | Type    | Default          | Description                              |
-| ----------------------- |---------| ----------------:| ---------------------------------------- |
-| className               | string  | -                | FQN of the class implementing the queue  |
-| maximumNumberOfReleases | integer | 3                | Max. number of times a message is re-<br>released to the queue if a job failed |
-| executeIsolated         | boolean | FALSE            | If TRUE jobs for this queue are executed in a separate Thread. This makes sense in order to avoid memory leaks and side-effects |
-| queueNamePrefix         | string  | -                | Optional prefix for the internal queue name,<br>allowing to re-use the same backend over multiple installations |
-| options                 | array   | -                | Options for the queue.<br>Implementation specific (see corresponding package) |
-| releaseOptions          | array   | ['delay' => 300] | Options that will be passed to `release()` when a job failed<br>Implementation specific (see corresponding package)  |
+| Parameter               | Type    | Default | Description                                                                                                                     |
+| ----------------------- |---------|--------:|---------------------------------------------------------------------------------------------------------------------------------|
+| className               | string  |       - | FQN of the class implementing the queue                                                                                         |
+| maximumNumberOfReleases | integer |       3 | Max. number of times a message is re-<br>released to the queue if a job failed                                                  |
+| executeIsolated         | boolean |   FALSE | If TRUE jobs for this queue are executed in a separate Thread. This makes sense in order to avoid memory leaks and side-effects |
+| queueNamePrefix         | string  |       - | Optional prefix for the internal queue name,<br>allowing to re-use the same backend over multiple installations                 |
+| options                 | array   |       - | Options for the queue.<br>Implementation specific (see corresponding package)                                                   |
+| releaseOptions          | array   |       - | Options that will be passed to `release()` when a job failed.<br>Implementation specific (see corresponding package)            |
 
 A more complex example could look something like:
 
