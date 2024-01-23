@@ -65,7 +65,7 @@ abstract class AbstractQueueTest extends FunctionalTestCase
     public function submitReturnsMessageId()
     {
         $messageId = $this->queue->submit('some message payload');
-        self::assertInternalType('string', $messageId);
+        self::assertIsString($messageId);
     }
 
     /**
@@ -79,6 +79,17 @@ abstract class AbstractQueueTest extends FunctionalTestCase
         $message = $this->queue->waitAndTake(1);
         self::assertInstanceOf(Message::class, $message, 'waitAndTake should return message');
         self::assertEquals($payload, $message->getPayload(), 'message should have payload as before');
+    }
+
+    /**
+     * @test
+     */
+    public function submitWithDelaySchedulesMessage()
+    {
+        $messageId = $this->queue->submit('some message payload', ['delay' => 2]);
+        self::assertNull($this->queue->waitAndTake(1), 'message was available too soon');
+        $message = $this->queue->waitAndTake(2);
+        self::assertInstanceOf(Message::class, $message, 'waitAndTake should return message');
     }
 
     /**
