@@ -14,6 +14,9 @@ Flowpack:
 #          # If set jobs are executed on a separate thread avoiding side-effects and memory-leaks
 #          executeIsolated: true
 #
+#          # If set to true, forwards the full output (stdout + stderr) of the respective job to the stdout of its "parent"
+#          outputResults: false
+#
 #          # The max number of times a message is released when job execution failed
 #          maximumNumberOfReleases: 3
 #
