@@ -12,6 +12,7 @@ properties:
         'className': { type: string, format: class-name }
         'queueNamePrefix': { type: string }
         'executeIsolated': { type: boolean }
+        'outputResults': { type: boolean }
         'options': { type: dictionary }
         'releaseOptions': { type: dictionary }
   'queues':
@@ -27,5 +28,6 @@ properties:
         'className': { type: string, format: class-name }
         'queueNamePrefix': { type: string }
         'executeIsolated': { type: boolean }
+        'outputResults': { type: boolean }
         'options': { type: dictionary }
         'releaseOptions': { type: dictionary }
