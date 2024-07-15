@@ -66,6 +66,12 @@ class JobManager
     protected $flowSettings;
 
     /**
+     * @Flow\InjectConfiguration(package="Flowpack.JobQueue.Common", path="outputResults")
+     * @var string
+     */
+    protected $outputResults;
+
+    /**
      * @Flow\Inject
      * @var ThrowableStorageInterface
      */
@@ -123,7 +129,7 @@ class JobManager
             if (isset($queueSettings['executeIsolated']) && $queueSettings['executeIsolated'] === true) {
                 $messageCacheIdentifier = sha1(serialize($message));
                 $this->messageCache->set($messageCacheIdentifier, $message);
-                Scripts::executeCommand('flowpack.jobqueue.common:job:execute', $this->flowSettings, true, ['queue' => $queue->getName(), 'messageCacheIdentifier' => $messageCacheIdentifier]);
+                Scripts::executeCommand('flowpack.jobqueue.common:job:execute', $this->flowSettings, (bool)$this->outputResults, ['queue' => $queue->getName(), 'messageCacheIdentifier' => $messageCacheIdentifier]);
             } else {
                 $this->executeJobForMessage($queue, $message);
             }
