@@ -1,7 +1,6 @@
 Flowpack:
   JobQueue:
     Common:
-      outputResults: false
       presets: []
 #        'example':
 #          # FQN of the queue implementation to use
