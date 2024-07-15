@@ -189,7 +189,7 @@ The following parameters are supported by all queues:
 | className               | string  |       - | FQN of the class implementing the queue                                                                                         |
 | maximumNumberOfReleases | integer |       3 | Max. number of times a message is re-<br>released to the queue if a job failed                                                  |
 | executeIsolated         | boolean |   FALSE | If TRUE jobs for this queue are executed in a separate Thread. This makes sense in order to avoid memory leaks and side-effects |
-| outputResults           | boolean |   FALSE | If set to true, forwards the full output (stdout + stderr) of the respective job to the stdout of its "parent"                  |
+| outputResults           | boolean |   FALSE | If TRUE the full output (stdout + stderr) of the respective job is forwarded to the stdout of its "parent" (only applicable if `executeIsolated` is `true`)  |
 | queueNamePrefix         | string  |       - | Optional prefix for the internal queue name,<br>allowing to re-use the same backend over multiple installations                 |
 | options                 | array   |       - | Options for the queue.<br>Implementation specific (see corresponding package)                                                   |
 | releaseOptions          | array   |       - | Options that will be passed to `release()` when a job failed.<br>Implementation specific (see corresponding package)            |
