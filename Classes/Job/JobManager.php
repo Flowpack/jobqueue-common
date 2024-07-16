@@ -11,6 +11,7 @@ namespace Flowpack\JobQueue\Common\Job;
  * source code.
  */
 
+use Flowpack\JobQueue\Common\InterruptException;
 use Flowpack\JobQueue\Common\Queue\QueueInterface;
 use Neos\Cache\Frontend\VariableFrontend;
 use Neos\Flow\Annotations as Flow;
@@ -192,6 +193,18 @@ class JobManager
             $job = unserialize($message->getPayload());
             return $job;
         }, $messages);
+    }
+
+    /**
+     * This method is here to be called by queues if they reached local polling timeouts, if this applies
+     *
+     * @throws InterruptException
+     */
+    public function interruptMe(): void
+    {
+        if (function_exists('pcntl_signal_dispatch')) {
+            pcntl_signal_dispatch();
+        }
     }
 
     /**
