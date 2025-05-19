@@ -115,7 +115,7 @@ class TestQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function waitAndTake(int $timeout = null): ?Message
+    public function waitAndTake(?int $timeout = null): ?Message
     {
         $message = $this->reserveMessage($timeout);
         if ($message === null) {
@@ -129,16 +129,16 @@ class TestQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function waitAndReserve(int $timeout = null): ?Message
+    public function waitAndReserve(?int $timeout = null): ?Message
     {
         return $this->reserveMessage($timeout);
     }
 
     /**
-     * @param int $timeout
+     * @param int|null $timeout
      * @return Message
      */
-    protected function reserveMessage(int $timeout = null): ?Message
+    protected function reserveMessage(?int $timeout = null): ?Message
     {
         if ($timeout === null) {
             $timeout = $this->defaultTimeout;

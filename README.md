@@ -373,7 +373,7 @@ class Package extends BasePackage
 
         $dispatcher->connect(
             JobManager::class, 'messageFailed',
-            function(QueueInterface $queue, Message $message, \Exception $jobExecutionException = null) use ($bootstrap) {
+            function(QueueInterface $queue, Message $message, ?\Exception $jobExecutionException = null) use ($bootstrap) {
                 $additionalData = [
                     'queue' => $queue->getName(),
                     'message' => $message->getIdentifier()
