@@ -98,7 +98,7 @@ class FakeQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function waitAndTake(int $timeout = null): Message
+    public function waitAndTake(?int $timeout = null): Message
     {
         throw new \BadMethodCallException('The FakeQueue does not support reserving of messages.' . chr(10) . 'It is not required to use a worker for this queue as messages are handled immediately upon submission.', 1468425275);
     }
@@ -106,7 +106,7 @@ class FakeQueue implements QueueInterface
     /**
      * @inheritdoc
      */
-    public function waitAndReserve(int $timeout = null): Message
+    public function waitAndReserve(?int $timeout = null): Message
     {
         throw new \BadMethodCallException('The FakeQueue does not support reserving of messages.' . chr(10) . 'It is not required to use a worker for this queue as messages are handled immediately upon submission.', 1468425280);
     }

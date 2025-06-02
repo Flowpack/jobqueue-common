@@ -258,7 +258,7 @@ class JobManager
      * @Flow\Signal
      * @api
      */
-    protected function emitMessageReleased(QueueInterface $queue, Message $message, array $releaseOptions, \Exception $jobExecutionException = null): void
+    protected function emitMessageReleased(QueueInterface $queue, Message $message, array $releaseOptions, ?\Exception $jobExecutionException = null): void
     {
     }
 
@@ -272,7 +272,7 @@ class JobManager
      * @Flow\Signal
      * @api
      */
-    protected function emitMessageFailed(QueueInterface $queue, Message $message, \Exception $jobExecutionException = null): void
+    protected function emitMessageFailed(QueueInterface $queue, Message $message, ?\Exception $jobExecutionException = null): void
     {
     }
 
