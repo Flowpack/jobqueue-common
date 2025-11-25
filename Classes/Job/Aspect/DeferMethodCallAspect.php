@@ -39,9 +39,9 @@ class DeferMethodCallAspect
     protected $reflectionService;
 
     /**
-     * @var boolean
+     * @var string
      */
-    protected $processingJob = false;
+    protected string $processingMethodCallHash = '';
 
     /**
      * @param JoinPointInterface $joinPoint The current join point
@@ -50,7 +50,7 @@ class DeferMethodCallAspect
      */
     public function queueMethodCallAsJob(JoinPointInterface $joinPoint)
     {
-        if ($this->processingJob) {
+        if ($this->processingMethodCallHash === StaticMethodCallJob::methodCallHash($joinPoint->getClassName(), $joinPoint->getMethodName())) {
             return $joinPoint->getAdviceChain()->proceed($joinPoint);
         }
         /** @var Defer $deferAnnotation */
@@ -62,10 +62,10 @@ class DeferMethodCallAspect
     }
 
     /**
-     * @param boolean $processingJob
+     * @param string $processingMethodCallHash
      */
-    public function setProcessingJob($processingJob)
+    public function setProcessingMethodCallHash(string $processingMethodCallHash): void
     {
-        $this->processingJob = $processingJob;
+        $this->processingMethodCallHash = $processingMethodCallHash;
     }
 }

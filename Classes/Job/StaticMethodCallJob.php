@@ -75,7 +75,7 @@ class StaticMethodCallJob implements JobInterface
     public function execute(QueueInterface $queue, Message $message): bool
     {
         $service = $this->objectManager->get($this->className);
-        $this->deferMethodCallAspect->setProcessingJob(true);
+        $this->deferMethodCallAspect->setProcessingMethodCallHash(static::methodCallHash($this->className, $this->methodName));
         try {
             $methodName = $this->methodName;
             call_user_func_array([$service, $methodName], $this->arguments);
@@ -83,7 +83,7 @@ class StaticMethodCallJob implements JobInterface
         } catch (\Exception $exception) {
             throw $exception;
         } finally {
-            $this->deferMethodCallAspect->setProcessingJob(false);
+            $this->deferMethodCallAspect->setProcessingMethodCallHash('');
         }
     }
 
@@ -94,5 +94,10 @@ class StaticMethodCallJob implements JobInterface
     {
         $arguments = array_map([VariableDumper::class, 'dumpValue'], $this->arguments);
         return sprintf('%s::%s(%s)', $this->className, $this->methodName, implode(', ', $arguments));
+    }
+
+    public static function methodCallHash($className, $methodName): string
+    {
+        return md5($className . '::' .  $methodName);
     }
 }
