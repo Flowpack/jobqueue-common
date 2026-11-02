@@ -11,6 +11,7 @@ namespace Flowpack\JobQueue\Common\Tests\Unit\Job;
  * source code.
  */
 
+use Flowpack\JobQueue\Common\Exception as JobQueueException;
 use Flowpack\JobQueue\Common\Queue\Message;
 use Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestQueue;
 use Neos\Flow\Tests\UnitTestCase;
@@ -18,6 +19,7 @@ use Flowpack\JobQueue\Common\Job\JobManager;
 use Flowpack\JobQueue\Common\Queue\QueueManager;
 use Flowpack\JobQueue\Common\Tests\Unit\Fixtures\TestJob;
 use PHPUnit\Framework\MockObject\MockObject;
+use Psr\Log\LoggerInterface;
 
 /**
  * Unit tests for the JobManager
@@ -48,6 +50,7 @@ class JobManagerTest extends UnitTestCase
 
         $this->jobManager = new JobManager();
         $this->inject($this->jobManager, 'queueManager', $this->mockQueueManager);
+        $this->inject($this->jobManager, 'logger', $this->createMock(LoggerInterface::class));
     }
 
     /**
@@ -72,5 +75,27 @@ class JobManagerTest extends UnitTestCase
         $this->jobManager->queue('TestQueue', $job, $mockOptions);
 
         self::assertSame($mockOptions, $this->testQueue->getLastSubmitOptions());
+    }
+
+    /**
+     * @test
+     */
+    public function waitAndExecuteMarksMessagesBeyondTheReleaseLimitAsFailed()
+    {
+        $this->mockQueueManager->method('getQueueSettings')->with('TestQueue')->willReturn(['maximumNumberOfReleases' => 1]);
+        $this->jobManager->queue('TestQueue', new TestJob());
+        $messageId = $this->testQueue->waitAndReserve()->getIdentifier();
+        $this->testQueue->release($messageId);
+        $this->testQueue->waitAndReserve();
+        $this->testQueue->release($messageId);
+
+        try {
+            $this->jobManager->waitAndExecute('TestQueue');
+            self::fail('waitAndExecute() should have thrown an exception');
+        } catch (JobQueueException $exception) {
+            self::assertSame(1792744883, $exception->getCode());
+        }
+        self::assertSame(0, $this->testQueue->countReady());
+        self::assertSame(1, $this->testQueue->countFailed());
     }
 }

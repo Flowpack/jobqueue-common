@@ -26,6 +26,13 @@ use Neos\Flow\Mvc\Exception\StopActionException;
 class JobCommandController extends CommandController
 {
     /**
+     * Maximum time a waiting worker needs to notice a shutdown request, in seconds
+     */
+    private const SHUTDOWN_CHECK_INTERVAL = 5;
+
+    protected bool $shutdownRequested = false;
+
+    /**
      * @Flow\Inject
      * @var JobManager
      */
@@ -56,6 +63,10 @@ class JobCommandController extends CommandController
      * With the <i>limit</i> flag the number of executed jobs can be limited before the script exits.
      * This can be combined with <i>exit-after</i> to exit when either the time or job limit is reached
      *
+     * On SIGTERM or SIGINT (requires the pcntl extension), the worker finishes the job it is executing
+     * and exits afterwards. Give it enough time for that before killing it, for example with "stopwaitsecs"
+     * in supervisord.
+     *
      * The <i>verbose</i> flag can be used to gain some insight about which jobs are executed etc.
      *
      * @param string $queue Name of the queue to fetch messages from. Can also be a comma-separated list of queues.
@@ -75,12 +86,13 @@ class JobCommandController extends CommandController
             $this->outputLine('...');
         }
         $startTime = time();
-        $timeout = null;
         $numberOfJobExecutions = 0;
+        $shutdownSignalsHandled = $this->registerShutdownSignalHandlers();
         do {
             $message = null;
+            $timeout = $shutdownSignalsHandled ? self::SHUTDOWN_CHECK_INTERVAL : null;
             if ($exitAfter !== null) {
-                $timeout = max(1, $exitAfter - (time() - $startTime));
+                $timeout = min($timeout ?? PHP_INT_MAX, max(1, $exitAfter - (time() - $startTime)));
             }
             try {
                 $message = $this->jobManager->waitAndExecute($queue, $timeout);
@@ -101,6 +113,12 @@ class JobCommandController extends CommandController
                     $messagePayload = strlen($message->getPayload()) <= 50 ? $message->getPayload() : substr($message->getPayload(), 0, 50) . '...';
                     $this->outputLine('<success>Successfully executed job "%s" (%s)</success>', [$message->getIdentifier(), $messagePayload]);
                 }
+            }
+            if ($this->shutdownRequested) {
+                if ($verbose) {
+                    $this->outputLine('Quitting due to a shutdown signal');
+                }
+                $this->quit();
             }
             if ($exitAfter !== null && (time() - $startTime) >= $exitAfter) {
                 if ($verbose) {
@@ -161,5 +179,24 @@ class JobCommandController extends CommandController
         $message = $this->messageCache->get($messageCacheIdentifier);
         $queue = $this->queueManager->getQueue($queue);
         $this->jobManager->executeJobForMessage($queue, $message);
+    }
+
+    /**
+     * Lets SIGTERM and SIGINT request a shutdown instead of killing the worker in the middle of a job
+     *
+     * Returns false if signals cannot be handled, because the pcntl extension is missing.
+     */
+    protected function registerShutdownSignalHandlers(): bool
+    {
+        if (!function_exists('pcntl_async_signals')) {
+            return false;
+        }
+        pcntl_async_signals(true);
+        $requestShutdown = function () {
+            $this->shutdownRequested = true;
+        };
+        pcntl_signal(SIGTERM, $requestShutdown);
+        pcntl_signal(SIGINT, $requestShutdown);
+        return true;
     }
 }

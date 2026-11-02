@@ -119,6 +119,20 @@ class JobManager
         $this->emitMessageReserved($queue, $message);
 
         $queueSettings = $this->queueManager->getQueueSettings($queueName);
+        $maximumNumberOfReleases = isset($queueSettings['maximumNumberOfReleases']) ?
+            (int)$queueSettings['maximumNumberOfReleases'] :
+            self::DEFAULT_MAXIMUM_NUMBER_RELEASES;
+
+        // A queue may release a message on its own, for example when the worker holding it was killed.
+        // Such a message can exceed the maximum number of releases and must not run again.
+        if ($message->getNumberOfReleases() > $maximumNumberOfReleases) {
+            $queue->abort($message->getIdentifier());
+            $exception = new \RuntimeException(sprintf('The message was released %d times, but only %d releases are allowed', $message->getNumberOfReleases(), $maximumNumberOfReleases), 1792744882);
+            $this->emitMessageFailed($queue, $message, $exception);
+            $this->logger->error($exception->getMessage(), LogEnvironment::fromMethodName(__METHOD__));
+            throw new JobQueueException(sprintf('Job execution for job (message: "%s", queue: "%s") exceeded the maximum number of releases (%d) - ABORTING', $message->getIdentifier(), $queue->getName(), $maximumNumberOfReleases), 1792744883, $exception);
+        }
+
         try {
             if (isset($queueSettings['executeIsolated']) && $queueSettings['executeIsolated'] === true) {
                 $messageCacheIdentifier = sha1(serialize($message));
@@ -128,9 +142,6 @@ class JobManager
                 $this->executeJobForMessage($queue, $message);
             }
         } catch (\Throwable $throwable) {
-            $maximumNumberOfReleases = isset($queueSettings['maximumNumberOfReleases']) ?
-                (int)$queueSettings['maximumNumberOfReleases'] :
-                self::DEFAULT_MAXIMUM_NUMBER_RELEASES;
             if ($message->getNumberOfReleases() < $maximumNumberOfReleases) {
                 $releaseOptions = isset($queueSettings['releaseOptions']) ? $queueSettings['releaseOptions'] : [];
                 $queue->release($message->getIdentifier(), $releaseOptions);

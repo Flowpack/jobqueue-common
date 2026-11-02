@@ -181,11 +181,13 @@ class TestQueue implements QueueInterface
      */
     public function abort(string $messageId): void
     {
-        if (!isset($this->readyMessages[$messageId])) {
-            return;
+        if (isset($this->processingMessages[$messageId])) {
+            $this->failedMessages[$messageId] = $this->processingMessages[$messageId];
+            unset($this->processingMessages[$messageId]);
+        } elseif (isset($this->readyMessages[$messageId])) {
+            $this->failedMessages[$messageId] = $this->readyMessages[$messageId];
+            unset($this->readyMessages[$messageId]);
         }
-        $this->failedMessages[$messageId] = $this->readyMessages[$messageId];
-        unset($this->readyMessages[$messageId]);
     }
 
     /**

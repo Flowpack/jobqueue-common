@@ -335,6 +335,20 @@ Use the `flowpack.jobqueue.common:queue:*` and `flowpack.jobqueue.common:job:*` 
 | job:work        | Work on a queue and execute jobs                                           |
 | job:list        | List queued jobs                                                           |
 
+### Stopping workers
+
+On `SIGTERM` or `SIGINT`, `job:work` finishes the job it is currently
+executing and exits afterwards. While it waits for messages, it notices
+the signal within five seconds. This requires the `pcntl` extension.
+Without it, the worker is stopped immediately.
+
+When workers run under a process manager like supervisord or in a
+container, give them enough time to finish a job before they are
+killed (for example with `stopwaitsecs` in supervisord, or
+`terminationGracePeriodSeconds` in Kubernetes). A worker that is killed
+in the middle of a job leaves its message reserved. Whether and when
+such a message is executed again depends on the queue implementation.
+
 ## Signal & Slots
 
 When working with JobQueues proper monitoring is crucial as failures might not be visible immediately.
